@@ -1,1 +1,0 @@
-# kundalik_com

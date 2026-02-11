@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>O'quvchi profili</title>
+</head>
+<body>
+    <h1>Assalomu alaykum,{{user.username}}!</h1>
+    <p>Sizning rolingiz: <b>{{user.get_rol_display}}</b></p>
+    <h3>Mening natijalarim:</h3>
+    <u1>
+        <li>O'rtacha ball: {{tahlil.ortacha}}</li>
+        <li>Holat: {{tahlil.holat}}</li>
+    </u1>
+    <a hrey="/admin">Admin panelga o'tish</a> |
+    <from action="{% url 'logout' %" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Chiqish</button>
+    </from>
+</body>
+</html>
