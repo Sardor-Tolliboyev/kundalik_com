@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+<!-- Brauzer tabidagi sarlavha -->
+{% block title %}{{ title }} | BilimNazoratchi Admin{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <!-- Rasmingizdagi logo.png ni chaqiramiz -->
+        <img src="{% static 'img/logo.png' %}" alt="Logo" style="height: 35px; vertical-align: middle; margin-right: 10px; background: white; border-radius: 50%; padding: 2px;">
+        BilimNazoratchi Admin
+    </a>
+</h1>
+{% endblock %}
+
+<!-- O'zimiz yozgan professional CSSni ulash -->
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/admin_custom.css' %}">
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

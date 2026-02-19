@@ -9,28 +9,18 @@ from pathlib import Path
 # Loyihaning asosiy papkasi (bilim_nazoratchi/)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# =========================================================================
-# 1. XAVFSIZLIK SOZLAMALARI
-# =========================================================================
-
-# Maxfiy kalit (Ishlab chiqish davrida shunday qoladi)
+# Sozlamalar
+# Maxfiy kalit
 SECRET_KEY = 'django-insecure-bilim-nazoratchi-2026-pro-key'
 
-# Debug rejimi (Xatoliklarni ko'rish uchun True bo'lishi shart)
+# Debug rejimi 
 DEBUG = True
 
 # Ruxsat berilgan domenlar
 ALLOWED_HOSTS = ['*']
 
-
-# =========================================================================
-# 2. ILOVALAR RO'YXATI (INSTALLED APPS)
-# =========================================================================
+# Ilovalar ro'yxati
 INSTALLED_APPS = [
-    # Admin panel interfeysini zamonaviy qiluvchi kutubxona (Admin'dan tepada turishi shart)
-    'jazzmin',
-
     # Django standart ilovalari
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,16 +30,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Biz yaratgan jamoaviy ilovalar (Apps papkasi ichidagilar)
-    'apps.hisoblar',  # 1-talaba: Foydalanuvchilar va rollar
-    'apps.talim',     # 2 va 4-talaba: Sinf, Fan, Mavzu, Baho
-    'apps.tahlil',    # 5-talaba: Statistika va Analitika
-    'apps.xabarlar',  # 4-talaba: Bildirishnomalar
+    'apps.hisoblar',  # Foydalanuvchilarni boshqarish: O'qituvchi, O'quvchi, Sinf rahbari
+    'apps.talim',     # Ta'lim jarayonini boshqarish: Sinflar, Fanlar, Baholar, Mavzular
+    'apps.tahlil',    # Tahlil va hisobotlar: O'quvchilarning baholari, o'qituvchilarning samaradorligi
+    'apps.xabarlar',  # Xabarlar va bildirishnomalar: O'qituvchilar va o'quvchilar uchun xabarlar tizimi
 ]
 
-
-# =========================================================================
-# 3. ORALIK DASTURLAR (MIDDLEWARE)
-# =========================================================================
+# Oraliq qatlamlar (Middleware) ro'yxati
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -63,9 +50,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'config.urls'
 
 
-# =========================================================================
-# 4. SHABLONLAR (TEMPLATES) VA FRONTEND
-# =========================================================================
+# Shablonlar (Templates) sozlamalari
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -84,10 +69,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
-# =========================================================================
-# 5. MA'LUMOTLAR BAZASI (DATABASE - SQLite)
-# =========================================================================
+# Ma'lumotlar bazasi sozlamalari (SQLite)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -95,12 +77,7 @@ DATABASES = {
     }
 }
 
-
-# =========================================================================
-# 6. FOYDALANUVCHILARNI BOSHQARISH (AUTH)
-# =========================================================================
-
-# Biz yaratgan o'zbekcha Foydalanuvchi modeli
+# Parol murakkabligini tekshirish sozlamalari
 AUTH_USER_MODEL = 'hisoblar.Foydalanuvchi'
 
 # Parol murakkabligini tekshirish sozlamalari
@@ -111,11 +88,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
-# =========================================================================
-# 7. MAHALLIYLASHTIRISH (LOCALIZATION)
-# =========================================================================
-
+# Xalqaro sozlamalar
 # Sayt tili: O'zbekcha
 LANGUAGE_CODE = 'uz'
 
@@ -125,48 +98,12 @@ TIME_ZONE = 'Asia/Tashkent'
 USE_I18N = True
 USE_TZ = True
 
-
-# =========================================================================
-# 8. STATIK VA MEDIA FAYLLAR (CSS, JS, IMAGES)
-# =========================================================================
+# Statik va media fayllar sozlamalari
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
-
-# =========================================================================
-# 9. JAZZMIN (ADMIN PANEL) DIZAYN SOZLAMALARI
-# =========================================================================
-JAZZMIN_SETTINGS = {
-    "site_title": "BilimNazoratchi",
-    "site_header": "BilimNazoratchi",
-    "site_brand": "BilimNazoratchi",
-    "welcome_sign": "Maktab Monitoring Tizimiga Xush Kelibsiz!",
-    "copyright": "BilimNazoratchi Jamoasi © 2026",
-    "search_model": ["hisoblar.Foydalanuvchi"],
-    "show_sidebar": True,
-    "navigation_expanded": True,
-
-    # Ilovalar va modellarga o'zbekcha ikonkalarni biriktiramiz (FontAwesome)
-    "icons": {
-        "hisoblar.Foydalanuvchi": "fas fa-user-graduate",
-        "talim.Sinf": "fas fa-school",
-        "talim.Fan": "fas fa-book",
-        "talim.Baho": "fas fa-star",
-        "talim.Mavzu": "fas fa-list-ul",
-    },
-    # Admin panelning tartibi
-    "order_with_respect_to": ["hisoblar", "talim", "tahlil"],
-}
-
-# Admin panelning zamonaviy ko'k rangli temasi
-JAZZMIN_UI_TWEAKS = {
-    "theme": "flatly",
-    "navbar": "navbar-primary",
-    "sidebar": "sidebar-dark-primary",
-}
 
 LOGIN_URL = '/hisoblar/login/'
 LOGIN_REDIRECT_URL = 'talim:bosh_sahifa' # Bu orqali foydalanuvchi roli bo'yicha dashboardga boradi

@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Farzandim Nazorati | BilimNazoratchi{% endblock %}
+
+{% block extra_css %}
+    <!-- 3-talaba o'z dizaynini shu faylga yozadi -->
+    <link rel="stylesheet" href="{% static 'css/ota_ona.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- 1. YUQORI QISM: Sarlavha -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold text-dark">
+                <i class="bi bi-shield-check text-primary me-2"></i>Farzandimning bilim nazorati
+            </h2>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 2. CHAP TOMON: Farzand haqida qisqacha ma'lumot va Holat (Pulse) -->
+        <div class="col-lg-4">
+            <div class="card-em mb-4">
+                <div class="text-center p-3">
+                    <!-- Foydalanuvchi belgisi -->
+                    <div class="bg-light rounded-circle d-inline-block p-4 mb-3">
+                        <i class="bi bi-person-bounding-box display-4 text-primary"></i>
+                    </div>
+                    
+                    <!-- Farzand ismi -->
+                    <h3 class="fw-bold">{{ farzand.get_full_name|default:farzand.username }}</h3>
+                    <p class="text-muted small">O'quvchi ID: #{{ farzand.id }}</p>
+                    
+                    <div class="py-3 border-top border-bottom my-3">
+                        <p class="text-muted mb-1 small text-uppercase fw-bold">Joriy o'rtacha ball</p>
+                        <!-- 5-talaba hisoblagan o'rtacha ball -->
+                        <div class="display-4 fw-bold text-{{ tahlil.rang }}">{{ tahlil.ortacha|default:"0.0" }}</div>
+                        
+                        <!-- Holat belgisi -->
+                        <span class="badge bg-{{ tahlil.rang }} p-2 mt-2 px-3 rounded-pill">
+                            {{ tahlil.holat }} {{ tahlil.trend_belgi }}
+                        </span>
+                    </div>
+
+                    <div class="text-start mt-3">
+                        <p class="small text-muted mb-1"><b>Sinfi:</b> {{ farzand.sinf.nomi|default:"-" }}</p>
+                        <p class="small text-muted mb-0"><b>Trend:</b> {{ tahlil.trend }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⚠️ Xavf signali (Agar baholar past bo'lsa chiqadi) -->
+            {% if tahlil.rang == 'danger' %}
+            <div class="alert alert-danger border-0 shadow-sm rounded-3">
+                <h6 class="fw-bold"><i class="bi bi-exclamation-triangle-fill"></i> Diqqat!</h6>
+                <p class="small mb-0">Farzandingizning o'zlashtirish ko'rsatkichi pasaygan. Iltimos, o'qituvchilar bilan bog'laning.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- 3. O'NG TOMON: Grafik va Baholar jadvali -->
+        <div class="col-lg-8">
+            <!-- Bilim grafigi (Skeleton) -->
+            <div class="card-em mb-4">
+                <h5 class="fw-bold mb-4">Bilim o'sish dinamikasi</h5>
+                <div style="height: 250px;">
+                    <!-- Chart.js grafigi shu yerga chiziladi -->
+                    <canvas id="farzandGrafigi"></canvas>
+                </div>
+            </div>
+
+            <!-- Baholar jadvali -->
+            <div class="card-em">
+                <h5 class="fw-bold mb-4">Oxirgi olingan baholar</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fan</th>
+                                <th class="text-center">Baho</th>
+                                <th class="text-center">Sana</th>
+                                <th>O'qituvchi izohi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for baho in baholar %}
+                            <tr>
+                                <td class="fw-bold text-dark">{{ baho.mavzu.fan.nomi }}</td>
+                                <td class="text-center">
+                                    <span class="badge bg-primary rounded-circle p-2" style="width: 35px; height: 35px; line-height: 18px;">
+                                        {{ baho.qiymati }}
+                                    </span>
+                                </td>
+                                <td class="text-center text-muted small">{{ baho.mavzu.sana|date:"d.m.Y" }}</td>
+                                <td class="text-muted small italic">
+                                    <i>"{{ baho.izoh|default:"Izoh yo'q" }}"</i>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">Hozircha baholar yo'q.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        // 5-talaba bu yerga grafik chizish kodini yozadi
+        const ctx = document.getElementById('farzandGrafigi').getContext('2d');
+        // Grafik mantiqi...
+    </script>
+{% endblock %}

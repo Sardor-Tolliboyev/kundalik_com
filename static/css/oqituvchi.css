@@ -1,0 +1,38 @@
+/* O'qituvchi profil sahifasi uchun maxsus dizayn */
+
+/* Avatar stili */
+.teacher-avatar {
+    width: 100px;
+    height: 100px;
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+/* Kartochkalar uchun eMaktab uslubi */
+.card-em {
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e1e8ed;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Info-row (Shaxsiy ma'lumotlar qatori) */
+.info-row small {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+/* Jurnalga o'tish tugmasi animatsiyasi */
+.btn-em-primary:hover i {
+    transform: translateX(3px);
+    transition: 0.2s;
+}
+
+/* Jadval ko'rinishini yumshatish */
+.table-em thead th {
+    font-size: 12px;
+    color: #6c757d;
+}

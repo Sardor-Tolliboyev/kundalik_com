@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-4">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold" style="color: var(--em-blue);">Kirish</h2>
+            <p class="text-muted small">BilimNazoratchi — Ta'lim portali</p>
+        </div>
+
+        <div class="card shadow-sm border-0 p-4" style="border-radius: 8px;">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Login</label>
+                    <input type="text" name="username" class="form-control" placeholder="Loginni kiriting" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label small fw-bold">Parol</label>
+                    <input type="password" name="password" class="form-control" placeholder="Parolni kiriting" required>
+                </div>
+                <!-- eMaktab kabi gradientli tugma -->
+                <button type="submit" class="btn btn-em-primary w-100 py-2 shadow-sm">
+                    Tizimga kirish
+                </button>
+            </form>
+            
+            {% if form.errors %}
+                <div class="alert alert-danger mt-3 small p-2 text-center">Login yoki parol xato!</div>
+            {% endif %}
+
+            <div class="text-center mt-4 border-top pt-3">
+                <a href="https://t.me/Sardor_Tolliboyev" class="text-decoration-none small" style="color: var(--em-blue);">
+                    Admin bilan bog'lanish
+                </a>
+            </div>
+        </div>
+        <p class="text-center mt-4 small text-muted">© 2026 BilimNazoratchi jamoasi</p>
+    </div>
+</div>
+{% endblock %}

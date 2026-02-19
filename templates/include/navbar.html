@@ -1,0 +1,71 @@
+<!-- templates/include/navbar.html -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
+    <div class="container">
+        <!-- Logotip va Sayt nomi -->
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'talim:bosh_sahifa' %}">
+            <i class="bi bi-graph-up-arrow me-2"></i>
+            <span style="letter-spacing: 1px;">BILIM NAZORATCHI</span>
+        </a>
+
+        <!-- Mobil qurilmalar uchun menyu tugmasi -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                {% if user.is_authenticated %}
+                    <!-- Foydalanuvchi tizimga kirgan bo'lsa -->
+                    <li class="nav-item">
+                        <!-- O'qituvchi profiliga havola qo'shildi -->
+                        {% if user.rol == 'oqituvchi' %}
+                            <a href="{% url 'talim:oqituvchi_profil' %}" class="nav-link text-white me-3 d-flex align-items-center">
+                                <i class="bi bi-person-circle fs-5 me-1"></i> 
+                                <span class="fw-bold">{{ user.get_full_name|default:user.username }}</span>
+                                <span class="badge bg-light text-primary ms-2 small">{{ user.get_rol_display }}</span>
+                            </a>
+                        {% else %}
+                            <span class="nav-link text-white me-3 d-flex align-items-center">
+                                <i class="bi bi-person-circle fs-5 me-1"></i> 
+                                <span class="fw-bold">{{ user.get_full_name|default:user.username }}</span>
+                                <span class="badge bg-light text-primary ms-2 small">{{ user.get_rol_display }}</span>
+                            </span>
+                        {% endif %}
+                    </li>
+                    
+                    <li class="nav-item">
+                        <!-- Tizimdan chiqish formasi -->
+                        <form action="{% url 'logout' %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-light btn-sm fw-bold px-3 rounded-pill">
+                                <i class="bi bi-box-arrow-right"></i> Chiqish
+                            </button>
+                        </form>
+                    </li>
+                {% else %}
+                    <!-- Foydalanuvchi tizimga kirmagan bo'lsa -->
+                    <li class="nav-item">
+                        <a class="btn btn-light btn-sm text-primary fw-bold px-4 rounded-pill shadow-sm" href="{% url 'login' %}">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Kirish
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    /* Navbarni biroz balandroq va chiroyli qilish */
+    .navbar {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        z-index: 1030;
+    }
+    .navbar-brand span {
+        font-size: 1.1rem;
+    }
+    .nav-link:hover {
+        opacity: 0.9;
+    }
+</style>

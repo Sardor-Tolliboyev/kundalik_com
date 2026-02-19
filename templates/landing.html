@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Hero qismi -->
+    {% include 'include/hero.html' %}
+
+    <!-- Funksiyalar (Slayddagi katalog kabi) -->
+    <div class="row mt-5 pt-5">
+        <h2 class="fw-bold mb-4">Tizim imkoniyatlari</h2>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 p-4 border-0 shadow-sm" style="background: #1f2937; color: white; border-radius: 20px;">
+                <div class="mb-3 text-primary"><i class="bi bi-graph-up-arrow fs-1"></i></div>
+                <h4 class="fw-bold">Pulse Tahlili</h4>
+                <p class="text-secondary small">O‘quvchining bilim darajasi va trendini avtomatik hisoblash tizimi.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 p-4 border-0 shadow-sm" style="background: #1f2937; color: white; border-radius: 20px;">
+                <div class="mb-3 text-primary"><i class="bi bi-file-earmark-excel fs-1"></i></div>
+                <h4 class="fw-bold">Excel Import</h4>
+                <p class="text-secondary small">Sinf o‘quvchilarini Excel fayl orqali bir soniyada yuklash imkoniyati.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 p-4 border-0 shadow-sm" style="background: #1f2937; color: white; border-radius: 20px;">
+                <div class="mb-3 text-primary"><i class="bi bi-shield-check fs-1"></i></div>
+                <h4 class="fw-bold">Nazorat</h4>
+                <p class="text-secondary small">Ota-onalar uchun farzandining ta'lim jarayonini real vaqtda kuzatish.</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

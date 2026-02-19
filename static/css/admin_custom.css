@@ -1,0 +1,72 @@
+/* --- BilimNazoratchi Professional Admin CSS --- */
+
+/* 1. Yuqori qism (Header) dizayni */
+#header {
+    background: #0087c0 !important;
+    color: #fff !important;
+    padding: 15px 40px;
+    height: auto;
+}
+
+#branding h1 {
+    color: #fff !important;
+    font-weight: 800;
+    font-size: 22px;
+    text-transform: uppercase;
+}
+
+/* 2. Sidebar va Modullar */
+.module h2, .module caption, .inline-group h2 {
+    background: #0087c0 !important;
+    color: white !important;
+    font-weight: 600;
+    border-radius: 4px 4px 0 0;
+}
+
+div.module {
+    border: 1px solid #e1e8ed !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* 3. Tugmalar (Buttons) - eMaktab uslubidagi gradient */
+.button, input[type=submit], input[type=button], .submit-row input {
+    background-image: linear-gradient(to bottom, #00c3e8 0, #00b0e1 100%) !important;
+    background-color: #0087c0 !important;
+    border: 1px solid #0097ba !important;
+    border-radius: 4px !important;
+    padding: 10px 25px !important;
+    color: white !important;
+    font-weight: bold !important;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.button:hover, input[type=submit]:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.button.default, input[type=submit].default {
+    background: #28a745 !important; /* Saqlash tugmasi yashil */
+    border: 1px solid #218838 !important;
+}
+
+/* 4. Jadvallar */
+#changelist table thead th {
+    background: #f8f9fa !important;
+    color: #333 !important;
+    padding: 12px;
+    border-bottom: 2px solid #0087c0;
+}
+
+#changelist table tbody tr:hover {
+    background-color: #f0f7ff !important;
+}
+
+/* 5. Shriftlar va umumiy ko'rinish */
+body {
+    font-family: 'Open Sans', sans-serif !important;
+    background-color: #f4f7f9;
+}

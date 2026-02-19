@@ -1,21 +1,151 @@
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-    <meta charset="UTF-8">
-    <title>O'quvchi profili</title>
-</head>
-<body>
-    <h1>Assalomu alaykum,{{user.username}}!</h1>
-    <p>Sizning rolingiz: <b>{{user.get_rol_display}}</b></p>
-    <h3>Mening natijalarim:</h3>
-    <u1>
-        <li>O'rtacha ball: {{tahlil.ortacha}}</li>
-        <li>Holat: {{tahlil.holat}}</li>
-    </u1>
-    <a hrey="/admin">Admin panelga o'tish</a> |
-    <from action="{% url 'logout' %" method="post" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit">Chiqish</button>
-    </from>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mening Profilim | BilimNazoratchi{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- 1. YUQORI BLOK: Foydalanuvchi va Sinf -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold">
+                <i class="bi bi-person-badge text-primary"></i> 
+                Assalomu alaykum, {{ user.get_full_name|default:user.username }}!
+            </h2>
+            <p class="text-muted mb-0">Bugun: {% now "j-F, Y" %}-yil. {% now "l" %}</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <div class="card-em d-inline-block px-4 py-2 border-primary">
+                <span class="text-muted small">Sinfingiz:</span>
+                <span class="fw-bold text-primary">{{ sinf.nomi|default:"Biriktirilmagan" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. ANALITIKA KARTALARI -->
+    <div class="row mb-4 text-center">
+        <!-- O'rtacha ball -->
+        <div class="col-md-4 mb-3">
+            <div class="card-em h-100 shadow-sm border-0">
+                <h6 class="text-uppercase fw-bold text-secondary small">O'rtacha ko'rsatkich</h6>
+                <div class="display-4 fw-bold text-primary">{{ tahlil.ortacha|default:"0.0" }}</div>
+                <div class="mt-2">
+                    <span class="badge rounded-pill bg-{{ tahlil.rang }} px-4 py-2">
+                        {{ tahlil.holat }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!-- Bilim Trendi -->
+        <div class="col-md-4 mb-3">
+            <div class="card-em h-100 shadow-sm border-0">
+                <h6 class="text-uppercase fw-bold text-secondary small">Bilim dinamikasi</h6>
+                <div class="display-5 fw-bold text-dark mt-2">
+                    {{ tahlil.trend_belgi }} {{ tahlil.trend }}
+                </div>
+                <p class="text-muted small mt-2">Oxirgi natijalar asosida</p>
+            </div>
+        </div>
+        <!-- Fanlar soni -->
+        <div class="col-md-4 mb-3">
+            <div class="card-em h-100 shadow-sm border-0">
+                <h6 class="text-uppercase fw-bold text-secondary small">O'qilayotgan fanlar</h6>
+                <div class="display-5 fw-bold text-primary mt-2">{{ fanlar.count|default:"0" }} ta</div>
+                <p class="text-muted small mt-2">Sinf dars jadvali bo'yicha</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 3. DINAMIK GRAFIK (Chart.js) -->
+        <div class="col-lg-8 mb-4">
+            <div class="card-em h-100 shadow-sm">
+                <h5 class="fw-bold mb-4"><i class="bi bi-graph-up text-primary"></i> Bilim o'sish grafigi</h5>
+                <canvas id="bilimGrafigi" height="250"></canvas>
+            </div>
+        </div>
+
+        <!-- 4. FANLAR RO'YXATI -->
+        <div class="col-lg-4 mb-4">
+            <div class="card-em h-100 shadow-sm">
+                <h5 class="fw-bold mb-3"><i class="bi bi-book text-primary"></i> Mening fanlarim</h5>
+                <div class="list-group list-group-flush overflow-auto" style="max-height: 300px;">
+                    {% for fan in fanlar %}
+                    <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 py-3 rounded-3 mb-2 bg-light">
+                        <span class="fw-bold">{{ fan.nomi }}</span>
+                        <i class="bi bi-chevron-right text-primary"></i>
+                    </a>
+                    {% empty %}
+                    <p class="text-muted small">Hali fanlar biriktirilmagan.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. OXIRGI BAHOLAR JADVALI -->
+    <div class="row mt-2">
+        <div class="col-12">
+            <div class="card-em shadow-sm">
+                <h5 class="fw-bold mb-4"><i class="bi bi-journal-check text-primary"></i> Oxirgi olingan baholar</h5>
+                <div class="table-responsive">
+                    <table class="table-em table-hover">
+                        <thead>
+                            <tr>
+                                <th>Fan nomi</th>
+                                <th>Baho</th>
+                                <th>Sana</th>
+                                <th>O'qituvchi izohi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for baho in baholar %}
+                            <tr>
+                                <td class="fw-bold">{{ baho.mavzu.fan.nomi }}</td>
+                                <td>
+                                    <span class="badge {% if baho.qiymati >= 4 %}bg-success{% elif baho.qiymati == 3 %}bg-warning text-dark{% else %}bg-danger{% endif %} rounded-circle p-2" style="width: 35px;">
+                                        {{ baho.qiymati }}
+                                    </span>
+                                </td>
+                                <td class="text-muted">{{ baho.mavzu.sana|date:"d-M, Y" }}</td>
+                                <td class="fst-italic small">{{ baho.izoh|default:"-" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">Baholar hali mavjud emas.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Dinamik grafikni chizish (Chart.js)
+    const ctx = document.getElementById('bilimGrafigi').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [{% for b in baholar reversed %}"{{ b.mavzu.sana|date:'d-M' }}",{% endfor %}],
+            datasets: [{
+                label: 'Bilim darajasi',
+                data: [{% for b in baholar reversed %}{{ b.qiymati }},{% endfor %}],
+                borderColor: '#0087c0',
+                backgroundColor: 'rgba(0, 135, 192, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5
+            }]
+        },
+        options: {
+            scales: { y: { min: 2, max: 5 } },
+            plugins: { legend: { display: false } }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}O'qituvchi Profili | BilimNazoratchi{% endblock %}
+
+{% block extra_css %}
+    <!-- 2-talaba o'z dizaynini shu faylga yozadi -->
+    <link rel="stylesheet" href="{% static 'css/oqituvchi.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- 1. YUQORI QISM: Sarlavha va umumiy holat -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold text-dark">
+                <i class="bi bi-person-vcard text-primary me-2"></i>O'qituvchi shaxsiy sahifasi
+            </h2>
+            <p class="text-muted small">Tizimdagi ma'lumotlaringiz va sizga biriktirilgan sinflar jadvali.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <p class="text-muted mb-0">Bugun: <b>{% now "j-F, Y" %}-yil</b></p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 2. CHAP TOMON: O'qituvchi haqida ma'lumot (ID kartochka) -->
+        <div class="col-lg-4 mb-4">
+            <div class="card-em border-0 shadow-sm text-center p-4">
+                <div class="mb-3">
+                    <!-- Ism-familiyaning bosh harflaridan avatar -->
+                    <div class="teacher-avatar bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm">
+                        {{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}
+                    </div>
+                </div>
+                <h4 class="fw-bold mb-1">{{ user.get_full_name|default:user.username }}</h4>
+                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-4">
+                    <i class="bi bi-award"></i> {{ user.get_rol_display }}
+                </span>
+                
+                <div class="text-start mt-2">
+                    <div class="info-row mb-3 border-bottom pb-2">
+                        <small class="text-muted d-block">Foydalanuvchi nomi:</small>
+                        <span class="fw-bold text-dark">@{{ user.username }}</span>
+                    </div>
+                    <div class="info-row mb-3 border-bottom pb-2">
+                        <small class="text-muted d-block">Telefon raqami:</small>
+                        <span class="fw-bold text-dark">{{ user.telefon|default:"Kiritilmagan" }}</span>
+                    </div>
+                    <div class="info-row">
+                        <small class="text-muted d-block">Elektron pochta:</small>
+                        <span class="fw-bold text-dark">{{ user.email|default:"Kiritilmagan" }}</span>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <!-- Ma'lumotlarni tahrirlash tugmasi -->
+                    <a href="/admin/hisoblar/foydalanuvchi/{{ user.id }}/change/" class="btn-em-primary w-100 py-2">
+                        <i class="bi bi-gear-wide-linear"></i> Sozlamalar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. O'NG TOMON: Biriktirilgan sinflar va fanlar jadvali -->
+        <div class="col-lg-8 mb-4">
+            <div class="card-em border-0 shadow-sm p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">
+                        <i class="bi bi-journal-bookmark-fill text-primary me-2"></i>Siz o'tadigan darslar
+                    </h5>
+                    <span class="badge bg-secondary">Jami: {{ darslar.count|default:"0" }} ta</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table-em table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Sinf nomi</th>
+                                <th>Fan nomi</th>
+                                <th class="text-end">Amallar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 'mening_darslarim' nomli Queryset ishlatiladi -->
+                            {% for dars in mening_darslarim %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><span class="fw-bold text-primary">{{ dars.sinf.nomi }}</span></td>
+                                <td>{{ dars.fan.nomi }}</td>
+                                <td class="text-end">
+                                    <a href="#" class="btn btn-sm btn-em-primary rounded-pill px-3">
+                                        Jurnalga o'tish <i class="bi bi-arrow-right-short"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="bi bi-info-circle display-6 d-block mb-2"></i>
+                                    Sizga hali birorta dars (sinf) biriktirilmagan.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Eslatma -->
+                <div class="mt-auto pt-4">
+                    <div class="p-3 bg-light rounded-3 border-start border-primary border-4">
+                        <p class="small mb-0 text-secondary italic">
+                            <b>Eslatma:</b> Agar darslar ro'yxatida xatolik bo'lsa, iltimos, maktab administratoriga murojaat qiling.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+/* O'quvchi profili uchun maxsus stillar */
+.profile-stat-card {
+    border-left: 5px solid var(--em-blue);
+    transition: 0.3s;
+}
+
+/* Grafik turgan blokni bezash */
+.chart-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Fanlar ro'yxati dizayni */
+.subject-item {
+    border-radius: 6px;
+    margin-bottom: 10px;
+}

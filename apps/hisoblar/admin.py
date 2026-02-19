@@ -1,84 +1,87 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import Foydalanuvchi
 
 # -------------------------------------------------------------------------
-# STANDART GURUHLARNI TOZALASH
+# 1. YANGI FOYDALANUVCHI YARATISH FORMASI
 # -------------------------------------------------------------------------
-# Djangoning standart 'Groups' (Guruhlar) bo'limi ko'p hollarda ishlatilmaydi.
-# Sidebar toza turishi uchun uni admin paneldan olib tashlaymiz.
-admin.site.unregister(Group)
-
+class FoydalanuvchiYaratishForm(UserCreationForm):
+    """
+    Admin panelda yangi foydalanuvchi qo'shishda ishlatiladigan professional forma.
+    Bu yerda biz 'rol' maydonini ham qo'shib ketamiz.
+    """
+    class Meta(UserCreationForm.Meta):
+        model = Foydalanuvchi
+        fields = ("username", "rol", "first_name", "last_name")
 
 # -------------------------------------------------------------------------
-# FOYDALANUVCHILARNI BOSHQARISH (ADMIN) SINFISI
+# 2. FOYDALANUVCHILARNI BOSHQARISH (ADMIN KLASSI)
 # -------------------------------------------------------------------------
 @admin.register(Foydalanuvchi)
 class FoydalanuvchiAdmin(UserAdmin):
     """
-    Foydalanuvchilarni tahrirlash, qidirish va saralash oynasi sozlamalari.
-    Biz standart 'UserAdmin'dan meros olib, uni o'zbekchaga moslashtirdik.
+    Foydalanuvchilarni tahrirlash va tahlil qilish uchun professional panel.
     """
-
-    # 1. Ro'yxat sahifasida ko'rinadigan ustunlar
+    add_form = FoydalanuvchiYaratishForm
+    form = UserChangeForm
+    
+    # Ro'yxat sahifasida ko'rinadigan ustunlar
     list_display = ('username', 'first_name', 'last_name', 'rol', 'is_active', 'is_staff')
-
-    # 2. Ro'yxatning o'ng tomonidagi saralash (filtr) oynasi
     list_filter = ('rol', 'is_active', 'is_staff', 'date_joined')
-
-    # 3. Foydalanuvchini nomi, ismi yoki telefoni orqali qidirish imkoniyati
     search_fields = ('username', 'first_name', 'last_name', 'telefon')
-
-    # 4. Faqat o'qish uchun maydonlar (Tizim avtomatik belgilaydigan sanalar)
-    # Bu maydonlarni readonly_fields ga qo'shmasak, tahrirlashda xato beradi.
+    list_editable = ('rol', 'is_active')
     readonly_fields = ('last_login', 'date_joined')
 
-    # 5. TAHRIRLASH SAHIFASIDAGI BLOKLAR (FIELDSETS)
-    # Hamma maydonlarni mantiqiy guruhlarga bo'lib chiqdik.
-    fieldsets = (
-        ("Kirish ma'lumotlari", {
-            'fields': ('username', 'password'),
-            'description': "Foydalanuvchining tizimga kirishi uchun kerakli ma'lumotlar."
+    # --- YANGI FOYDALANUVCHI QO'SHISH SAHIFASI (add) ---
+    # MUHIM: password_confirm o'rniga password1 va password2 ishlatiladi
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'rol', 'first_name', 'last_name', 'password1', 'password2'),
+            'description': "Dastlab foydalanuvchining login, parol va rolini kiriting."
         }),
-        ("Shaxsiy ma'lumotlar", {
+    )
+
+    # --- FOYDALANUVCHINI TAHRIRLASH SAHIFASI (change) ---
+    fieldsets = (
+        ("🔐 Kirish ma'lumotlari", {
+            'fields': ('username', 'password'),
+        }),
+        ("👤 Shaxsiy ma'lumotlar", {
             'fields': ('first_name', 'last_name', 'email', 'telefon'),
         }),
-        ("Tizimdagi roli va bog'liqlik", {
+        ("🏫 Tizimdagi roli", {
             'fields': ('rol', 'farzandi'),
-            'description': "Agar roli 'Ota-ona' bo'lsa, unga o'quvchini shu yerdan biriktiring."
+            'description': "Ota-ona bo'lsa, unga o'quvchini shu yerdan biriktiring."
         }),
-        ("Huquqlar va Maqom", {
+        ("🛠 Huquqlar va Maqom", {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'user_permissions'),
-            'classes': ('collapse',),  # Bu bo'limni yashirin qildik, bosganda ochiladi
+            'classes': ('collapse',), 
         }),
-        ("Muhim sanalar", {
+        ("📅 Muhim sanalar", {
             'fields': ('last_login', 'date_joined'),
         }),
     )
 
-    # 6. PROFESSIONAL SOZLAMA: Parol maydonidagi inglizcha texnik matnlarni o'zbekchaga o'girish
     def get_form(self, request, obj=None, **kwargs):
+        """Texnik inglizcha yordamchi matnlarni o'zbekchaga o'zgartirish"""
         form = super().get_form(request, obj, **kwargs)
         if 'password' in form.base_fields:
-            # Rasmda ko'ringan 'algorithm', 'hash' kabi so'zlarni yashirib, o'rniga tushunarli matn qo'yamiz
             form.base_fields['password'].label = "Xavfsiz parol tizimi"
             form.base_fields['password'].help_text = (
-                "Xavfsizlik yuzasidan parollar tizimda shifrlangan holatda saqlanadi. "
-                "Ularni ochiq holda ko'rishning imkoni yo'q. Parolni o'zgartirish uchun "
-                "<a href='../password/'>mana bu havolaga</a> o'ting."
+                "Xavfsizlik yuzasidan parollar shifrlangan holatda saqlanadi. "
+                "Parolni o'zgartirish uchun <a href='../password/'>bu yerga bosing</a>."
             )
         return form
 
-
 # -------------------------------------------------------------------------
-# ADMIN PANEL SARLAVHALARINI BRENDING QILISH
+# 3. ADMIN PANEL BRANDING
 # -------------------------------------------------------------------------
-# Brauzer tabidagi nom
-admin.site.site_title = "BilimNazoratchi"
+admin.site.site_header = "Bilim Nazoratchi: Boshqaruv Markazi"
+admin.site.index_title = "Tizim ma'lumotlarini boshqarish"
 
-# Admin panelning tepasidagi asosiy sarlavha
-admin.site.site_header = "BilimNazoratchi Boshqaruv Paneli"
-
-# Dashboardning asosiy nomi
-admin.site.index_title = "Maktab ma'lumotlarini tahlil qilish va boshqarish"
+# Guruhlarni o'chiramiz (agar mavjud bo'lsa)
+if admin.site.is_registered(Group):
+    admin.site.unregister(Group)
