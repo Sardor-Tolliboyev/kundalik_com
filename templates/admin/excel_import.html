@@ -1,0 +1,28 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<div id="content-main">
+    <div class="module" style="padding: 20px; background: white; border-radius: 8px;">
+        <h3 class="fw-bold">Excel orqali o'quvchilarni tizimga yuklash</h3>
+        <hr>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="margin-bottom: 20px;">
+                <label style="display:block; margin-bottom:10px;"><b>1. O'quvchilar yuklanadigan sinfni tanlang:</b></label>
+                <select name="sinf_id" class="form-control" style="width: 300px; padding: 10px;" required>
+                    <option value="">--- Sinfni tanlang ---</option>
+                    {% for sinf in sinflar %}
+                        <option value="{{ sinf.id }}">{{ sinf.nomi }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display:block; margin-bottom:10px;"><b>2. Excel faylni tanlang (.xlsx):</b></label>
+                <input type="file" name="excel_fayl" accept=".xlsx, .xls" required>
+            </div>
+            <div class="submit-row">
+                <input type="submit" value="YUKLASHNI BOSHLASH" class="default" style="background: #0087c0; width: 100%;">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

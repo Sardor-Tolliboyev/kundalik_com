@@ -1,38 +1,50 @@
-/* O'qituvchi profil sahifasi uchun maxsus dizayn */
+/* O'qituvchi dashboardi va Jurnal uchun maxsus */
 
-/* Avatar stili */
-.teacher-avatar {
-    width: 100px;
-    height: 100px;
-    font-size: 40px;
-    font-weight: 700;
-    letter-spacing: 2px;
+/* Jurnal setkasi (Table) */
+.table-jurnal {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
 }
 
-/* Kartochkalar uchun eMaktab uslubi */
-.card-em {
-    background: #ffffff;
-    border-radius: 8px;
-    border: 1px solid #e1e8ed;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+.table-jurnal th {
+    background-color: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 12px;
+    font-size: 13px;
+    color: #64748b;
+    text-align: center;
 }
 
-/* Info-row (Shaxsiy ma'lumotlar qatori) */
-.info-row small {
-    text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
+.table-jurnal td {
+    padding: 10px;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: center;
 }
 
-/* Jurnalga o'tish tugmasi animatsiyasi */
-.btn-em-primary:hover i {
-    transform: translateX(3px);
-    transition: 0.2s;
+/* O'quvchi ismi qatori (chapda qotib turadi) */
+.student-name-col {
+    text-align: left !important;
+    font-weight: 600;
+    color: #1e293b;
+    background-color: #fff;
+    position: sticky;
+    left: 0;
+    z-index: 5;
 }
 
-/* Jadval ko'rinishini yumshatish */
-.table-em thead th {
-    font-size: 12px;
-    color: #6c757d;
+/* Baholash tugmalari animatsiyasi */
+.btn-grade-add {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px dashed var(--em-blue);
+    background: transparent;
+    color: var(--em-blue);
+    transition: 0.3s;
+}
+
+.btn-grade-add:hover {
+    background: var(--em-blue);
+    color: white;
 }

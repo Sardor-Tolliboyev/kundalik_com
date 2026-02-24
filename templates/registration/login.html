@@ -1,42 +1,142 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Kirish | BilimNazoratchi{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Login sahifasi uchun maxsus eMaktab uslubidagi dizayn */
+    body {
+        background-color: #f4f7f9 !important; /* Och kulrang-ko'k fon */
+    }
+
+    .login-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .login-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 86, 179, 0.1);
+        width: 100%;
+        max-width: 400px;
+        padding: 40px;
+        border: 1px solid #e1e8ed;
+    }
+
+    .login-logo {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .login-logo h2 {
+        color: var(--em-blue);
+        font-weight: 800;
+        margin-top: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Inputlarni eMaktab uslubiga keltirish */
+    .form-control-em {
+        height: 48px;
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        padding: 10px 15px;
+        font-size: 15px;
+        transition: all 0.3s;
+    }
+
+    .form-control-em:focus {
+        border-color: var(--em-blue);
+        box-shadow: 0 0 0 0.25rem rgba(0, 135, 192, 0.1);
+        outline: none;
+    }
+
+    .form-label-em {
+        font-size: 13px;
+        font-weight: 700;
+        color: #555;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    /* Yordamchi havolalar */
+    .login-footer-links {
+        margin-top: 25px;
+        text-align: center;
+        border-top: 1px solid #eee;
+        padding-top: 15px;
+    }
+
+    .login-footer-links a {
+        color: var(--em-blue);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .login-footer-links a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="col-md-4">
-        <div class="text-center mb-4">
-            <h2 class="fw-bold" style="color: var(--em-blue);">Kirish</h2>
-            <p class="text-muted small">BilimNazoratchi — Ta'lim portali</p>
+<div class="login-container">
+    <div class="login-card">
+        
+        <!-- 1. LOGOTIP VA TIZIM NOMI -->
+        <div class="login-logo">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" width="70" class="rounded-circle shadow-sm bg-light p-1">
+            <h2>BilimNazoratchi</h2>
+            <p class="text-muted small">Ta'limni raqamli monitoring qilish tizimi</p>
         </div>
 
-        <div class="card shadow-sm border-0 p-4" style="border-radius: 8px;">
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label class="form-label small fw-bold">Login</label>
-                    <input type="text" name="username" class="form-control" placeholder="Loginni kiriting" required>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label small fw-bold">Parol</label>
-                    <input type="password" name="password" class="form-control" placeholder="Parolni kiriting" required>
-                </div>
-                <!-- eMaktab kabi gradientli tugma -->
-                <button type="submit" class="btn btn-em-primary w-100 py-2 shadow-sm">
-                    Tizimga kirish
-                </button>
-            </form>
+        <!-- 2. KIRISH FORMASI -->
+        <form method="post">
+            {% csrf_token %}
             
-            {% if form.errors %}
-                <div class="alert alert-danger mt-3 small p-2 text-center">Login yoki parol xato!</div>
-            {% endif %}
-
-            <div class="text-center mt-4 border-top pt-3">
-                <a href="https://t.me/Sardor_Tolliboyev" class="text-decoration-none small" style="color: var(--em-blue);">
-                    Admin bilan bog'lanish
-                </a>
+            <!-- Login maydoni -->
+            <div class="mb-3">
+                <label for="username" class="form-label-em">Foydalanuvchi nomi (Login)</label>
+                <input type="text" name="username" id="username" 
+                       class="form-control-em w-100" 
+                       placeholder="Loginni kiriting" required>
             </div>
+
+            <!-- Parol maydoni -->
+            <div class="mb-4">
+                <label for="password" class="form-label-em">Maxfiy parol</label>
+                <input type="password" name="password" id="password" 
+                       class="form-control-em w-100" 
+                       placeholder="Parolni kiriting" required>
+            </div>
+
+            <!-- eMaktab uslubidagi gradientli tugma -->
+            <button type="submit" class="btn-em-primary w-100 py-2 shadow-sm border-0">
+                <i class="bi bi-box-arrow-in-right me-2"></i> TIZIMGA KIRISH
+            </button>
+        </form>
+
+        <!-- 3. XATOLIKLARNI KO'RSATISH -->
+        {% if form.errors %}
+            <div class="alert-em-danger mt-3 text-center py-2">
+                <i class="bi bi-exclamation-circle me-1"></i> Login yoki parol noto'g'ri!
+            </div>
+        {% endif %}
+
+        <!-- 4. QO'SHIMCHA HAVOLALAR -->
+        <div class="login-footer-links">
+            <p class="text-muted small mb-1">Muammo bormi?</p>
+            <a href="https://t.me/Sardor_Tolliboyev" target="_blank">
+                <i class="bi bi-telegram me-1"></i> Administrator bilan bog'lanish
+            </a>
         </div>
-        <p class="text-center mt-4 small text-muted">© 2026 BilimNazoratchi jamoasi</p>
+
     </div>
 </div>
 {% endblock %}

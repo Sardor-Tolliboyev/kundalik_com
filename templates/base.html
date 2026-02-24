@@ -4,49 +4,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}BilimNazoratchi{% endblock %}</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title>{% block title %}Bilim Nazoratchi{% endblock %}</title>
 
-    <!-- 1. Google Fonts va Bootstrap (Tashqi kutubxonalar) -->
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- 1. SHRIFTLAR -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- 2. KUTUBXONALAR -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <!-- 2. GLOBAL CSS (Siz yozgan poydevor - bunga hech kim tegmaydi) -->
+    <!-- 3. SHAXSIY CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-    <!-- 3. MAXSUS CSS (Har bir talaba o'z bo'limi CSS faylini shu yerga ulaydi) -->
     {% block extra_css %}{% endblock %}
 </head>
-<body class="page_adaptive d-flex flex-column min-vh-100">
 
-    <!-- 4. NAVIGATSIYA (O'sha qotib turadigan Navbar) -->
-    <header class="sticky-top shadow-sm">
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- HEADER: Navbar har doim tepada -->
+    <header class="sticky-top">
         {% include 'include/navbar.html' %}
     </header>
 
-    <!-- 5. ASOSIY KONTENT -->
-    <main class="container py-4 flex-grow-1">
-        <!-- Tizim xabarlari (Alerts) -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert-em-{% if message.tags == 'error' %}danger{% else %}success{% endif %} mb-4">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+    <!-- MAIN: flex-grow-1 footerni pastga itaradi -->
+    <main class="flex-grow-1">
+        <div class="container mt-2">
+            
+            <!-- Django Bildirishnomalari -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} border-0 shadow-sm rounded-3 py-3 mb-4" role="alert">
+                        <div class="d-flex align-items-center">
+                            <i class="bi {% if message.tags == 'error' %}bi-exclamation-octagon{% else %}bi-check-circle{% endif %} fs-4 me-2"></i>
+                            <span class="fw-bold">{{ message }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-        {% block content %}{% endblock %}
+            <!-- Sahifa kontenti -->
+            {% block content %}{% endblock %}
+            
+        </div>
     </main>
 
-    <!-- 6. FOOTER (Siz yasagan eMaktab footer) -->
+    <!-- FOOTER: Har doim kontentdan keyin chiqadi -->
     {% include 'include/footer.html' %}
 
-    <!-- 7. SKRIPTLAR -->
+
+    <!-- SKRIPTLAR -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'js/main.js' %}"></script>
-    
-    <!-- Sahifalar uchun maxsus JS (masalan, 5-talaba grafigi uchun) -->
     {% block extra_js %}{% endblock %}
+
 </body>
 </html>

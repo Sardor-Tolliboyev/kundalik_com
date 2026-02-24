@@ -1,18 +1,44 @@
-/* O'quvchi profili uchun maxsus stillar */
-.profile-stat-card {
-    border-left: 5px solid var(--em-blue);
-    transition: 0.3s;
+/* O'quvchi profili va grafiklar dizayni */
+
+.profile-header {
+    background: linear-gradient(45deg, var(--em-blue), #0056b3);
+    color: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 25px;
 }
 
-/* Grafik turgan blokni bezash */
-.chart-container {
-    background: #fff;
+.stat-card {
+    border-radius: 12px;
     padding: 20px;
-    border-radius: 10px;
+    text-align: center;
+    border-bottom: 4px solid var(--em-blue);
 }
 
-/* Fanlar ro'yxati dizayni */
-.subject-item {
-    border-radius: 6px;
-    margin-bottom: 10px;
+/* Grafik turgan maydon (Chart container) */
+.chart-container {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+/* Fanlar ro'yxati (Grid layout) */
+.fan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.fan-item {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 5px solid var(--em-gradient-top);
+    transition: 0.2s;
+}
+
+.fan-item:hover {
+    background: #f0f7ff;
+    transform: translateX(5px);
 }

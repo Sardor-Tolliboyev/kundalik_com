@@ -1,6 +1,10 @@
 """
-'BilimNazoratchi' loyihasining asosiy URL yo'riqnomasi.
-Ushbu fayl foydalanuvchi so'rovlarini tegishli ilovalarga (apps) yo'naltiradi.
+'BilimNazoratchi' loyihasining markaziy URL (manzillar) yo'riqnomasi.
+
+Vazifasi:
+1. Foydalanuvchi so'rovlarini mantiqan tegishli ilovalarga (apps) yo'naltirish.
+2. Admin panelini loyiha brendiga mos ravishda o'zbekchalashtirish.
+3. Ishlab chiqish jarayonida dizayn (static) va media fayllarning ishlashini ta'minlash.
 """
 
 from django.contrib import admin
@@ -9,42 +13,60 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 # -------------------------------------------------------------------------
-# ADMIN PANELNI O'ZBEKCHALASHTIRISH (BRANDING)
+# 1. ADMIN PANELNI PROFESSIONAL O'ZBEKCHALASHTIRISH (BRANDING)
 # -------------------------------------------------------------------------
-admin.site.site_header = "BilimNazoratchi: Boshqaruv Paneli"
+# Admin panelning tepa qismidagi asosiy sarlavha
+admin.site.site_header = "BilimNazoratchi: Boshqaruv Markazi"
+
+# Brauzer tabida (tepasida) ko'rinadigan nom
 admin.site.site_title = "BilimNazoratchi"
-admin.site.index_title = "Tizim ma'lumotlarini boshqarish bo'limi"
+
+# Admin panelning bosh sahifasidagi sarlavha matni
+admin.site.index_title = "Tizim ma'lumotlarini boshqarish va monitoring bo'limi"
+
 
 # -------------------------------------------------------------------------
-# ASOSIY YO'NALISHLAR (URL PATTERNS)
+# 2. ASOSIY YO'NALISHLAR (URL PATTERNS)
 # -------------------------------------------------------------------------
 urlpatterns = [
-    # 1. ADMIN PANEL YO'LI
+    # A) DJANGO ADMIN PANEL: Tizim administratorlari uchun maxsus yo'l
     path('admin/', admin.site.urls),
 
-    # 2. FOYDALANUVCHI HISOBLARI (Login, Logout, Parol o'zgartirish)
-    # Manzil: http://127.0.0.1:8000/hisoblar/login/
-    path('hisoblar/', include('django.contrib.auth.urls')),
+    # B) FOYDALANUVCHI HISOBLARI: Login, Logout, Profil va yo'naltirishlar
+    # Manzillar 'apps/hisoblar/urls.py' faylidan olinadi
+    path('hisoblar/', include('apps.hisoblar.urls')),
 
-    # 3. TA'LIM MANTIQLARI (Asosiy sahifa shu yerda)
+    # D) TA'LIM MANTIQLARI: Sinf, Fan, Jurnal, Baholash va Asosiy sahifa
+    # Loyihaning markaziy qismi (URL bo'sh bo'lganda shu app ishlaydi)
     path('', include('apps.talim.urls')),
 
-    # 4. TAHLIL VA STATISTIKA
+    # E) TAHLIL VA STATISTIKA: Matematik hisobotlar va o'quvchi grafiklari
     path('tahlil/', include('apps.tahlil.urls')),
 
-    # 5. BILDIRISHNOMALAR (XABARLAR)
+    # F) BILD IRISHNOMALAR VA XABARLAR: Ota-onalar uchun ogohlantirish tizimi
     path('xabarlar/', include('apps.xabarlar.urls')),
 ]
 
-# -------------------------------------------------------------------------
-# STATIK VA MEDIA FAYLLARNI QO'LLAB-QUVVATLASH
-# -------------------------------------------------------------------------
-if settings.DEBUG:
-    # Statik fayllar (CSS, JS, Rasmlar)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    # Agar STATIC_ROOT bo'sh bo'lsa, STATICFILES_DIRS orqali ulaymiz
-    if not settings.STATIC_ROOT:
-        urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
 
-    # Foydalanuvchilar yuklagan fayllar (Media)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# -------------------------------------------------------------------------
+# 3. STATIK VA MEDIA FAYLLARNI QO'LLAB-QUVVATLASH
+# -------------------------------------------------------------------------
+# Loyihani ishlab chiqish (Development) bosqichida dizayn fayllari (CSS, JS) 
+# va yuklangan rasmlar to'g'ri ko'rinishi uchun quyidagi professional blok shart:
+if settings.DEBUG:
+    # 1. Statik fayllar (Dizayn elementlari, JavaScript, Loyiha rasmlari)
+    if settings.STATIC_URL and settings.STATICFILES_DIRS:
+        urlpatterns += static(
+            settings.STATIC_URL, 
+            document_root=settings.STATICFILES_DIRS[0]
+        )
+
+    # 2. Media fayllar (Foydalanuvchilar tomonidan yuklanadigan hujjatlar yoki rasmlar)
+    if settings.MEDIA_URL and settings.MEDIA_ROOT:
+        urlpatterns += static(
+            settings.MEDIA_URL, 
+            document_root=settings.MEDIA_ROOT
+        )
+
+# Izoh: Loyiha serverga (Production) qo'yilganda, statik fayllar 
+# Nginx yoki WhiteNoise kabi vositalar orqali xizmat ko'rsatiladi.

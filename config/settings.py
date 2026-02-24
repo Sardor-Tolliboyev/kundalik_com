@@ -1,27 +1,32 @@
 """
-'BilimNazoratchi' loyihasining asosiy sozlamalari.
-Ushbu fayl loyihaning barcha texnik qismlarini boshqaradi.
+'BilimNazoratchi' loyihasining asosiy sozlamalari (settings.py).
+Ushbu fayl loyihaning barcha texnik qismlarini, ma'lumotlar bazasini, 
+xavfsizlik va xalqaro sozlamalarini markaziy tartibda boshqaradi.
 """
 
 import os
 from pathlib import Path
 
-# Loyihaning asosiy papkasi (bilim_nazoratchi/)
+# 1. LOYIHA ASOSI (ROOT DIRECTORY)
+# Loyihaning asosiy papkasi (bilim_nazoratchi/) yo'li
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Sozlamalar
-# Maxfiy kalit
+
+# 2. XAVFSIZLIK SOZLAMALARI
+# Maxfiy kalit (Ishlab chiqish vaqtida shunday qoladi, production uchun maxfiy saqlanishi shart)
 SECRET_KEY = 'django-insecure-bilim-nazoratchi-2026-pro-key'
 
-# Debug rejimi 
+# Debug rejimi: True bo'lsa xatoliklarni ko'rsatadi. Productionda False bo'lishi shart.
 DEBUG = True
 
-# Ruxsat berilgan domenlar
+# Ruxsat berilgan domenlar (Localhost uchun barcha manzillarga ruxsat berilgan)
 ALLOWED_HOSTS = ['*']
 
-# Ilovalar ro'yxati
+
+# 3. ILOVALAR RO'YXATI (INSTALLED APPS)
+# Tizimga o'rnatilgan Django ilovalari va biz yaratgan lokal applar (modullar)
 INSTALLED_APPS = [
-    # Django standart ilovalari
+    # Django standart (ichki) ilovalari
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,37 +34,41 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Biz yaratgan jamoaviy ilovalar (Apps papkasi ichidagilar)
-    'apps.hisoblar',  # Foydalanuvchilarni boshqarish: O'qituvchi, O'quvchi, Sinf rahbari
-    'apps.talim',     # Ta'lim jarayonini boshqarish: Sinflar, Fanlar, Baholar, Mavzular
-    'apps.tahlil',    # Tahlil va hisobotlar: O'quvchilarning baholari, o'qituvchilarning samaradorligi
-    'apps.xabarlar',  # Xabarlar va bildirishnomalar: O'qituvchilar va o'quvchilar uchun xabarlar tizimi
+    # Biz yaratgan jamoaviy ilovalar (Local Apps)
+    'apps.hisoblar',  # Foydalanuvchilar: O'qituvchi, O'quvchi, Ota-ona tizimi
+    'apps.talim',     # O'quv jarayoni: Sinf, Fan, Baho, Mavzu mantiqi
+    'apps.tahlil',    # Analitika: O'quvchilar ko'rsatkichlari va Pulse tizimi
+    'apps.xabarlar',  # Bildirishnomalar: Ota-onalar uchun ogohlantirishlar
 ]
 
-# Oraliq qatlamlar (Middleware) ro'yxati
+
+# 4. ORALIK QATLAM DASTURLARI (MIDDLEWARE)
+# So'rovlarni (Request) qayta ishlash zanjiri (Tartib muhim!)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',      # Sessiyalarni boshqarish
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',                  # CSRF xavfsizligi
+    'django.contrib.auth.middleware.AuthenticationMiddleware',      # Login tizimi
+    'django.contrib.messages.middleware.MessageMiddleware',        # Xabarlar moduli
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Asosiy URL yo'riqnomasi fayli manzili
 ROOT_URLCONF = 'config.urls'
 
 
-# Shablonlar (Templates) sozlamalari
+# 5. SHABLONLAR (TEMPLATES) SOZLAMALARI
+# HTML shablonlar (frontend) qayerda joylashganini belgilaydi
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # templates/ papkasini ulaymiz
+        'DIRS': [BASE_DIR / 'templates'], # templates/ papkasini loyihaga ulaymiz
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
+                'django.template.context_processors.request', # Shablonlarda 'request'dan foydalanish uchun
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -67,9 +76,12 @@ TEMPLATES = [
     },
 ]
 
+# Loyihani ishga tushiruvchi server konfiguratsiyasi (Web Server Gateway Interface)
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Ma'lumotlar bazasi sozlamalari (SQLite)
+
+# 6. MA'LUMOTLAR BAZASI (DATABASE - SQLite)
+# Jamoaviy ishlash uchun SQLite fayl ko'rinishida tanlandi
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -77,10 +89,12 @@ DATABASES = {
     }
 }
 
-# Parol murakkabligini tekshirish sozlamalari
+
+# 7. FOYDALANUVCHILARNI BOSHQARISH (AUTHENTICATION)
+# Tizim biz yaratgan maxsus 'Foydalanuvchi' modelidan foydalanadi
 AUTH_USER_MODEL = 'hisoblar.Foydalanuvchi'
 
-# Parol murakkabligini tekshirish sozlamalari
+# Parol murakkabligini tekshirish standartlari
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -88,26 +102,39 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Xalqaro sozlamalar
-# Sayt tili: O'zbekcha
+
+# 8. MAHALLIYLASHTIRISH (INTERNATIONALIZATION)
+# Tizim tili va vaqtini O'zbekistonga moslaymiz
 LANGUAGE_CODE = 'uz'
 
-# Vaqt zonasi: O'zbekiston (Toshkent)
 TIME_ZONE = 'Asia/Tashkent'
 
-USE_I18N = True
-USE_TZ = True
+USE_I18N = True # Ko'p tillilikni qo'llab-quvvatlash
+USE_L10N = True # Raqam/Sana formatlarini mahalliylashtirish
+USE_TZ = False   # MySQL va SQLite muammolarini oldini olish uchun False tavsiya etiladi
 
-# Statik va media fayllar sozlamalari
+
+# 9. STATIK VA MEDIA FAYLLAR (CSS, JS, IMAGES)
+# Saytning dizayn fayllari (Local static)
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-MEDIA_URL = 'media/'
+# Foydalanuvchilar yuklagan media fayllar (masalan, o'quvchi rasmi)
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-LOGIN_URL = '/hisoblar/login/'
-LOGIN_REDIRECT_URL = 'talim:bosh_sahifa' # Bu orqali foydalanuvchi roli bo'yicha dashboardga boradi
-LOGOUT_REDIRECT_URL = '/hisoblar/login/'
 
-# Standart ID maydoni turi
+# 10. TIZIMGA KIRISH VA CHIQISH REDIREKTLARI (AUTH FLOW)
+# Foydalanuvchi login qilishi kerak bo'lgan manzil
+# settings.py faylining oxirida buni tasdiqlang:
+LOGIN_URL = '/hisoblar/login/'
+LOGIN_REDIRECT_URL = 'hisoblar:login_redirect'
+LOGOUT_REDIRECT_URL = 'hisoblar:login' # Manzil emas, yo'l nomi ('hisoblar:login')
+
+
+# 11. XAVFSIZLIK VA TIZIM SOZLAMALARI
+# Standart ID maydoni turi (64 bitli butun son)
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CSRF xavfsizligi uchun ishonchli manzillar
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']

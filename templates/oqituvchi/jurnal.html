@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}{{ taqsimot.sinf.nomi }} | Jurnal{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Jurnal sahifasi umumiy dizayni */
+    .jurnal-page { background-color: #f4f7f9; min-height: 100vh; }
+    .jurnal-card { background: #fff; border: 1px solid #dcdcdc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; }
+
+    /* Chap ustun (F.I.SH) qotishi */
+    .sticky-col { position: sticky; left: 0; background-color: #f7f9fa !important; z-index: 10; border-right: 2px solid #0087c0 !important; min-width: 250px; }
+    
+    /* Jadval kataklari */
+    .table-jurnal th, .table-jurnal td { border: 1px solid #e1e8ed !important; padding: 0 !important; vertical-align: middle; text-align: center; min-width: 70px; height: 55px; }
+    .mavzu-cell { background-color: #f8fafc; font-weight: 700; color: #334155; }
+    .mavzu-cell small { font-size: 10px; color: var(--em-blue); text-transform: uppercase; }
+
+    /* Baho aylanasi */
+    .grade-badge { width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 800; color: #fff; cursor: pointer; transition: 0.2s; border: 2px solid rgba(255,255,255,0.2); }
+    .grade-5 { background-color: #28a745; }
+    .grade-4 { background-color: #007bff; }
+    .grade-3 { background-color: #ffc107; color: #000; }
+    .grade-2 { background-color: #dc3545; }
+
+    /* Davomat: Kelmaganlik belgisi (S - Sababsiz) */
+    .attendance-absent { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; background-color: #fff1f0; border: 1px solid #ffa39e; color: #cf1322; font-weight: bold; cursor: pointer; }
+
+    /* Baho yo'q joyda chiqadigan "+" tugmasi */
+    .btn-add-grade { border: none; background: transparent; color: #ced4da; font-size: 22px; width: 100%; height: 100%; transition: 0.2s; }
+    .btn-add-grade:hover { color: #0087c0; background-color: rgba(0, 135, 192, 0.05); }
+
+    /* Radio button stillari (Davomat uchun) */
+    .btn-check:checked + .btn-outline-success { background-color: #28a745; color: white; }
+    .btn-check:checked + .btn-outline-danger { background-color: #dc3545; color: white; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="jurnal-page py-4">
+    <!-- 1. YUQORI QISM -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: var(--em-blue);">
+                {{ taqsimot.sinf.nomi }} — {{ taqsimot.fan.nomi }}
+            </h3>
+            <p class="text-muted small">Baho qo'yish yoki davomat qilish uchun katak ustiga bosing</p>
+        </div>
+        <button class="btn btn-em-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#yangiMavzuModal">
+            <i class="bi bi-calendar-plus me-2"></i>Yangi dars qo'shish
+        </button>
+    </div>
+
+    <!-- 2. JURNAL JADVALI -->
+    <div class="jurnal-card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-jurnal mb-0">
+                <thead>
+                    <tr>
+                        <th class="sticky-col align-middle px-3">O'quvchi F.I.SH</th>
+                        {% for mavzu in mavzular %}
+                        <th class="mavzu-cell py-2">
+                            <span>{{ mavzu.sana|date:"d.m" }}</span><br>
+                            <small title="{{ mavzu.mavzu_nomi }}">{{ mavzu.mavzu_nomi|truncatechars:10 }}</small>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for oquvchi in oquvchilar %}
+                    <tr>
+                        <td class="sticky-col text-start ps-3 fw-bold text-dark">
+                            {{ forloop.counter }}. {{ oquvchi.get_full_name|default:oquvchi.username }}
+                        </td>
+
+                        {% for mavzu in mavzular %}
+                        <td>
+                            {# Mantiq: Bahoni va Davomatni tekshiramiz #}
+                            {% with baho=oquvchi.tayyor_baholar|get_item:mavzu.id davomat=oquvchi.tayyor_davomat|get_item:mavzu.id %}
+                                
+                                {% if baho %}
+                                    <!-- Baho bo'lsa (Aylana chiqadi) -->
+                                    <div class="grade-badge grade-{{ baho.qiymati }}" 
+                                         data-bs-toggle="modal" data-bs-target="#bahoModal{{ oquvchi.id }}_{{ mavzu.id }}">
+                                        {{ baho.qiymati }}
+                                    </div>
+                                {% elif davomat and not davomat.keldi %}
+                                    <!-- Kelmagan bo'lsa (S belgisi chiqadi) -->
+                                    <div class="attendance-absent" 
+                                         data-bs-toggle="modal" data-bs-target="#bahoModal{{ oquvchi.id }}_{{ mavzu.id }}">
+                                        S
+                                    </div>
+                                {% else %}
+                                    <!-- Hech narsa bo'lmasa "+" tugmasi -->
+                                    <button class="btn-add-grade" data-bs-toggle="modal" data-bs-target="#bahoModal{{ oquvchi.id }}_{{ mavzu.id }}">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </button>
+                                {% endif %}
+
+                            {% endwith %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
+     3. BAHOLASH VA DAVOMAT MODALLARI
+     ========================================================= -->
+{% for oquvchi in oquvchilar %}
+    {% for mavzu in mavzular %}
+    <div class="modal fade" id="bahoModal{{ oquvchi.id }}_{{ mavzu.id }}" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-primary text-white py-3">
+                    <h6 class="modal-title fw-bold">Baholash va Davomat</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="oquvchi_id" value="{{ oquvchi.id }}">
+                    <input type="hidden" name="mavzu_id" value="{{ mavzu.id }}">
+                    
+                    <div class="modal-body p-4 text-start">
+                        <p class="small text-muted mb-3 text-center"><b>{{ oquvchi.first_name }}</b> | {{ mavzu.sana|date:"d-F" }}</p>
+                        
+                        <!-- BAHO QISMI -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Baho qo'yish:</label>
+                            <select name="baho_qiymati" class="form-select border-primary">
+                                <option value="" selected>Bahosiz</option>
+                                <option value="5">5 - A'lo</option>
+                                <option value="4">4 - Yaxshi</option>
+                                <option value="3">3 - Qoniqarli</option>
+                                <option value="2">2 - Qoniqarsiz</option>
+                            </select>
+                        </div>
+
+                        <!-- DAVOMAT QISMI (Siz so'ragan yangi joy) -->
+                        <div class="mb-3 border-top pt-3">
+                            <label class="form-label small fw-bold text-secondary">Darsda ishtiroki:</label>
+                            <input type="hidden" name="davomat_holati" value="1"> <!-- View tanishi uchun -->
+                            <div class="d-flex gap-2">
+                                <input type="radio" class="btn-check" name="holat" id="keldi{{ oquvchi.id }}{{ mavzu.id }}" value="keldi" 
+                                    {% if oquvchi.tayyor_davomat|get_item:mavzu.id %}{% if oquvchi.tayyor_davomat|get_item:mavzu.id.keldi %}checked{% endif %}{% else %}checked{% endif %}>
+                                <label class="btn btn-outline-success btn-sm w-50" for="keldi{{ oquvchi.id }}{{ mavzu.id }}">Keldi</label>
+
+                                <input type="radio" class="btn-check" name="holat" id="kelmadi{{ oquvchi.id }}{{ mavzu.id }}" value="kelmadi"
+                                    {% if oquvchi.tayyor_davomat|get_item:mavzu.id %}{% if not oquvchi.tayyor_davomat|get_item:mavzu.id.keldi %}checked{% endif %}{% endif %}>
+                                <label class="btn btn-outline-danger btn-sm w-50" for="kelmadi{{ oquvchi.id }}{{ mavzu.id }}">Kelmidi (S)</label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <label class="form-label small fw-bold">Izoh:</label>
+                            <textarea name="izoh" class="form-control small" rows="2" placeholder="Ixtiyoriy izoh..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer border-0 p-4 pt-0">
+                        <button type="submit" class="btn btn-em-primary w-100 py-2 fw-bold">SAQLASH</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endfor %}
+
+<!-- YANGI MAVZU QO'SHISH MODALI (Avvalgi variantdek) -->
+<div class="modal fade" id="yangiMavzuModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title fw-bold">Yangi dars kuni kiritish</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Mavzu nomi</label>
+                        <input type="text" name="mavzu_nomi" class="form-control" placeholder="Mavzuni to'liq yozing..." required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Dars sanasi</label>
+                        <input type="date" name="sana" class="form-control" value="{% now 'Y-m-d' %}" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="submit" class="btn btn-em-primary w-100 py-3 fw-bold">JURNALGA QO'SHISH</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

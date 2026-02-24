@@ -1,72 +1,103 @@
-/* --- BilimNazoratchi Professional Admin CSS --- */
+/* 
+    =========================================================
+    'BilimNazoratchi' - Professional Admin UI (Total Fix)
+    Vazifasi: Kontrastni tiklash va jadvallarni karta ko'rinishiga keltirish
+    =========================================================
+*/
 
-/* 1. Yuqori qism (Header) dizayni */
+/* 1. ASOSIY FON VA MATN QULFI */
+html, body {
+    background-color: #f1f5f9 !important;
+    color: #1e293b !important; /* To'q matn rangi */
+}
+
+/* 2. HEADER (TEPADA QOTIB TURADIGAN KO'K PANEL) */
 #header {
     background: #0087c0 !important;
-    color: #fff !important;
-    padding: 15px 40px;
-    height: auto;
+    color: #ffffff !important;
+    border-bottom: 4px solid #ff9d00 !important;
 }
 
-#branding h1 {
-    color: #fff !important;
-    font-weight: 800;
-    font-size: 22px;
-    text-transform: uppercase;
+#header a, #header span, #branding h1 a {
+    color: #ffffff !important;
+    font-weight: 800 !important;
 }
 
-/* 2. Sidebar va Modullar */
-.module h2, .module caption, .inline-group h2 {
-    background: #0087c0 !important;
-    color: white !important;
-    font-weight: 600;
-    border-radius: 4px 4px 0 0;
+/* 3. BO'LIMLARNI (MODULES) KARTOCKA KO'RINISHIGA KELTIRISH */
+/* Bu qism o'sha tushunarsiz jadvallarni chiroyli Dashboard qiladi */
+.dashboard #content-main {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 25px;
 }
 
-div.module {
-    border: 1px solid #e1e8ed !important;
+.module {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 0 !important;
+    overflow: hidden;
 }
 
-/* 3. Tugmalar (Buttons) - eMaktab uslubidagi gradient */
-.button, input[type=submit], input[type=button], .submit-row input {
-    background-image: linear-gradient(to bottom, #00c3e8 0, #00b0e1 100%) !important;
-    background-color: #0087c0 !important;
-    border: 1px solid #0097ba !important;
-    border-radius: 4px !important;
-    padding: 10px 25px !important;
+/* 4. SIZDA KO'RINMAY QOLGAN SARLAVHALAR (Foydalanuvchi hisoblari va h.k.) */
+/* Biz ularni to'q ko'k fon va oq matn qilamiz, endi 100% ko'rinadi */
+.module h2, .module caption, .module h2 a {
+    background: #005a82 !important; 
+    color: #ffffff !important;     /* TOZA OQ MATN */
+    font-weight: 800 !important;
+    padding: 15px !important;
+    display: block !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px;
+}
+
+/* 5. JADVAL ICHIDAGI LINKLAR (O'quvchilar, Baholar...) */
+/* Bular oq fonda to'q ko'k bo'lib ko'rinadi */
+.module table td a, .module table th a {
+    color: #0087c0 !important; /* ANIQ KO'K RANG */
+    font-weight: 700 !important;
+    font-size: 15px;
+    text-decoration: none !important;
+}
+
+.module table td a:hover {
+    color: #ff9d00 !important; /* Sichqoncha borganda eMaktab sariq rangiga o'tadi */
+    text-decoration: underline !important;
+}
+
+/* 6. SIDEBAR (O'NG TOMON PANEL) */
+#content-related {
+    background: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+    padding: 20px !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+#content-related h2 {
+    color: #1e3a8a !important;
+    font-weight: 800 !important;
+    border-bottom: 2px solid #0087c0 !important;
+}
+
+/* 7. TUGMALAR (SAQLASH / O'CHIRISH) */
+.button, input[type=submit] {
+    background: linear-gradient(135deg, #00c3e8 0%, #0087c0 100%) !important;
     color: white !important;
-    font-weight: bold !important;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-}
-
-.button:hover, input[type=submit]:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 25px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
 }
 
 .button.default, input[type=submit].default {
-    background: #28a745 !important; /* Saqlash tugmasi yashil */
-    border: 1px solid #218838 !important;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
 }
 
-/* 4. Jadvallar */
-#changelist table thead th {
-    background: #f8f9fa !important;
-    color: #333 !important;
-    padding: 12px;
-    border-bottom: 2px solid #0087c0;
-}
-
-#changelist table tbody tr:hover {
-    background-color: #f0f7ff !important;
-}
-
-/* 5. Shriftlar va umumiy ko'rinish */
-body {
-    font-family: 'Open Sans', sans-serif !important;
-    background-color: #f4f7f9;
+/* 8. FORMADA KO'RINMAY QOLADIGAN LABEL VA TEXTLAR */
+label, .help, .info, .quiet {
+    color: #334155 !important; /* TO'Q KULRANG - ANIQ KO'RINADI */
+    font-weight: 600 !important;
 }

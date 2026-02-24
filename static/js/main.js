@@ -2,61 +2,90 @@
  * 'BilimNazoratchi' tizimining asosiy interaktiv logikasi (JavaScript).
  * 
  * Vazifasi:
- * 1. Bildirishnomalarni (Alerts) boshqarish.
- * 2. Sahifa elementlari yuklanishini nazorat qilish.
- * 3. Foydalanuvchi interfeysini interaktiv qilish.
+ * 1. Tizim xabarlarini (Alerts) avtomatik yopish.
+ * 2. Jadvallar va interaktiv elementlarga dinamik effektlar qo'shish.
+ * 3. Formalarni yuborishdan oldin tekshirish (Validation).
  */
 
-// Sahifa tarkibi (DOM) to'liq yuklangandan so'ng kodni ishga tushiramiz
+// 1. SAHIFA TO'LIQ YUKLANISHINI KUTISH
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Tizim holatini tekshirish uchun konsolga professional xabar chiqaramiz
-    console.log("BilimNazoratchi tizimi muvaffaqiyatli yuklandi!");
+    // Tizim holatini dasturchilar konsolida tekshirish
+    console.log("BilimNazoratchi tizimi muvaffaqiyatli ishga tushdi!");
 
     /**
-     * 1. BILD IRISHNOMALARNI (ALERTS) AVTOMATIK YOPISH
-     * Django orqali yuborilgan muvaffaqiyat yoki xatolik xabarlari (Django messages) 
+     * 2. BILDIRISHNOMALARNI (ALERTS) AVTOMATIK TOZALASH
+     * Django xabarlar tizimi (messages) orqali yuborilgan bildirishnomalar 
      * foydalanuvchiga xalaqit bermasligi uchun 5 soniyadan so'ng yopiladi.
      */
-    function bildirishnomalarniAvtomatikTozalash() {
-        // Sahifadagi barcha alert elementlarini qidirib topamiz
-        const xabarlar = document.querySelectorAll('.alert');
+    function bildirishnomalarniAvtomatikYopish() {
+        const xabarlar = document.querySelectorAll('.alert-em-danger, .alert-em-success, .alert');
 
-        // Har bir topilgan xabarni vaqt bo'yicha yopamiz
         xabarlar.forEach(function(xabar) {
-            // Bootstrap Alert API mavjudligini tekshiramiz
-            if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
-                setTimeout(function() {
+            // 5000 millisoniya = 5 soniya
+            setTimeout(function() {
+                if (typeof bootstrap !== 'undefined') {
                     try {
-                        // Bootstrap Alert ob'ektini olamiz va uni yopamiz
-                        const bsAlert = bootstrap.Alert.getOrCreateInstance(xabar);
-                        if (bsAlert) {
-                            bsAlert.close();
-                            console.log("Xabarnoma muddati tugadi va yopildi.");
+                        // Bootstrap 5 Alert API orqali yopish
+                        const yopuvchi = bootstrap.Alert.getOrCreateInstance(xabar);
+                        if (yopuvchi) {
+                            yopuvchi.close();
+                            console.log("Bildirishnoma muddati tugadi va yopildi.");
                         }
                     } catch (xato) {
-                        // Agar kutilmagan xato bo'lsa, shunchaki elementni yashiramiz
+                        // Agar Bootstrap yuklanmagan bo'lsa, elementni shunchaki yashiramiz
                         xabar.style.display = 'none';
                     }
-                }, 5000); // 5000 ms = 5 soniya
-            }
+                } else {
+                    xabar.style.display = 'none';
+                }
+            }, 5000);
         });
     }
 
     // Funksiyani ishga tushiramiz
-    bildirishnomalarniAvtomatikTozalash();
+    bildirishnomalarniAvtomatikYopish();
+
 
     /**
-     * 2. MODALLARNI NAZORAT QILISH (Ixtiyoriy)
-     * Baho qo'yish oynasi ochilganda yoki yopilganda biror amal 
-     * bajarish kerak bo'lsa, shu yerda yoziladi.
+     * 3. JURNAL KATAKLARIGA INTERAKTIVLIK QO'SHISH
+     * O'qituvchi jurnalidagi kataklar ustiga borganda ularni ajratib ko'rsatish.
      */
-    const bahoModallari = document.querySelectorAll('.modal');
-    bahoModallari.forEach(modal => {
-        modal.addEventListener('hidden.bs.modal', function () {
-            // Modal yopilganda formani tozalash mantiqi (kerak bo'lsa)
-            console.log("Baholash oynasi yopildi.");
+    const jurnalKataklari = document.querySelectorAll('.table-em tbody td');
+    jurnalKataklari.forEach(td => {
+        td.addEventListener('mouseenter', function() {
+            // Agar katak ichida baho qo'yish tugmasi bo'lsa, fonni o'zgartiramiz
+            if (this.querySelector('button') || this.innerText.trim() !== "") {
+                this.style.backgroundColor = 'rgba(0, 135, 192, 0.05)';
+            }
+        });
+
+        td.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = '';
         });
     });
 
+
+    /**
+     * 4. CHART.JS UCHUN GLOBAL SOZLAMALAR (Ixtiyoriy)
+     * Grafiklar o'zbek tilida va eMaktab ranglarida chiqishi uchun.
+     */
+    if (typeof Chart !== 'undefined') {
+        Chart.defaults.font.family = "'Open Sans', sans-serif";
+        Chart.defaults.color = "#64748b";
+        console.log("Grafik tizimi (Chart.js) tayyor holatda.");
+    }
+
 });
+
+/**
+ * 5. PROFESSIONAL FORM VALIDATION (Tekshiruv)
+ * Baho qo'yishda qiymatlarni (1-5 oralig'ida) tekshirish uchun yordamchi funksiya.
+ */
+function bahoniTekshir(qiymat) {
+    if (qiymat < 1 || qiymat > 5) {
+        alert("Xato: Baho 1 va 5 oralig'ida bo'lishi shart!");
+        return false;
+    }
+    return true;
+}

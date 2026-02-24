@@ -1,107 +1,118 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Farzandim Nazorati | BilimNazoratchi{% endblock %}
+{% block title %}Farzandim nazorati | Bilim Nazoratchi{% endblock %}
 
 {% block extra_css %}
-    <!-- 3-talaba o'z dizaynini shu faylga yozadi -->
+    <!-- Ota-ona uchun maxsus dizayn fayli -->
     <link rel="stylesheet" href="{% static 'css/ota_ona.css' %}">
+    <style>
+        /* Sahifa cheksiz cho'zilib ketmasligi uchun qo'shimcha qulf */
+        main.container {
+            height: auto !important;
+            min-height: auto !important;
+        }
+        
+        /* Grafik uchun qat'iy balandlikdagi konteyner */
+        .chart-wrapper {
+            position: relative;
+            height: 320px; /* Grafik balandligi shu yerda boshqariladi */
+            width: 100%;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container mt-4 mb-5">
     <!-- 1. YUQORI QISM: Sarlavha -->
     <div class="row mb-4">
         <div class="col-12">
             <h2 class="fw-bold text-dark">
                 <i class="bi bi-shield-check text-primary me-2"></i>Farzandimning bilim nazorati
             </h2>
-            <hr>
+            <p class="text-muted small">Ushbu sahifa orqali farzandingizning darsdagi natijalarini va o'qituvchi izohlarini real vaqtda kuzatasiz.</p>
         </div>
     </div>
 
     <div class="row">
-        <!-- 2. CHAP TOMON: Farzand haqida qisqacha ma'lumot va Holat (Pulse) -->
-        <div class="col-lg-4">
-            <div class="card-em mb-4">
-                <div class="text-center p-3">
-                    <!-- Foydalanuvchi belgisi -->
-                    <div class="bg-light rounded-circle d-inline-block p-4 mb-3">
-                        <i class="bi bi-person-bounding-box display-4 text-primary"></i>
-                    </div>
-                    
-                    <!-- Farzand ismi -->
-                    <h3 class="fw-bold">{{ farzand.get_full_name|default:farzand.username }}</h3>
-                    <p class="text-muted small">O'quvchi ID: #{{ farzand.id }}</p>
-                    
-                    <div class="py-3 border-top border-bottom my-3">
-                        <p class="text-muted mb-1 small text-uppercase fw-bold">Joriy o'rtacha ball</p>
-                        <!-- 5-talaba hisoblagan o'rtacha ball -->
-                        <div class="display-4 fw-bold text-{{ tahlil.rang }}">{{ tahlil.ortacha|default:"0.0" }}</div>
-                        
-                        <!-- Holat belgisi -->
-                        <span class="badge bg-{{ tahlil.rang }} p-2 mt-2 px-3 rounded-pill">
-                            {{ tahlil.holat }} {{ tahlil.trend_belgi }}
-                        </span>
-                    </div>
-
-                    <div class="text-start mt-3">
-                        <p class="small text-muted mb-1"><b>Sinfi:</b> {{ farzand.sinf.nomi|default:"-" }}</p>
-                        <p class="small text-muted mb-0"><b>Trend:</b> {{ tahlil.trend }}</p>
-                    </div>
+        <!-- 2. CHAP USTUN: Shaxsiy ko'rsatkichlar -->
+        <div class="col-lg-4 mb-4">
+            <div class="card-em text-center p-4 shadow-sm border-0 mb-4">
+                <!-- Farzand avatar qismi -->
+                <div class="bg-primary-subtle rounded-circle d-inline-block p-4 mb-3">
+                    <i class="bi bi-person-bounding-box display-4 text-primary"></i>
+                </div>
+                <h3 class="fw-bold text-dark">{{ farzand.get_full_name|default:farzand.username }}</h3>
+                <p class="text-muted small">Sinfi: <b>{{ farzand.sinf.nomi|default:"-" }}</b></p>
+                
+                <hr class="my-4">
+                
+                <!-- Pulse (O'rtacha ball) ko'rsatkichi -->
+                <p class="text-muted mb-1 text-uppercase fw-bold small">Joriy o'rtacha ko'rsatkich</p>
+                <div class="display-3 fw-bold text-{{ tahlil.rang }}">{{ tahlil.ortacha|default:"0.0" }}</div>
+                
+                <div class="badge bg-{{ tahlil.rang }} p-2 mt-2 px-4 rounded-pill fs-6 shadow-sm">
+                    {{ tahlil.holat }} {{ tahlil.trend_belgi }}
                 </div>
             </div>
 
-            <!-- ⚠️ Xavf signali (Agar baholar past bo'lsa chiqadi) -->
+            <!-- XAVF SIGNALI: Agar o'quvchi xavf ostida bo'lsa chiqadi -->
             {% if tahlil.rang == 'danger' %}
-            <div class="alert alert-danger border-0 shadow-sm rounded-3">
-                <h6 class="fw-bold"><i class="bi bi-exclamation-triangle-fill"></i> Diqqat!</h6>
-                <p class="small mb-0">Farzandingizning o'zlashtirish ko'rsatkichi pasaygan. Iltimos, o'qituvchilar bilan bog'laning.</p>
+            <div class="card border-0 bg-danger text-white shadow-sm rounded-4 p-4 badge-pulse mb-4">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-exclamation-triangle-fill fs-1 me-3"></i>
+                    <div>
+                        <h5 class="fw-bold mb-1">Diqqat: Xavf aniqlandi!</h5>
+                        <p class="mb-0 small opacity-75">O'zlashtirish darajasi pasaygan. O'qituvchi bilan bog'lanish tavsiya etiladi.</p>
+                    </div>
+                </div>
             </div>
             {% endif %}
         </div>
 
-        <!-- 3. O'NG TOMON: Grafik va Baholar jadvali -->
+        <!-- 3. O'NG USTUN: Grafik va Baholar tarixi -->
         <div class="col-lg-8">
-            <!-- Bilim grafigi (Skeleton) -->
-            <div class="card-em mb-4">
-                <h5 class="fw-bold mb-4">Bilim o'sish dinamikasi</h5>
-                <div style="height: 250px;">
-                    <!-- Chart.js grafigi shu yerga chiziladi -->
-                    <canvas id="farzandGrafigi"></canvas>
+            <!-- Dinamik Grafik Bloki -->
+            <div class="card-em shadow-sm border-0 mb-4">
+                <h5 class="fw-bold mb-4">
+                    <i class="bi bi-activity text-primary me-2"></i>Bilim o'sish dinamikasi
+                </h5>
+                <!-- MUHIM: Grafik sig'adigan joy -->
+                <div class="chart-wrapper">
+                    <canvas id="otaOnaGrafigi"></canvas>
                 </div>
             </div>
 
-            <!-- Baholar jadvali -->
-            <div class="card-em">
-                <h5 class="fw-bold mb-4">Oxirgi olingan baholar</h5>
+            <!-- Baholar Jadvali -->
+            <div class="card-em shadow-sm border-0">
+                <h5 class="fw-bold mb-4">
+                    <i class="bi bi-journal-text text-primary me-2"></i>Oxirgi olingan baholar
+                </h5>
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
+                    <table class="table-em table-hover">
+                        <thead class="bg-light">
                             <tr>
-                                <th>Fan</th>
+                                <th class="ps-3">Fan nomi</th>
                                 <th class="text-center">Baho</th>
                                 <th class="text-center">Sana</th>
-                                <th>O'qituvchi izohi</th>
+                                <th>Izoh</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for baho in baholar %}
                             <tr>
-                                <td class="fw-bold text-dark">{{ baho.mavzu.fan.nomi }}</td>
+                                <td class="ps-3 fw-bold text-dark">{{ baho.mavzu.taqsimot.fan.nomi }}</td>
                                 <td class="text-center">
-                                    <span class="badge bg-primary rounded-circle p-2" style="width: 35px; height: 35px; line-height: 18px;">
+                                    <span class="badge {% if baho.qiymati >= 4 %}bg-success{% elif baho.qiymati == 3 %}bg-warning text-dark{% else %}bg-danger{% endif %} rounded-circle p-2" style="width: 35px; height: 35px; line-height: 18px;">
                                         {{ baho.qiymati }}
                                     </span>
                                 </td>
                                 <td class="text-center text-muted small">{{ baho.mavzu.sana|date:"d.m.Y" }}</td>
-                                <td class="text-muted small italic">
-                                    <i>"{{ baho.izoh|default:"Izoh yo'q" }}"</i>
-                                </td>
+                                <td class="small text-muted italic">"{{ baho.izoh|default:"Izoh yo'q" }}"</td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">Hozircha baholar yo'q.</td>
+                                <td colspan="4" class="text-center py-5 text-muted">Baholar ma'lumotlari mavjud emas.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -114,9 +125,53 @@
 {% endblock %}
 
 {% block extra_js %}
-    <script>
-        // 5-talaba bu yerga grafik chizish kodini yozadi
-        const ctx = document.getElementById('farzandGrafigi').getContext('2d');
-        // Grafik mantiqi...
-    </script>
+<script>
+    /**
+     * CHART.JS SOZLAMALARI
+     * maintainAspectRatio: false - grafikni div ichida ushlab turadi.
+     */
+    const ctx2 = document.getElementById('otaOnaGrafigi').getContext('2d');
+    
+    // Gradient fon (Dizayn uchun)
+    const gradientFon = ctx2.createLinearGradient(0, 0, 0, 300);
+    gradientFon.addColorStop(0, 'rgba(0, 135, 192, 0.2)');
+    gradientFon.addColorStop(1, 'rgba(0, 135, 192, 0.0)');
+
+    new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: [{% for b in baholar reversed %}"{{ b.mavzu.sana|date:'d.m' }}",{% endfor %}],
+            datasets: [{
+                label: 'Bilim darajasi',
+                data: [{% for b in baholar reversed %}{{ b.qiymati }},{% endfor %}],
+                borderColor: '#0087c0',
+                borderWidth: 3,
+                backgroundColor: gradientFon,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: '#fff',
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // JADVALNING CHO'ZILISHINI TO'XTATADI ✅
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { 
+                    min: 1, 
+                    max: 5, 
+                    ticks: { stepSize: 1 },
+                    grid: { color: '#f1f5f9' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}

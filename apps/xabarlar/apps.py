@@ -1,6 +1,12 @@
 from django.apps import AppConfig
 
-
 class XabarlarConfig(AppConfig):
-    name = 'apps.xabarlar' # <--- FAQAT xabarlar bo'lishi shart
-    label = 'xabarlar'
+    """
+    'Xabarlar' ilovasi sozlamalari.
+    Ushbu bo'lim tizimdagi barcha bildirishnomalar va ogohlantirishlarni boshqaradi.
+    """
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'apps.xabarlar'
+    
+    # Admin panelda ilovaning nomi
+    verbose_name = '🔔 BILDIRISHNOMALAR VA ALOQA'

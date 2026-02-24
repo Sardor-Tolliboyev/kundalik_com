@@ -1,31 +1,30 @@
-/* templates/ota_ona/farzand.html uchun maxsus dizaynlar */
+/* Ota-ona nazorati va ogohlantirishlar */
 
-/* Kartochkalarni eMaktab uslubida qilish */
-.card-em {
-    background: #fff;
+.child-summary {
+    border-top: 5px solid var(--em-orange);
+}
+
+/* 🔴 XAVF SIGNALI (Pulse animatsiyasi) */
+.danger-alert {
+    background-color: #fff5f5;
+    border-left: 6px solid #d0021b;
+    padding: 15px;
     border-radius: 8px;
-    border: 1px solid #e1e8ed;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    padding: 20px;
+    animation: danger-pulse 2s infinite;
 }
 
-/* O'rtacha ball ranglari (Dinamik) */
-.text-success { color: #198754 !important; }
-.text-warning { color: #ffc107 !important; }
-.text-danger { color: #dc3545 !important; }
-
-/* Jadval qatorlari hover bo'lganda */
-.table tr:hover {
-    background-color: #f8fbff;
+@keyframes danger-pulse {
+    0% { box-shadow: 0 0 0 0px rgba(208, 2, 27, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(208, 2, 27, 0); }
+    100% { box-shadow: 0 0 0 0px rgba(208, 2, 27, 0); }
 }
 
-/* Xavf signali animatsiyasi */
-.badge-pulse {
-    animation: alert-pulse 2s infinite;
-}
-
-@keyframes alert-pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
+/* O'qituvchi izohlari (Chat uslubida) */
+.comment-box {
+    background: #f1f5f9;
+    padding: 10px 15px;
+    border-radius: 15px 15px 15px 0;
+    font-style: italic;
+    margin-top: 5px;
+    color: #475569;
 }

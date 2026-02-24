@@ -1,39 +1,64 @@
-<!-- templates/includes/footer.html -->
-<footer class="mt-5 py-5 border-top" style="background: #111827; color: white;">
-    <div class="container text-center">
-        <div class="row">
-            <!-- 1-ustun: Sayt haqida -->
-            <div class="col-md-4 text-md-start mb-4">
-                <h5 class="fw-bold text-primary">BilimNazoratchi</h5>
-                <p class="small text-secondary">Maktab ta'limini raqamlashtirish bo'yicha professional monitoring tizimi.</p>
+<!-- 
+    'BilimNazoratchi' Loyihasi - Pastki qism (Footer)
+    Vazifasi: Aloqa ma'lumotlari va Telegram havolasini ko'rsatish.
+-->
+
+<footer class="footer-main py-5 border-top" style="background: #111827; color: #9ca3af;">
+    <div class="container">
+        <div class="row align-items-center">
+            
+            <!-- 1. LOYIHA HAQIDA QISQACHA -->
+            <div class="col-md-5 text-center text-md-start mb-4 mb-md-0">
+                <h5 class="fw-bold text-white mb-3">BilimNazoratchi</h5>
+                <p class="small mb-0" style="line-height: 1.6;">
+                    Maktab ta'lim jarayonini raqamlashtirish, o'quvchilar bilimini 
+                    tahlil qilish va ota-onalar nazoratini ta'minlovchi 
+                    professional monitoring platformasi.
+                </p>
             </div>
 
-            <!-- 2-ustun: Bo'limlar -->
-            <div class="col-md-4 mb-4">
-                <h5 class="fw-bold">Bo‘limlar</h5>
-                <ul class="list-unstyled small text-secondary">
-                    <li><a href="/" class="text-decoration-none text-secondary">Bosh sahifa</a></li>
-                    <li><a href="/tahlil/" class="text-decoration-none text-secondary">Sinf tahlili</a></li>
-                    <li><a href="/aloqa/" class="text-decoration-none text-secondary">Bog'lanish</a></li>
-                </ul>
-            </div>
-
-            <!-- 3-ustun: Aloqa va Telegram -->
-            <div class="col-md-4 text-md-end mb-4">
-                <h5 class="fw-bold">Yordam</h5>
-                <p class="small text-secondary mb-2">Savollaringiz bormi? <br> Admin bilan bog'laning:</p>
-
-                <!-- Telegram tugmasi -->
-                <a href="https://t.me/Sardor_Tolliboyev" target="_blank" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold shadow-sm">
-                    <i class="bi bi-telegram me-1"></i> @Sardor_Tolliboyev
+            <!-- 2. ALOQA VA YORDAM -->
+            <div class="col-md-7 text-center text-md-end">
+                <p class="text-white small mb-3 fw-bold text-uppercase" style="letter-spacing: 1px;">Yordam kerakmi? Admin bilan bog'laning:</p>
+                
+                <!-- Telegram Tugmasi -->
+                <a href="https://t.me/Sardor_Tolliboyev" target="_blank" class="btn btn-primary px-4 py-2 rounded-pill fw-bold shadow-lg footer-telegram-btn">
+                    <i class="bi bi-telegram me-2"></i> Telegram
                 </a>
+                
+                <div class="mt-4">
+                    <small class="text-muted">Ish vaqti: Dushanba - Shanba (09:00 - 18:00)</small>
+                </div>
             </div>
+
         </div>
 
-        <!-- Pastki chiziq va Copyright -->
-        <hr style="background-color: #374151; opacity: 0.5;">
-        <p class="small text-secondary mb-0">
-            &copy; 2026 BilimNazoratchi jamoasi. Barcha huquqlar himoyalangan.
-        </p>
+        <!-- 3. PASTKI CHIZIQ VA COPYRIGHT -->
+        <hr class="my-4" style="background-color: #374151; opacity: 0.3;">
+        
+        <div class="row small text-center">
+            <div class="col-12">
+                <p class="mb-0">
+                    &copy; 2026 <span class="text-white fw-bold">Bilim Nazoratchi jamoasi</span>. 
+                    Barcha huquqlar himoyalangan.
+                </p>
+            </div>
+        </div>
     </div>
 </footer>
+
+<style>
+    /* Footer uchun maxsus vizual effektlar */
+    .footer-telegram-btn {
+        background-color: #0088cc !important;
+        border: none !important;
+        transition: transform 0.2s ease-in-out;
+    }
+    .footer-telegram-btn:hover {
+        transform: scale(1.05);
+        background-color: #0077b5 !important;
+    }
+    .footer-main a:hover {
+        opacity: 0.8;
+    }
+</style>

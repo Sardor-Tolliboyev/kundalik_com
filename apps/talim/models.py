@@ -1,58 +1,113 @@
 from django.db import models
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 
-# 1. SINF MODELI
+# -------------------------------------------------------------------------
+# 1. SINF MODELI: Maktabdagi sinflarni saqlash uchun (masalan: 4-A, 9-B)
+# -------------------------------------------------------------------------
 class Sinf(models.Model):
-    """Maktab sinflari (masalan: 4-A, 9-B) uchun model"""
-    nomi = models.CharField("Sinf nomi", max_length=50, unique=True)
+    nomi = models.CharField("Sinf nomi", max_length=50, unique=True, help_text="Masalan: 9-A")
 
     class Meta:
         db_table = 'sinflar'
         verbose_name = "Sinf"
         verbose_name_plural = "Sinflar"
+        ordering = ['nomi'] # Alifbo tartibida chiqarish
 
     def __str__(self):
         return self.nomi
 
-# 2. FAN MODELI
+
+# -------------------------------------------------------------------------
+# 2. FAN MODELI: O'qitiladigan fanlar ro'yxati (masalan: Matematika, Tarix)
+# -------------------------------------------------------------------------
 class Fan(models.Model):
-    """O'qitiladigan fanlar ro'yxati"""
     nomi = models.CharField("Fan nomi", max_length=100, unique=True)
 
     class Meta:
         db_table = 'fanlar'
         verbose_name = "Fan"
         verbose_name_plural = "Fanlar"
+        ordering = ['nomi']
 
     def __str__(self):
         return self.nomi
 
-# 3. MAVZU MODELI (Xatolik aynan shu yerda bo'lgan)
-class Mavzu(models.Model):
-    """Har bir dars uchun o'qituvchi tomonidan kiritiladigan mavzu"""
-    sinf = models.ForeignKey(Sinf, on_delete=models.CASCADE, verbose_name="Sinf")
-    fan = models.ForeignKey(Fan, on_delete=models.CASCADE, verbose_name="Fan")
+
+# -------------------------------------------------------------------------
+# 3. TAQSIMOT MODELI: O'qituvchini sinf, fan va vaqtga bog'lovchi dars jadvali
+# -------------------------------------------------------------------------
+class Taqsimot(models.Model):
+    HAFTA_KUNLARI = (
+        ('1', 'Dushanba'),
+        ('2', 'Seshanba'),
+        ('3', 'Chorshanba'),
+        ('4', 'Payshanba'),
+        ('5', 'Juma'),
+        ('6', 'Shanba'),
+    )
+    
     oqituvchi = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 
         limit_choices_to={'rol': 'oqituvchi'},
-        verbose_name="O'qituvchi"
+        related_name='biriktirilgan_darslari',
+        verbose_name="Mas'ul o'qituvchi"
     )
-    mavzu_nomi = models.CharField("Mavzu nomi", max_length=255)
-    sana = models.DateField("Dars o'tilgan sana", auto_now_add=True)
+    sinf = models.ForeignKey(
+        Sinf, 
+        on_delete=models.CASCADE, 
+        related_name='dars_jadvali',
+        verbose_name="Sinf"
+    )
+    fan = models.ForeignKey(
+        Fan, 
+        on_delete=models.CASCADE, 
+        verbose_name="Fan"
+    )
+    kun = models.CharField("Hafta kuni", max_length=1, choices=HAFTA_KUNLARI)
+    soat = models.TimeField("Dars boshlanish vaqti")
+
+    class Meta:
+        db_table = 'dars_taqsimotlari'
+        verbose_name = "Dars taqsimoti"
+        verbose_name_plural = "Darslar taqsimoti"
+        # Bitta sinfda, bitta vaqtda faqat bitta dars bo'lishini ta'minlaydi
+        unique_together = ('sinf', 'kun', 'soat')
+
+    def __str__(self):
+        return f"{self.sinf.nomi} | {self.fan.nomi} ({self.get_kun_display()})"
+
+
+# -------------------------------------------------------------------------
+# 4. DARSLAR (MAVZU) MODELI: O'qituvchi har bir dars kuni uchun kiritadigan mavzu
+# -------------------------------------------------------------------------
+class Mavzu(models.Model):
+    taqsimot = models.ForeignKey(
+        Taqsimot, 
+        on_delete=models.CASCADE, 
+        related_name='mavzulari',
+        verbose_name="Dars jadvali bandi"
+    )
+    mavzu_nomi = models.CharField("Dars mavzusi", max_length=255)
+    uy_vazifasi = models.TextField("Uyga vazifa", blank=True, null=True)
+    sana = models.DateField("Dars o'tilgan sana")
 
     class Meta:
         db_table = 'dars_mavzulari'
         verbose_name = "Dars mavzusi"
         verbose_name_plural = "Dars mavzulari"
-        unique_together = ('sinf', 'fan', 'sana') # Bir kunda bitta fandan bitta mavzu
+        # Bitta dars jadvali bandi uchun bir kunda faqat bitta mavzu kiritish mumkin
+        unique_together = ('taqsimot', 'sana')
 
     def __str__(self):
-        return f"{self.sana} - {self.mavzu_nomi}"
+        return f"{self.sana} | {self.mavzu_nomi}"
 
-# 4. BAHO MODELI
+
+# -------------------------------------------------------------------------
+# 5. BAHO MODELI: O'quvchining aniq bir dars mavzusi bo'yicha olgan natijasi
+# -------------------------------------------------------------------------
 class Baho(models.Model):
-    """O'quvchilarning mavzu bo'yicha olgan baholari"""
     oquvchi = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 
@@ -60,15 +115,56 @@ class Baho(models.Model):
         limit_choices_to={'rol': 'oquvchi'},
         verbose_name="O'quvchi"
     )
-    mavzu = models.ForeignKey(Mavzu, on_delete=models.CASCADE, related_name='baholar', verbose_name="Dars mavzusi")
-    qiymati = models.PositiveSmallIntegerField("Baho") # 2, 3, 4, 5
-    izoh = models.TextField("O'qituvchi izohi", blank=True, null=True)
+    mavzu = models.ForeignKey(
+        Mavzu, 
+        on_delete=models.CASCADE, 
+        related_name='baholar_ruyxati',
+        verbose_name="Dars mavzusi"
+    )
+    qiymati = models.PositiveSmallIntegerField(
+        "Baho",
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        help_text="1 dan 5 gacha bo'lgan raqam"
+    )
+    izoh = models.CharField("O'qituvchi fikri", max_length=255, blank=True, null=True)
 
     class Meta:
         db_table = 'baholar'
         verbose_name = "Baho"
         verbose_name_plural = "Baholar"
-        unique_together = ('oquvchi', 'mavzu') # Bitta mavzuga bitta baho
+        # Bir o'quvchi bitta darsda (mavzuda) faqat bitta baho olishi mumkin
+        unique_together = ('oquvchi', 'mavzu')
 
     def __str__(self):
-        return f"{self.oquvchi.username} - {self.qiymati}"
+        return f"{self.oquvchi.username} -> {self.qiymati}"
+
+
+# -------------------------------------------------------------------------
+# 6. DAVOMAT MODELI: O'quvchining darsda ishtiroki tahlili
+# -------------------------------------------------------------------------
+class Davomat(models.Model):
+    oquvchi = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='davomati',
+        limit_choices_to={'rol': 'oquvchi'},
+        verbose_name="O'quvchi"
+    )
+    mavzu = models.ForeignKey(
+        Mavzu, 
+        on_delete=models.CASCADE, 
+        related_name='davomat_yozuvi',
+        verbose_name="Dars mavzusi"
+    )
+    keldi = models.BooleanField("Ishtirok etdi", default=True)
+
+    class Meta:
+        db_table = 'davomat'
+        verbose_name = "Davomat"
+        verbose_name_plural = "Davomatlar"
+        # Bitta darsda o'quvchi faqat bir marta yo'qlama qilinadi
+        unique_together = ('oquvchi', 'mavzu')
+
+    def __str__(self):
+        holat = "✅ Keldi" if self.keldi else "❌ Kelmadi"
+        return f"{self.oquvchi.username} - {self.mavzu.taqsimot.fan.nomi} ({holat})"
