@@ -127,10 +127,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # 10. TIZIMGA KIRISH VA CHIQISH REDIREKTLARI (AUTH FLOW)
 # Foydalanuvchi login qilishi kerak bo'lgan manzil
 # settings.py faylining oxirida buni tasdiqlang:
+# settings.py oxiri
 LOGIN_URL = '/hisoblar/login/'
-LOGIN_REDIRECT_URL = 'hisoblar:login_redirect'
-LOGOUT_REDIRECT_URL = 'hisoblar:login' # Manzil emas, yo'l nomi ('hisoblar:login')
 
+# Login qilganda 'hisoblar' appi ichidagi 'login_redirect' viewiga boradi
+LOGIN_REDIRECT_URL = 'hisoblar:login_redirect'
+
+# Logout qilganda yana login sahifasiga qaytadi
+LOGOUT_REDIRECT_URL = 'hisoblar:login'
 
 # 11. XAVFSIZLIK VA TIZIM SOZLAMALARI
 # Standart ID maydoni turi (64 bitli butun son)
