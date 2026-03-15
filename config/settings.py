@@ -130,11 +130,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # settings.py oxiri
 LOGIN_URL = '/hisoblar/login/'
 
-# Login qilganda 'hisoblar' appi ichidagi 'login_redirect' viewiga boradi
-LOGIN_REDIRECT_URL = 'hisoblar:login_redirect'
+# MUHIM: Login bo'lgach, bizning 'bosh_sahifa' view-ga boradi, 
+# u esa roliga qarab dashboard-ni tanlaydi.
+LOGIN_REDIRECT_URL = 'talim:bosh_sahifa' 
 
-# Logout qilganda yana login sahifasiga qaytadi
-LOGOUT_REDIRECT_URL = 'hisoblar:login'
+LOGOUT_REDIRECT_URL = '/hisoblar/login/'
 
 # 11. XAVFSIZLIK VA TIZIM SOZLAMALARI
 # Standart ID maydoni turi (64 bitli butun son)

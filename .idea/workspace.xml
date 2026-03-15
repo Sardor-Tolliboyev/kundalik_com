@@ -6,33 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="1f0bdde4-695e-438b-9b99-91bcc9417077" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/hisoblar/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/hisoblar/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/hisoblar/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/hisoblar/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/hisoblar/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/hisoblar/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/hisoblar/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/hisoblar/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/hisoblar/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/tahlil/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/tahlil/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/tahlil/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/tahlil/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/tahlil/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/tahlil/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/tahlil/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/tahlil/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/tahlil/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/tahlil/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/tahlil/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/talim/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/talim/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/talim/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/talim/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/talim/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/talim/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/talim/tests.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/talim/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/talim/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/talim/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/talim/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/xabarlar/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/xabarlar/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/xabarlar/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/xabarlar/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/xabarlar/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/xabarlar/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/xabarlar/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/xabarlar/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/xabarlar/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/xabarlar/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/xabarlar/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/include/footer.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/include/footer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/include/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/include/navbar.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/landing.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/landing.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -73,26 +50,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "ai.playground.ignore.import.keys.banner.in.settings": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

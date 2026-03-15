@@ -1,67 +1,85 @@
-{% load static %} <!-- BU QATOR XATOLIKNI DAVOLAYDI ✅ -->
+{% load static %}
 
-<!-- 
-    'BilimNazoratchi' Loyihasi - Asosiy Navigatsiya Paneli (Navbar)
-    Vazifasi: Foydalanuvchi tizimda kimligini ko'rsatish va sahifalararo o'tishni ta'minlash.
+<!--
+    'BilimNazoratchi' Loyihasi - Professional Navigatsiya Paneli (Navbar)
+    Vazifasi:
+    1. Foydalanuvchi tizimda kim ekanligini ko'rsatish.
+    2. Roliga qarab tegishli dashboard/profilga yo'naltirish.
+    3. Tizimdan xavfsiz chiqish (Logout) amalini bajarish.
 -->
 
-<nav class="navbar navbar-expand-lg navbar-em shadow-sm sticky-top">
+<!-- templates/include/navbar.html -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm sticky-top">
     <div class="container">
         
-        <!-- 1. TIZIM LOGOTIPI VA ASOSIY SAHIFA HAVOLASI -->
-        <a class="navbar-brand fw-bold text-dark" href="{% url 'talim:bosh_sahifa' %}">
+        <!-- 1. LOGOTIP VA SAYT NOMI -->
+        <!-- 'talim' ilovasidagi 'bosh_sahifa' yo'li -->
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'talim:bosh_sahifa' %}">
             <img src="{% static 'img/logo.png' %}" alt="Logo" width="40" height="40" class="me-2 rounded-circle bg-light p-1 shadow-sm">
             <span style="color: var(--em-blue); letter-spacing: 0.5px;">BILIM</span><span style="color: #334155;">NAZORATCHI</span>
         </a>
 
-        <!-- MOBIL QURILMALAR UCHUN BURGER MENYU -->
+        <!-- 2. MOBIL MENYU TUGMASI -->
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#bilimNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- 2. MENYU ELEMENTLARI -->
+        <!-- 3. MENYU ELEMENTLARI -->
         <div class="collapse navbar-collapse" id="bilimNavbar">
             <ul class="navbar-nav ms-auto align-items-center">
                 
-                <!-- BOSH SAHIFA TUGMASI -->
-                <li class="nav-item me-3">
-                    <a class="nav-link text-dark fw-bold small" href="{% url 'talim:bosh_sahifa' %}">
-                        <i class="bi bi-house-door"></i> BOSH SAHIFA
-                    </a>
-                </li>
-
                 {% if user.is_authenticated %}
-                    <!-- 3. FOYDALANUVCHI TIZIMGA KIRGAN BO'LSA -->
+                    <!-- FOYDALANUVCHI TIZIMGA KIRGAN BO'LSA -->
                     <li class="nav-item me-3">
-                        <div class="d-flex align-items-center bg-light px-3 py-1 rounded-pill border shadow-sm">
-                            <i class="bi bi-person-circle text-primary me-2 fs-5"></i>
-                            <div class="text-start">
-                                <span class="d-block fw-bold small text-dark" style="line-height: 1.2;">
-                                    {{ user.get_full_name|default:user.username }}
-                                </span>
-                                <span class="badge bg-primary-subtle text-primary p-0 small" style="font-size: 10px; text-transform: uppercase;">
-                                    {{ user.get_rol_display }}
-                                </span>
-                            </div>
-                        </div>
+                        
+                        <!-- O'qituvchi bo'lsa profiliga havola -->
+                        {% if user.rol == 'oqituvchi' %}
+                            <a href="{% url 'talim:oqituvchi_profil' %}" class="text-decoration-none d-flex align-items-center bg-light px-3 py-1 rounded-pill border">
+                                <i class="bi bi-person-circle text-primary me-2 fs-5"></i>
+                                <div class="text-start">
+                                    <span class="d-block fw-bold small text-dark" style="line-height: 1.2;">{{ user.username }}</span>
+                                    <span class="badge bg-primary-subtle text-primary p-0 small" style="font-size: 10px; text-transform: uppercase;">O'QITUVCHI</span>
+                                </div>
+                            </a>
+                        
+                        <!-- O'quvchi bo'lsa profiliga havola -->
+                        {% elif user.rol == 'oquvchi' %}
+                            <a href="{% url 'talim:oquvchi_profil' %}" class="text-decoration-none d-flex align-items-center bg-light px-3 py-1 rounded-pill border">
+                                <i class="bi bi-mortarboard text-success me-2 fs-5"></i>
+                                <div class="text-start">
+                                    <span class="d-block fw-bold small text-dark" style="line-height: 1.2;">{{ user.username }}</span>
+                                    <span class="badge bg-success-subtle text-success p-0 small" style="font-size: 10px; text-transform: uppercase;">O'QUVCHI</span>
+                                </div>
+                            </a>
+
+                        <!-- Ota-ona bo'lsa -->
+                        {% elif user.rol == 'ota_ona' %}
+                            <a href="{% url 'talim:ota_ona_view' %}" class="text-decoration-none d-flex align-items-center bg-light px-3 py-1 rounded-pill border">
+                                <i class="bi bi-shield-check text-info me-2 fs-5"></i>
+                                <div class="text-start">
+                                    <span class="d-block fw-bold small text-dark" style="line-height: 1.2;">{{ user.username }}</span>
+                                    <span class="badge bg-info-subtle text-info p-0 small" style="font-size: 10px; text-transform: uppercase;">OTA-ONA</span>
+                                </div>
+                            </a>
+                        {% endif %}
                     </li>
 
-                    <!-- TIZIMDAN CHIQISH TUGMASI (Namespace: hisoblar:logout) -->
                     <li class="nav-item">
+                        <!-- 'hisoblar' ilovasidagi 'logout' yo'li -->
                         <form action="{% url 'hisoblar:logout' %}" method="post" class="d-inline">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-outline-danger px-4 rounded-pill fw-bold">
-                                <i class="bi bi-box-arrow-right"></i> Chiqish
+                                Chiqish
                             </button>
                         </form>
                     </li>
 
                 {% else %}
-                    <!-- 4. FOYDALANUVCHI TIZIMGA KIRMAGAN BO'LSA -->
+                    <!-- FOYDALANUVCHI TIZIMGA KIRMAGAN BO'LSA -->
                     <li class="nav-item">
-                        <!-- Namespace: hisoblar:login -->
+                        <!-- 'hisoblar' ilovasidagi 'login' yo'li -->
                         <a class="btn btn-em-primary px-4 rounded-pill fw-bold shadow-sm" href="{% url 'hisoblar:login' %}">
-                            KIRISH
+                            TIZIMGA KIRISH
                         </a>
                     </li>
                 {% endif %}
@@ -72,16 +90,49 @@
 </nav>
 
 <style>
-    /* Navbar uchun qo'shimcha professional dizayn */
-    .navbar-em {
-        background-color: #ffffff !important;
-        border-bottom: 2px solid var(--em-blue);
-        min-height: 70px;
+    /* Navbar uchun mukkammal dizayn sozlamalari */
+    :root {
+        --em-blue: #0087c0;
     }
+
+    .navbar-em {
+        min-height: 75px;
+        transition: all 0.3s ease;
+    }
+
+    .text-primary-em {
+        color: var(--em-blue);
+    }
+
+    .brand-text {
+        font-size: 1.1rem;
+        line-height: 1;
+    }
+
+    .nav-link {
+        transition: color 0.2s ease-in-out;
+    }
+
     .nav-link:hover {
         color: var(--em-blue) !important;
     }
-    .badge {
-        letter-spacing: 0.5px;
+
+    /* Animatsiyalar */
+    .transition-all {
+        transition: all 0.2s ease;
+    }
+
+    .hover-shake:hover {
+        transform: scale(1.02);
+    }
+
+    .dropdown-item:hover {
+        background-color: #f0f7ff;
+        color: var(--em-blue);
+    }
+
+    /* Sticky bo'lganda boshqa elementlar ustida turishi uchun */
+    .sticky-top {
+        z-index: 1060 !important;
     }
 </style>
