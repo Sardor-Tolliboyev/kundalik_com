@@ -1,6 +1,6 @@
 """
 'BilimNazoratchi' Loyihasi - Foydalanuvchilar boshqaruv markazi.
-Vazifasi: 
+Vazifasi:
 1. Foydalanuvchilarni roli va sinfi bo'yicha boshqarish.
 2. O'qituvchi profilida uning dars jadvalini (Taqsimot) ko'rish va tahrirlash.
 3. Barcha foydalanuvchilar login-parollarini Excelga eksport qilish.
@@ -27,6 +27,7 @@ class FoydalanuvchiYaratishForm(UserCreationForm):
     Admin panelda yangi foydalanuvchi qo'shish oynasi uchun forma.
     Bu yerda 'rol' va 'sinf' maydonlarini majburiy yoki ixtiyoriy ko'rsatamiz.
     """
+
     class Meta(UserCreationForm.Meta):
         model = Foydalanuvchi
         fields = ("username", "rol", "first_name", "last_name", "sinf")
@@ -35,19 +36,22 @@ class FoydalanuvchiYaratishForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields['rol'].required = True
 
+
 # -------------------------------------------------------------------------
 # 2. DARSLAR TAQSIMOTI INLINE (O'qituvchi profilida darslarini ko'rish)
 # -------------------------------------------------------------------------
 class TaqsimotInline(admin.TabularInline):
     """
-    O'qituvchini tahrirlash sahifasida unga dars (sinf va fan) 
+    O'qituvchini tahrirlash sahifasida unga dars (sinf va fan)
     biriktirish imkonini beruvchi ichki jadval (Inline).
     """
+
     model = Taqsimot
     extra = 1  # Bo'sh qatorlar soni
     verbose_name = "Biriktirilgan dars"
     verbose_name_plural = "O'qituvchining dars jadvali"
     fk_name = "oqituvchi"
+
 
 # -------------------------------------------------------------------------
 # 3. ASOSIY FOYDALANUVCHILAR BOSHQARUVI (ADMIN)
@@ -55,29 +59,22 @@ class TaqsimotInline(admin.TabularInline):
 @admin.register(Foydalanuvchi)
 class FoydalanuvchiAdmin(UserAdmin):
     """
-    Foydalanuvchilar ro'yxatini boshqarish va login-parollarni 
+    Foydalanuvchilar ro'yxatini boshqarish va login-parollarni
     Excelga eksport qilish uchun professional boshqaruv paneli.
     """
+
     add_form = FoydalanuvchiYaratishForm
     form = UserChangeForm
-    
-    # Ro'yxat sahifasida ko'rinadigan ustunlar
+
     list_display = ('username', 'fio_kursatish', 'rol', 'sinf_nomi', 'is_active', 'is_staff')
-    # O'ng tomondagi tezkor filtrlar
     list_filter = ('rol', 'sinf', 'is_active', 'date_joined')
-    # Qidiruv maydonlari
     search_fields = ('username', 'first_name', 'last_name', 'telefon')
-    # Ro'yxatda tahrirlash (Tezkor amal)
     list_editable = ('rol', 'is_active')
-    # Avtomatik sanalarni faqat o'qish rejimiga o'tkazish
     readonly_fields = ('last_login', 'date_joined')
-    # O'qituvchi bo'lsa dars jadvalini profil ichida ko'rsatish
     inlines = [TaqsimotInline]
 
-    # Excel tugmasi chiqishi uchun shablon
     change_list_template = "admin/hisoblar/foydalanuvchi/change_list.html"
 
-    # --- URL SOZLAMALARI (EXCEL EXPORT UCHUN) ---
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
@@ -85,28 +82,46 @@ class FoydalanuvchiAdmin(UserAdmin):
         ]
         return custom_urls + urls
 
-    # --- EXCELGA EKSPORT QILISH MANTIQI (Siz xohlagan 4 ta ustun bilan) ---
+    def get_inline_instances(self, request, obj=None):
+        """
+        Inline (O'qituvchining dars jadvali) faqat o'qituvchi roli uchun ko'rinsin.
+
+        # IZOH: Admin foydalanuvchi tahrirlash sahifasida "O'qituvchining dars jadvali"
+        # blokini faqat `rol='oqituvchi'` bo'lganda chiqaramiz. Boshqa rollarda bu bo'lim
+        # keraksiz va chalkashlik keltiradi.
+        """
+        if obj is None:
+            return []
+        if getattr(obj, "rol", "") != "oqituvchi":
+            return []
+        return super().get_inline_instances(request, obj=obj)
+
     def export_user_logins(self, request):
         """Barcha foydalanuvchilar ma'lumotlarini (Login va 12345678 paroli bilan) Excelga chiqarish"""
-        users = Foydalanuvchi.objects.all().select_related('sinf').order_by('sinf__nomi', 'first_name')
-        
-        data = []
-        standart_parol = "12345678"  # Tizim o'rnatgan boshlang'ich parol
+        foydalanuvchilar = (
+            Foydalanuvchi.objects.all()
+            .select_related('sinf')
+            .order_by('sinf__nomi', 'first_name')
+        )
 
-        for user in users:
-            data.append({
-                'Ism familiyasi': f"{user.first_name} {user.last_name}" if user.first_name else user.username,
-                'Login': user.username,
+        malumotlar = []
+        standart_parol = "12345678"
+
+        for foydalanuvchi in foydalanuvchilar:
+            # # IZOH: Excel ustun nomlarini o'zgartirmaymiz (format bir xil bo'lib qoladi).
+            malumotlar.append({
+                'Ism familiyasi': f"{foydalanuvchi.first_name} {foydalanuvchi.last_name}" if foydalanuvchi.first_name else foydalanuvchi.username,
+                'Login': foydalanuvchi.username,
                 'Parol': standart_parol,
-                'Sinfi': user.sinf.nomi if user.sinf else "-",
-                'Lavozimi': user.get_rol_display()
+                'Sinfi': foydalanuvchi.sinf.nomi if foydalanuvchi.sinf else "-",
+                'Lavozimi': foydalanuvchi.get_rol_display()
             })
 
-        df = pd.DataFrame(data)
+        jadval_df = pd.DataFrame(malumotlar)
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            df.to_excel(writer, index=False, sheet_name='Foydalanuvchilar')
-        
+            jadval_df.to_excel(writer, index=False, sheet_name='Foydalanuvchilar')
+
         output.seek(0)
         response = HttpResponse(
             output.read(),
@@ -115,25 +130,22 @@ class FoydalanuvchiAdmin(UserAdmin):
         response['Content-Disposition'] = 'attachment; filename="BilimNazoratchi_Login_Parollar.xlsx"'
         return response
 
-    # --- QO'SHIMCHA KO'RSATISH METODLARI ---
     @admin.display(description="F.I.SH")
-    def fio_kursatish(self, obj):
-        return f"{obj.first_name} {obj.last_name}" if obj.first_name else obj.username
+    def fio_kursatish(self, foydalanuvchi):
+        return f"{foydalanuvchi.first_name} {foydalanuvchi.last_name}" if foydalanuvchi.first_name else foydalanuvchi.username
 
     @admin.display(description="Sinfi")
-    def sinf_nomi(self, obj):
-        return obj.sinf.nomi if obj.sinf else "Biriktirilmagan"
-    
-    # --- TAHRIRLASH SAHIFASI BLOKLARI (FIELDSETS) ---
+    def sinf_nomi(self, foydalanuvchi):
+        return foydalanuvchi.sinf.nomi if foydalanuvchi.sinf else "Biriktirilmagan"
+
     fieldsets = (
-        ("🔐 Kirish ma'lumotlari", {'fields': ('username', 'password')}),
-        ("👤 Shaxsiy ma'lumotlar", {'fields': ('first_name', 'last_name', 'email', 'telefon', 'telegram_id')}),
-        ("🏫 Tizimdagi vazifa va Bog'liqlik", {'fields': ('rol', 'sinf', 'farzandi')}),
-        ("🛠 Huquqlar", {'fields': ('is_active', 'is_staff', 'is_superuser', 'user_permissions'), 'classes': ('collapse',)}),
-        ("📅 Muhim sanalar", {'fields': ('last_login', 'date_joined')}),
+        ("Kirish ma'lumotlari", {'fields': ('username', 'password')}),
+        ("Shaxsiy ma'lumotlar", {'fields': ('first_name', 'last_name', 'email', 'telefon', 'telegram_id')}),
+        ("Tizimdagi vazifa va bog'liqlik", {'fields': ('rol', 'sinf', 'farzandi')}),
+        ("Huquqlar", {'fields': ('is_active', 'is_staff', 'is_superuser', 'user_permissions'), 'classes': ('collapse',)}),
+        ("Muhim sanalar", {'fields': ('last_login', 'date_joined')}),
     )
 
-    # --- YANGI QO'SHISH SAHIFASI BLOKLARI ---
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -144,21 +156,50 @@ class FoydalanuvchiAdmin(UserAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
 
+        # # IZOH: Django'ning standart User maydonlarida (is_active, is_staff, ...)
+        # inglizcha label/help_textlar kelib qolmasligi uchun ularni shu yerning o'zida
+        # to'liq o'zbekchalashtiramiz (migratsiyasiz, DBga tegmaydi).
+        if 'is_active' in form.base_fields:
+            form.base_fields['is_active'].label = "Faol"
+            form.base_fields['is_active'].help_text = (
+                "Belgilansa foydalanuvchi tizimdan foydalanadi. "
+                "O'chirish o'rniga faolligini olib tashlash tavsiya etiladi."
+            )
+
+        if 'is_staff' in form.base_fields:
+            form.base_fields['is_staff'].label = "Xodim holati"
+            form.base_fields['is_staff'].help_text = "Belgilansa foydalanuvchi admin panelga kira oladi."
+
+        if 'is_superuser' in form.base_fields:
+            form.base_fields['is_superuser'].label = "Superadmin holati"
+            form.base_fields['is_superuser'].help_text = (
+                "Belgilansa foydalanuvchi barcha huquqlarga ega bo'ladi (alohida ruxsat berilmasa ham)."
+            )
+
+        if 'user_permissions' in form.base_fields:
+            form.base_fields['user_permissions'].label = "Foydalanuvchi huquqlari"
+            form.base_fields['user_permissions'].help_text = (
+                "Quyidagi ro'yxatdan kerakli huquqlarni tanlab, o'ng tomonga o'tkazing."
+            )
+
+        if 'last_login' in form.base_fields:
+            form.base_fields['last_login'].label = "Oxirgi kirish"
+
+        if 'date_joined' in form.base_fields:
+            form.base_fields['date_joined'].label = "Ro'yxatdan o'tgan sana"
+
         if 'password' in form.base_fields:
             form.base_fields['password'].label = "Xavfsiz parol tizimi"
             form.base_fields['password'].help_text = (
-            "Parol xavfsizlik yuzasidan yashirilgan. "
-            "Uni o'zgartirish uchun <a href='../password/'>mana bu havolaga</a> o'ting."
-        )
+                "Parol xavfsizlik yuzasidan yashirilgan. "
+                "Uni o'zgartirish uchun <a href='../password/'>mana bu havolaga</a> o'ting."
+            )
         return form
-    
-# -------------------------------------------------------------------------
-# ADMIN PANEL GLOBAL BRENDING
-# -------------------------------------------------------------------------
+
+
 admin.site.site_header = "BILIM NAZORATCHI: BOSHQARUV MARKAZI"
 admin.site.site_title = "Bilim Nazoratchi"
 admin.site.index_title = "Tizim ma'lumotlarini boshqarish va monitoring"
 
-# Standart 'Groups' bo'limini yashiramiz
 if admin.site.is_registered(Group):
     admin.site.unregister(Group)

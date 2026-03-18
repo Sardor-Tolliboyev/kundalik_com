@@ -4,22 +4,22 @@
     border-top: 5px solid var(--em-orange);
 }
 
-/* 🔴 XAVF SIGNALI (Pulse animatsiyasi) */
+/* XAVF SIGNALI (Pulse animatsiyasi) */
 .danger-alert {
     background-color: #fff5f5;
     border-left: 6px solid #d0021b;
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 10px;
     animation: danger-pulse 2s infinite;
 }
 
 @keyframes danger-pulse {
-    0% { box-shadow: 0 0 0 0px rgba(208, 2, 27, 0.4); }
+    0% { box-shadow: 0 0 0 0px rgba(208, 2, 27, 0.35); }
     70% { box-shadow: 0 0 0 10px rgba(208, 2, 27, 0); }
     100% { box-shadow: 0 0 0 0px rgba(208, 2, 27, 0); }
 }
 
-/* O'qituvchi izohlari (Chat uslubida) */
+/* O'qituvchi izohlari */
 .comment-box {
     background: #f1f5f9;
     padding: 10px 15px;
@@ -28,3 +28,4 @@
     margin-top: 5px;
     color: #475569;
 }
+

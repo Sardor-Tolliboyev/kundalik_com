@@ -19,34 +19,34 @@ def shaxsiy_profil_view(request):
     Tizimga kirgan foydalanuvchining shaxsiy ma'lumotlarini 
     va uning roliga oid mantiqiy bog'liqliklarni ko'rsatuvchi funksiya.
     """
-    user = request.user
+    foydalanuvchi = request.user
     
     # Barcha rollar uchun umumiy ma'lumotlar
     kontekst = {
-        'foydalanuvchi': user,
-        'rol_nomi': user.get_rol_display(), # 'oquvchi' -> 'O'quvchi' ko'rinishida olish
+        'foydalanuvchi': foydalanuvchi,
+        'rol_nomi': foydalanuvchi.get_rol_display(), # 'oquvchi' -> 'O'quvchi' ko'rinishida olish
     }
     
     # --- ROLGA QARAB QO'SHIMCHA MA'LUMOTLARNI YIG'ISH ---
 
     # A) Agar foydalanuvchi O'QUVCHI bo'lsa
-    if user.rol == 'oquvchi':
+    if foydalanuvchi.rol == 'oquvchi':
         # Sinf ma'lumotini tekshiramiz
-        kontekst['sinf_nomi'] = user.sinf.nomi if user.sinf else "Sinfga biriktirilmagan"
+        kontekst['sinf_nomi'] = foydalanuvchi.sinf.nomi if foydalanuvchi.sinf else "Sinfga biriktirilmagan"
         
     # B) Agar foydalanuvchi OTA-ONA bo'lsa
-    elif user.rol == 'ota_ona':
+    elif foydalanuvchi.rol == 'ota_ona':
         # Biriktirilgan farzandi borligini tekshiramiz
-        if user.farzandi:
-            kontekst['farzand_fio'] = user.farzandi.get_full_name() or user.farzandi.username
-            kontekst['farzand_sinfi'] = user.farzandi.sinf.nomi if user.farzandi.sinf else "Noma'lum"
+        if foydalanuvchi.farzandi:
+            kontekst['farzand_fio'] = foydalanuvchi.farzandi.get_full_name() or foydalanuvchi.farzandi.username
+            kontekst['farzand_sinfi'] = foydalanuvchi.farzandi.sinf.nomi if foydalanuvchi.farzandi.sinf else "Noma'lum"
         else:
             kontekst['farzand_fio'] = "Farzand biriktirilmagan"
 
     # D) Agar foydalanuvchi O'QITUVCHI bo'lsa
-    elif user.rol == 'oqituvchi':
+    elif foydalanuvchi.rol == 'oqituvchi':
         # O'qituvchiga tegishli darslar sonini hisoblash mumkin
-        kontekst['darslar_soni'] = user.oqituvchi_darslari.count()
+        kontekst['darslar_soni'] = foydalanuvchi.oqituvchi_darslari.count()
 
     # Natijani eMaktab uslubidagi profil shabloniga yuboramiz
     return render(request, 'registration/profile.html', kontekst)
@@ -61,24 +61,24 @@ def login_redirect_view(request):
     Foydalanuvchi login-parolini terib kirganda ishga tushadi.
     Vazifasi: Foydalanuvchini 'shartta' o'zining ish stoliga yuborish.
     """
-    user = request.user
+    foydalanuvchi = request.user
     
     # 1. O'qituvchi bo'lsa - Sinf tanlash dashboardiga
-    if user.rol == 'oqituvchi':
-        messages.success(request, f"Xush kelibsiz, {user.first_name}! Ish faoliyatingizda muvaffaqiyatlar tilaymiz.")
+    if foydalanuvchi.rol == 'oqituvchi':
+        messages.success(request, f"Xush kelibsiz, {foydalanuvchi.first_name}! Ish faoliyatingizda muvaffaqiyatlar tilaymiz.")
         return redirect('talim:oqituvchi_dashboard')
         
     # 2. O'quvchi bo'lsa - Shaxsiy natijalar profiliga
-    elif user.rol == 'oquvchi':
-        messages.info(request, f"Salom, {user.first_name}. Bugungi natijalaringni ko'rishga tayyormisan?")
+    elif foydalanuvchi.rol == 'oquvchi':
+        messages.info(request, f"Salom, {foydalanuvchi.first_name}. Bugungi natijalaringni ko'rishga tayyormisan?")
         return redirect('talim:oquvchi_profil')
         
     # 3. Ota-ona bo'lsa - Farzandining nazorat sahifasiga
-    elif user.rol == 'ota_ona':
+    elif foydalanuvchi.rol == 'ota_ona':
         return redirect('talim:ota_ona_view')
         
     # 4. Administrator bo'lsa - To'g'ridan-to'g'ri boshqaruv paneliga
-    elif user.rol == 'admin' or user.is_superuser:
+    elif foydalanuvchi.rol == 'admin' or foydalanuvchi.is_superuser:
         return redirect('/admin/')
     
     # Agar roli aniqlanmagan yoki xato bo'lsa, asosiy sahifaga qaytaramiz

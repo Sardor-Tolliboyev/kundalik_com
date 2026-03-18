@@ -48,19 +48,19 @@ class OgohlantirishAdmin(admin.ModelAdmin):
     # --- 3. MAXSUS VIZUAL METODLAR (O'ZBEKCHA) ---
 
     @admin.display(description="Qabul qiluvchi (F.I.SH)")
-    def kimga_fio(self, obj):
+    def kimga_fio(self, xabar):
         """Foydalanuvchining to'liq ismini ko'rsatadi"""
-        return obj.kimga.get_full_name() or obj.kimga.username
+        return xabar.kimga.get_full_name() or xabar.kimga.username
 
     @admin.display(description="Xabar turi")
-    def turi_vizual(self, obj):
+    def turi_vizual(self, xabar):
         """Xabar turini modeldagi emojilar bilan birga ko'rsatish"""
-        return obj.get_turi_display()
+        return xabar.get_turi_display()
 
     @admin.display(description="Yuborilgan vaqt")
-    def yaratilgan_vaqt_format(self, obj):
+    def yaratilgan_vaqt_format(self, xabar):
         """Vaqtni o'zbekcha qulay formatda ko'rsatish"""
-        return obj.yaratilgan_vaqt.strftime("%d.%m.%Y | %H:%M")
+        return xabar.yaratilgan_vaqt.strftime("%d.%m.%Y | %H:%M")
 
     # --- 4. GURUXLI AMALLAR (ACTIONS) ---
 

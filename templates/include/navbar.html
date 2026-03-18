@@ -1,87 +1,72 @@
-{% load static %} <!-- BU QATOR XATOLIKNI DAVOLAYDI ✅ -->
+{% load static %}
 
-<!-- 
-    'BilimNazoratchi' Loyihasi - Asosiy Navigatsiya Paneli (Navbar)
-    Vazifasi: Foydalanuvchi tizimda kimligini ko'rsatish va sahifalararo o'tishni ta'minlash.
+<!--
+  'BilimNazoratchi' Loyihasi - Asosiy Navigatsiya Paneli (Navbar)
+  Vazifasi: Foydalanuvchi tizimda kimligini ko'rsatish va sahifalararo o'tishni ta'minlash.
 -->
 
-<nav class="navbar navbar-expand-lg navbar-em shadow-sm sticky-top">
-    <div class="container">
-        
-        <!-- 1. TIZIM LOGOTIPI VA ASOSIY SAHIFA HAVOLASI -->
-        <a class="navbar-brand fw-bold text-dark" href="{% url 'talim:bosh_sahifa' %}">
-            <img src="{% static 'img/logo.png' %}" alt="Logo" width="40" height="40" class="me-2 rounded-circle bg-light p-1 shadow-sm">
-            <span style="color: var(--em-blue); letter-spacing: 0.5px;">BILIM</span><span style="color: #334155;">NAZORATCHI</span>
-        </a>
+<nav class="navbar navbar-expand-lg navbar-em shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-dark bn-brand"
+       href="{% if user.is_authenticated %}{% url 'talim:bosh_sahifa' %}{% else %}{% url 'talim:landing' %}{% endif %}">
+      <img src="{% static 'img/logo.png' %}" alt="Logo" width="40" height="40"
+           class="me-2 rounded-circle bg-light p-1 shadow-sm">
+      <span class="bn-brand-a">BILIM</span><span class="bn-brand-b">NAZORATCHI</span>
+    </a>
 
-        <!-- MOBIL QURILMALAR UCHUN BURGER MENYU -->
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#bilimNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#bilimNavbar"
+            aria-controls="bilimNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <!-- 2. MENYU ELEMENTLARI -->
-        <div class="collapse navbar-collapse" id="bilimNavbar">
-            <ul class="navbar-nav ms-auto align-items-center">
-                
-                <!-- BOSH SAHIFA TUGMASI -->
-                <li class="nav-item me-3">
-                    <a class="nav-link text-dark fw-bold small" href="{% url 'talim:bosh_sahifa' %}">
-                        <i class="bi bi-house-door"></i> BOSH SAHIFA
-                    </a>
-                </li>
+    <div class="collapse navbar-collapse" id="bilimNavbar">
+      <ul class="navbar-nav ms-auto align-items-center gap-2">
+        <li class="nav-item">
+          <a class="nav-link text-dark fw-bold d-flex align-items-center" href="{% url 'talim:landing' %}">
+            <i class="bi bi-house-door me-1"></i>
+            BOSH SAHIFA
+          </a>
+        </li>
 
-                {% if user.is_authenticated %}
-                    <!-- 3. FOYDALANUVCHI TIZIMGA KIRGAN BO'LSA -->
-                    <li class="nav-item me-3">
-                        <div class="d-flex align-items-center bg-light px-3 py-1 rounded-pill border shadow-sm">
-                            <i class="bi bi-person-circle text-primary me-2 fs-5"></i>
-                            <div class="text-start">
-                                <span class="d-block fw-bold small text-dark" style="line-height: 1.2;">
-                                    {{ user.get_full_name|default:user.username }}
-                                </span>
-                                <span class="badge bg-primary-subtle text-primary p-0 small" style="font-size: 10px; text-transform: uppercase;">
-                                    {{ user.get_rol_display }}
-                                </span>
-                            </div>
-                        </div>
-                    </li>
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link text-dark fw-bold d-flex align-items-center" href="{% url 'talim:haftalik_dars_jadvali' %}">
+              <i class="bi bi-calendar-week me-1"></i>
+              DARS JADVALI
+            </a>
+          </li>
 
-                    <!-- TIZIMDAN CHIQISH TUGMASI (Namespace: hisoblar:logout) -->
-                    <li class="nav-item">
-                        <form action="{% url 'hisoblar:logout' %}" method="post" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-outline-danger px-4 rounded-pill fw-bold">
-                                <i class="bi bi-box-arrow-right"></i> Chiqish
-                            </button>
-                        </form>
-                    </li>
+          <li class="nav-item">
+            <div class="d-flex align-items-center bg-light px-3 py-1 rounded-pill border shadow-sm">
+              <i class="bi bi-person-circle text-primary me-2 fs-5"></i>
+              <div class="text-start">
+                <span class="d-block fw-bold small text-dark bn-user-name">
+                  {{ user.get_full_name|default:user.username }}
+                </span>
+                <span class="badge bg-primary-subtle text-primary p-0 small bn-role-badge">
+                  {{ user.get_rol_display }}
+                </span>
+              </div>
+            </div>
+          </li>
 
-                {% else %}
-                    <!-- 4. FOYDALANUVCHI TIZIMGA KIRMAGAN BO'LSA -->
-                    <li class="nav-item">
-                        <!-- Namespace: hisoblar:login -->
-                        <a class="btn btn-em-primary px-4 rounded-pill fw-bold shadow-sm" href="{% url 'hisoblar:login' %}">
-                            KIRISH
-                        </a>
-                    </li>
-                {% endif %}
-
-            </ul>
-        </div>
+          <li class="nav-item">
+            <form action="{% url 'hisoblar:logout' %}" method="post" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-danger px-4 rounded-pill fw-bold">
+                <i class="bi bi-box-arrow-right"></i>
+                Chiqish
+              </button>
+            </form>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="btn btn-em-primary px-4 rounded-pill fw-bold shadow-sm" href="{% url 'hisoblar:login' %}">
+              Kirish
+            </a>
+          </li>
+        {% endif %}
+      </ul>
     </div>
+  </div>
 </nav>
-
-<style>
-    /* Navbar uchun qo'shimcha professional dizayn */
-    .navbar-em {
-        background-color: #ffffff !important;
-        border-bottom: 2px solid var(--em-blue);
-        min-height: 70px;
-    }
-    .nav-link:hover {
-        color: var(--em-blue) !important;
-    }
-    .badge {
-        letter-spacing: 0.5px;
-    }
-</style>

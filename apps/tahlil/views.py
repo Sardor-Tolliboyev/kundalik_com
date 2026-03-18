@@ -21,35 +21,36 @@ def tahlilni_shakllantirish(oquvchi):
     Ushbu funksiya o'quvchi baho olgan zahoti ishga tushadi.
     Vazifasi: GPA hisoblash, trendni aniqlash va bazadagi 'OquvchiTahlili'ni yangilash.
     """
-    baholar = Baho.objects.filter(oquvchi=oquvchi).order_by('mavzu__sana')
+    # # IZOH: O'quvchining barcha baholarini sana bo'yicha tartiblab olamiz.
+    baholar_qs = Baho.objects.filter(oquvchi=oquvchi).order_by('mavzu__sana')
     
-    if not baholar.exists():
+    if not baholar_qs.exists():
         return None
 
     # A) O'rtacha ballni hisoblash
-    ballar_ruyxati = [b.qiymati for b in baholar]
+    ballar_ruyxati = [b.qiymati for b in baholar_qs]
     ortacha = sum(ballar_ruyxati) / len(ballar_ruyxati)
 
     # B) Trendni aniqlash (Oxirgi 3 baho tahlili)
-    trend = 'barqaror'
+    trend_holati = 'barqaror'
     if len(ballar_ruyxati) >= 3:
         oxirgi_uchta_ortacha = sum(ballar_ruyxati[-3:]) / 3
         oldingi_ballar = ballar_ruyxati[:-3]
         if oldingi_ballar:
             oldingi_ortacha = sum(oldingi_ballar) / len(oldingi_ballar)
             if oxirgi_uchta_ortacha > oldingi_ortacha:
-                trend = 'osish'
+                trend_holati = 'osish'
             elif oxirgi_uchta_ortacha < oldingi_ortacha:
-                trend = 'pasayish'
+                trend_holati = 'pasayish'
     
     # D) Xavf darajasini belgilash
-    xavf_sharti = True if ortacha < 3.5 else False
+    xavf_ostida = True if ortacha < 3.5 else False
 
     # E) Bazaga saqlash
     tahlil_obj, yaratildi = OquvchiTahlili.objects.get_or_create(oquvchi=oquvchi)
     tahlil_obj.ortacha_ball = round(ortacha, 2)
-    tahlil_obj.trend = trend
-    tahlil_obj.xavf_ostida = xavf_sharti
+    tahlil_obj.trend = trend_holati
+    tahlil_obj.xavf_ostida = xavf_ostida
     tahlil_obj.save()
     
     return tahlil_obj
@@ -64,18 +65,18 @@ def oquvchi_bilimini_tahlil_qilish(oquvchi_id):
     Vazifasi: O'quvchi ID raqami orqali uning tayyor tahlil natijasini lug'atda qaytarish.
     """
     try:
-        tahlil = OquvchiTahlili.objects.get(oquvchi_id=oquvchi_id)
+        tahlil_obj = OquvchiTahlili.objects.get(oquvchi_id=oquvchi_id)
         
         # Trend va ranglarni xaritaga solamiz
-        trend_map = {'osish': "O'sish", 'pasayish': "Pasayish", 'barqaror': "Barqaror"}
-        belgi_map = {'osish': '⬆', 'pasayish': '⬇', 'barqaror': '➡'}
+        trend_izohi = {'osish': "O'sish", 'pasayish': "Pasayish", 'barqaror': "Barqaror"}
+        trend_belgilari = {'osish': '⬆', 'pasayish': '⬇', 'barqaror': '➡'}
         
         return {
-            "ortacha": tahlil.ortacha_ball,
-            "holat": "Xavf ostida" if tahlil.xavf_ostida else "Yaxshi",
-            "rang": "danger" if tahlil.xavf_ostida else "success",
-            "trend": trend_map.get(tahlil.trend, "Barqaror"),
-            "trend_belgi": belgi_map.get(tahlil.trend, "➡")
+            "ortacha": tahlil_obj.ortacha_ball,
+            "holat": "Xavf ostida" if tahlil_obj.xavf_ostida else "Yaxshi",
+            "rang": "danger" if tahlil_obj.xavf_ostida else "success",
+            "trend": trend_izohi.get(tahlil_obj.trend, "Barqaror"),
+            "trend_belgi": trend_belgilari.get(tahlil_obj.trend, "➡")
         }
     except OquvchiTahlili.DoesNotExist:
         # Agar hali tahlil hisoblanmagan bo'lsa
@@ -93,7 +94,9 @@ def statistika_markazi_view(request):
     """
     Maktabdagi barcha o'quvchilarning tahliliy jadvalini ko'rsatuvchi sahifa.
     """
-    if request.user.rol not in ['admin', 'oqituvchi']:
+    foydalanuvchi = request.user
+
+    if foydalanuvchi.rol not in ['admin', 'oqituvchi']:
         messages.error(request, "Sizda ushbu ma'lumotlarni ko'rish huquqi yo'q!")
         return redirect('talim:bosh_sahifa')
 

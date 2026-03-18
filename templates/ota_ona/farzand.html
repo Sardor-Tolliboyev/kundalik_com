@@ -5,14 +5,8 @@
 
 {% block extra_css %}
     <!-- Ota-ona uchun maxsus dizayn fayli -->
-    <link rel="stylesheet" href="{% static 'css/ota_ona.css' %}">
+    <link rel="stylesheet" href="{% static 'css/ota_ona.css' %}?v=20260317">
     <style>
-        /* Sahifa cheksiz cho'zilib ketmasligi uchun qo'shimcha qulf */
-        main.container {
-            height: auto !important;
-            min-height: auto !important;
-        }
-        
         /* Grafik uchun qat'iy balandlikdagi konteyner */
         .chart-wrapper {
             position: relative;
@@ -23,7 +17,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4 mb-5">
+<div class="mt-4 mb-5">
     <!-- 1. YUQORI QISM: Sarlavha -->
     <div class="row mb-4">
         <div class="col-12">
@@ -103,7 +97,7 @@
                             <tr>
                                 <td class="ps-3 fw-bold text-dark">{{ baho.mavzu.taqsimot.fan.nomi }}</td>
                                 <td class="text-center">
-                                    <span class="badge {% if baho.qiymati >= 4 %}bg-success{% elif baho.qiymati == 3 %}bg-warning text-dark{% else %}bg-danger{% endif %} rounded-circle p-2" style="width: 35px; height: 35px; line-height: 18px;">
+                                    <span class="badge {% if baho.qiymati >= 4 %}bg-success{% elif baho.qiymati == 3 %}bg-warning text-dark{% else %}bg-danger{% endif %} bn-grade-circle">
                                         {{ baho.qiymati }}
                                     </span>
                                 </td>
@@ -156,7 +150,7 @@
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, // JADVALNING CHO'ZILISHINI TO'XTATADI ✅
+            maintainAspectRatio: false, // Grafik div ichida turadi
             plugins: {
                 legend: { display: false }
             },

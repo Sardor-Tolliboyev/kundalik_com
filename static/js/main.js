@@ -51,7 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
      * 3. JURNAL KATAKLARIGA INTERAKTIVLIK QO'SHISH
      * O'qituvchi jurnalidagi kataklar ustiga borganda ularni ajratib ko'rsatish.
      */
-    const jurnalKataklari = document.querySelectorAll('.table-em tbody td');
+    // # IZOH: Jurnal sahifasida `.table-jurnal`, boshqa joylarda `.table-em` ishlatiladi.
+    const jurnalKataklari = document.querySelectorAll('.table-em tbody td, .table-jurnal tbody td');
     jurnalKataklari.forEach(td => {
         td.addEventListener('mouseenter', function() {
             // Agar katak ichida baho qo'yish tugmasi bo'lsa, fonni o'zgartiramiz
@@ -75,6 +76,30 @@ document.addEventListener('DOMContentLoaded', function() {
         Chart.defaults.color = "#64748b";
         console.log("Grafik tizimi (Chart.js) tayyor holatda.");
     }
+
+    /**
+     * 5. PAROLNI KO'RSATISH/YASHIRISH (KO'ZCHA)
+     * Login sahifasida foydalanuvchi parolni tekshirishi uchun qulaylik.
+     */
+    document.querySelectorAll("[data-bn-pass-target]").forEach((btn) => {
+        if (btn.dataset.bnBound) return;
+        btn.dataset.bnBound = "1";
+
+        const targetId = btn.getAttribute("data-bn-pass-target");
+        const input = targetId ? document.getElementById(targetId) : null;
+        if (!input) return;
+
+        btn.addEventListener("click", () => {
+            const isHidden = input.type === "password";
+            input.type = isHidden ? "text" : "password";
+
+            const icon = btn.querySelector("i");
+            if (icon) {
+                icon.classList.toggle("bi-eye", !isHidden);
+                icon.classList.toggle("bi-eye-slash", isHidden);
+            }
+        });
+    });
 
 });
 

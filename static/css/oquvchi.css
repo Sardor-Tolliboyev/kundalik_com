@@ -34,7 +34,7 @@
     background: #fff;
     padding: 15px;
     border-radius: 8px;
-    border-left: 5px solid var(--em-gradient-top);
+    border-left: 5px solid var(--em-blue);
     transition: 0.2s;
 }
 
@@ -42,3 +42,4 @@
     background: #f0f7ff;
     transform: translateX(5px);
 }
+

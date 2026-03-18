@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="520" viewBox="0 0 520 520" aria-hidden="true">
+  <!--
+    Orqa fon uchun juda yengil naqsh.
+    # IZOH: Ko'zni olmaydigan bo'lishi uchun rang/opacity ataylab past qilingan.
+  -->
+  <defs>
+    <pattern id="naqsh" x="0" y="0" width="130" height="130" patternUnits="userSpaceOnUse">
+      <rect width="130" height="130" fill="transparent"/>
+      <circle cx="18" cy="18" r="3.5" fill="rgba(0,135,192,0.10)"/>
+      <circle cx="112" cy="18" r="3.5" fill="rgba(255,157,0,0.08)"/>
+      <circle cx="18" cy="112" r="3.5" fill="rgba(255,157,0,0.08)"/>
+      <circle cx="112" cy="112" r="3.5" fill="rgba(0,135,192,0.10)"/>
+      <path d="M18 18 L112 112" stroke="rgba(0,135,192,0.06)" stroke-width="2"/>
+      <path d="M112 18 L18 112" stroke="rgba(0,135,192,0.06)" stroke-width="2"/>
+      <path d="M65 0 V130" stroke="rgba(2,8,23,0.025)" stroke-width="2"/>
+      <path d="M0 65 H130" stroke="rgba(2,8,23,0.025)" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <rect width="520" height="520" fill="url(#naqsh)"/>
+</svg>
+

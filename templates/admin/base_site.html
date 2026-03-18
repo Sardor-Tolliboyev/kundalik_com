@@ -5,22 +5,32 @@
 
 {% block branding %}
 <h1 id="site-name">
-    <a href="{% url 'admin:index' %}" style="display: flex; align-items: center; text-decoration: none; gap: 10px;">
-        <img src="{% static 'img/logo.png' %}" alt="Logo" style="height: 32px; width: 32px; background: white; border-radius: 50%; padding: 2px;">
-        <span style="color: white !important; font-weight: 800; font-size: 18px; text-transform: uppercase;">Bilim Nazoratchi Admin</span>
+    <a href="{% url 'admin:index' %}" class="bn-admin-brand">
+        <img src="{% static 'img/logo.png' %}" alt="Logo" class="bn-admin-logo">
+        <span class="bn-admin-title">Bilim Nazoratchi Admin</span>
     </a>
 </h1>
+
+<div class="bn-admin-toplinks">
+    <a href="{% url 'talim:haftalik_dars_jadvali' %}" class="bn-admin-toplink">
+        Dars jadvali
+    </a>
+</div>
 {% endblock %}
 
 {% block extrastyle %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/admin_custom.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/admin_custom.css' %}?v=20260317">
 {% endblock %}
 
-<!-- Footer qismini admin paneldagi standart joyiga qo'yamiz -->
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% static 'js/admin_custom.js' %}?v=20260317" defer></script>
+{% endblock %}
+
 {% block footer %}
-    <div id="footer" style="background: #111827; color: #94a3b8; padding: 20px; text-align: center; border-top: 1px solid #1e293b;">
-        <strong>BilimNazoratchi</strong> &copy; 2026. Admin bilan bog'lanish: 
-        <a href="https://t.me/Sardor_Tolliboyev" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: bold;">TELEGRAM</a>
+    <div class="bn-admin-footer">
+        <strong>BilimNazoratchi</strong> &copy; 2026. Admin bilan bog'lanish:
+        <a href="https://t.me/Sardor_Tolliboyev" target="_blank" rel="noopener" class="bn-admin-footer-link">TELEGRAM</a>
     </div>
 {% endblock %}

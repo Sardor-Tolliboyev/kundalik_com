@@ -1,6 +1,27 @@
 /* O'qituvchi dashboardi va Jurnal uchun maxsus */
 
-/* Jurnal setkasi (Table) */
+/* ====================================================================== */
+/* JURNAL SAHIFASI */
+/* ====================================================================== */
+
+.jurnal-page {
+    background-color: #f4f7f9;
+    min-height: 100vh;
+}
+
+.jurnal-card {
+    background: #ffffff;
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    box-shadow: 0 10px 26px rgba(2, 8, 23, 0.06);
+    overflow: hidden;
+}
+
+/* # IZOH: Juda ko'p ustun bo'lganda yuqori sarlavha ko'rinib turishi uchun */
+.jurnal-table-wrap {
+    max-height: calc(100vh - 280px);
+}
+
 .table-jurnal {
     border-collapse: separate;
     border-spacing: 0;
@@ -14,37 +35,113 @@
     font-size: 13px;
     color: #64748b;
     text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 4;
 }
 
 .table-jurnal td {
     padding: 10px;
     border-bottom: 1px solid #f1f5f9;
     text-align: center;
+    vertical-align: middle;
+    min-width: 76px;
+    height: 56px;
 }
 
-/* O'quvchi ismi qatori (chapda qotib turadi) */
-.student-name-col {
+/* Chap ustun (F.I.SH) qotishi */
+.sticky-col {
     text-align: left !important;
     font-weight: 600;
     color: #1e293b;
-    background-color: #fff;
+    background-color: #f7f9fa !important;
     position: sticky;
     left: 0;
-    z-index: 5;
+    z-index: 6;
+    border-right: 2px solid var(--em-blue) !important;
+    min-width: 280px;
 }
 
-/* Baholash tugmalari animatsiyasi */
-.btn-grade-add {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px dashed var(--em-blue);
-    background: transparent;
+.table-jurnal thead th.sticky-col {
+    z-index: 7; /* # IZOH: tepa + chap sticky kesishganda ustun bo'lsin */
+}
+
+.mavzu-cell {
+    background-color: #f8fafc;
+    font-weight: 800;
+    color: #334155;
+}
+
+.mavzu-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;     /* # IZOH: mavzu uzun bo'lsa ham chiroyli 2 qator */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 10px;
     color: var(--em-blue);
-    transition: 0.3s;
+    text-transform: uppercase;
+    line-height: 1.15;
+    max-width: 140px;
+    margin: 0 auto;
 }
 
-.btn-grade-add:hover {
-    background: var(--em-blue);
-    color: white;
+/* Baho aylanasi */
+.grade-badge {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 900;
+    color: #ffffff;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 2px solid rgba(255, 255, 255, 0.2);
 }
+
+.grade-5 { background-color: #28a745; }
+.grade-4 { background-color: #007bff; }
+.grade-3 { background-color: #ffc107; color: #0f172a; }
+.grade-2 { background-color: #dc3545; }
+
+/* Davomat: Kelmaganlik belgisi (S - Sababsiz) */
+.attendance-absent {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background-color: #fff1f0;
+    border: 1px solid #ffa39e;
+    color: #cf1322;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+/* Baho yo'q joyda chiqadigan "+" tugmasi */
+.btn-add-grade {
+    border: none;
+    background: transparent;
+    color: #ced4da;
+    font-size: 22px;
+    width: 100%;
+    height: 100%;
+    transition: 0.2s;
+}
+
+.btn-add-grade:hover {
+    color: var(--em-blue);
+    background-color: rgba(0, 135, 192, 0.05);
+}
+
+/* Radio button stillari (Davomat uchun) */
+.btn-check:checked + .btn-outline-success { background-color: #28a745; color: white; }
+.btn-check:checked + .btn-outline-danger { background-color: #dc3545; color: white; }
+
+@media (max-width: 900px) {
+    .sticky-col { min-width: 220px; }
+    .jurnal-table-wrap { max-height: none; }
+}
+

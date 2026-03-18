@@ -1,15 +1,25 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
 <div id="content-main">
-    <div class="module" style="padding: 20px; background: white; border-radius: 8px;">
-        <h3 class="fw-bold">Excel orqali o'quvchilarni tizimga yuklash</h3>
+    <div class="module bn-excel-card">
+        <div class="bn-excel-head">
+            <div>
+                <h3 class="bn-excel-title">Excel orqali o'quvchilarni tizimga yuklash</h3>
+                <p class="bn-excel-subtitle">
+                    Namuna fayl kerakmi?
+                    <a href="{% url 'admin:talim_sinf_excel_namuna' %}" class="button bn-excel-sample-btn">
+                        Namuna Excelni yuklab olish
+                    </a>
+                </p>
+            </div>
+        </div>
         <hr>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div style="margin-bottom: 20px;">
                 <label style="display:block; margin-bottom:10px;"><b>1. O'quvchilar yuklanadigan sinfni tanlang:</b></label>
-                <select name="sinf_id" class="form-control" style="width: 300px; padding: 10px;" required>
-                    <option value="">--- Sinfni tanlang ---</option>
+                <select name="sinf_id" style="width: 100%; max-width: 520px; padding: 10px;" required>
+                    <option value="">Sinfni tanlang</option>
                     {% for sinf in sinflar %}
                         <option value="{{ sinf.id }}">{{ sinf.nomi }}</option>
                     {% endfor %}
@@ -17,7 +27,15 @@
             </div>
             <div style="margin-bottom: 20px;">
                 <label style="display:block; margin-bottom:10px;"><b>2. Excel faylni tanlang (.xlsx):</b></label>
-                <input type="file" name="excel_fayl" accept=".xlsx, .xls" required>
+                <div class="help" style="margin: -6px 0 10px 0; color: #64748b; font-weight: 700;">
+                    Eslatma: Excel faylda <b>Ism familiyasi</b> ustuni majburiy. <b>Sinf</b> ustuni ixtiyoriy (sinf yuqorida tanlanadi).
+                </div>
+                
+                <div class="bn-file" style="max-width: 520px;">
+                    <input class="bn-file-input" type="file" id="excel_fayl" name="excel_fayl" accept=".xlsx, .xls" required>
+                    <button class="button bn-file-btn" type="button" data-bn-file-btn="excel_fayl">Fayl tanlash</button>
+                    <span class="bn-file-name" data-bn-file-name="excel_fayl">Fayl tanlanmadi</span>
+                </div>
             </div>
             <div class="submit-row">
                 <input type="submit" value="YUKLASHNI BOSHLASH" class="default" style="background: #0087c0; width: 100%;">

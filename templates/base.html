@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <!-- 3. SHAXSIY CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260316">
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -29,12 +29,12 @@
 
     <!-- MAIN: flex-grow-1 footerni pastga itaradi -->
     <main class="flex-grow-1">
-        <div class="container mt-2">
+        <div class="container mt-2 bn-page">
             
             <!-- Django Bildirishnomalari -->
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} border-0 shadow-sm rounded-3 py-3 mb-4" role="alert">
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags %}{{ message.tags }}{% else %}success{% endif %} border-0 shadow-sm rounded-3 py-3 mb-4" role="alert">
                         <div class="d-flex align-items-center">
                             <i class="bi {% if message.tags == 'error' %}bi-exclamation-octagon{% else %}bi-check-circle{% endif %} fs-4 me-2"></i>
                             <span class="fw-bold">{{ message }}</span>

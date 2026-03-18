@@ -5,37 +5,7 @@
 {% block title %}{{ taqsimot.sinf.nomi }} | Jurnal{% endblock %}
 
 {% block extra_css %}
-<style>
-    /* Jurnal sahifasi umumiy dizayni */
-    .jurnal-page { background-color: #f4f7f9; min-height: 100vh; }
-    .jurnal-card { background: #fff; border: 1px solid #dcdcdc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; }
-
-    /* Chap ustun (F.I.SH) qotishi */
-    .sticky-col { position: sticky; left: 0; background-color: #f7f9fa !important; z-index: 10; border-right: 2px solid #0087c0 !important; min-width: 250px; }
-    
-    /* Jadval kataklari */
-    .table-jurnal th, .table-jurnal td { border: 1px solid #e1e8ed !important; padding: 0 !important; vertical-align: middle; text-align: center; min-width: 70px; height: 55px; }
-    .mavzu-cell { background-color: #f8fafc; font-weight: 700; color: #334155; }
-    .mavzu-cell small { font-size: 10px; color: var(--em-blue); text-transform: uppercase; }
-
-    /* Baho aylanasi */
-    .grade-badge { width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 800; color: #fff; cursor: pointer; transition: 0.2s; border: 2px solid rgba(255,255,255,0.2); }
-    .grade-5 { background-color: #28a745; }
-    .grade-4 { background-color: #007bff; }
-    .grade-3 { background-color: #ffc107; color: #000; }
-    .grade-2 { background-color: #dc3545; }
-
-    /* Davomat: Kelmaganlik belgisi (S - Sababsiz) */
-    .attendance-absent { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; background-color: #fff1f0; border: 1px solid #ffa39e; color: #cf1322; font-weight: bold; cursor: pointer; }
-
-    /* Baho yo'q joyda chiqadigan "+" tugmasi */
-    .btn-add-grade { border: none; background: transparent; color: #ced4da; font-size: 22px; width: 100%; height: 100%; transition: 0.2s; }
-    .btn-add-grade:hover { color: #0087c0; background-color: rgba(0, 135, 192, 0.05); }
-
-    /* Radio button stillari (Davomat uchun) */
-    .btn-check:checked + .btn-outline-success { background-color: #28a745; color: white; }
-    .btn-check:checked + .btn-outline-danger { background-color: #dc3545; color: white; }
-</style>
+    <link rel="stylesheet" href="{% static 'css/oqituvchi.css' %}?v=20260317">
 {% endblock %}
 
 {% block content %}
@@ -44,7 +14,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="fw-bold mb-1" style="color: var(--em-blue);">
-                {{ taqsimot.sinf.nomi }} — {{ taqsimot.fan.nomi }}
+                {{ taqsimot.sinf.nomi }} - {{ taqsimot.fan.nomi }}
             </h3>
             <p class="text-muted small">Baho qo'yish yoki davomat qilish uchun katak ustiga bosing</p>
         </div>
@@ -55,7 +25,7 @@
 
     <!-- 2. JURNAL JADVALI -->
     <div class="jurnal-card shadow-sm">
-        <div class="table-responsive">
+        <div class="table-responsive jurnal-table-wrap">
             <table class="table table-jurnal mb-0">
                 <thead>
                     <tr>
@@ -63,7 +33,7 @@
                         {% for mavzu in mavzular %}
                         <th class="mavzu-cell py-2">
                             <span>{{ mavzu.sana|date:"d.m" }}</span><br>
-                            <small title="{{ mavzu.mavzu_nomi }}">{{ mavzu.mavzu_nomi|truncatechars:10 }}</small>
+                            <small class="mavzu-title" title="{{ mavzu.mavzu_nomi }}">{{ mavzu.mavzu_nomi }}</small>
                         </th>
                         {% endfor %}
                     </tr>
@@ -71,7 +41,7 @@
                 <tbody>
                     {% for oquvchi in oquvchilar %}
                     <tr>
-                        <td class="sticky-col text-start ps-3 fw-bold text-dark">
+                        <td class="sticky-col text-start ps-3 fw-bold text-dark" title="{{ oquvchi.get_full_name|default:oquvchi.username }}">
                             {{ forloop.counter }}. {{ oquvchi.get_full_name|default:oquvchi.username }}
                         </td>
 
@@ -128,7 +98,9 @@
                     <input type="hidden" name="mavzu_id" value="{{ mavzu.id }}">
                     
                     <div class="modal-body p-4 text-start">
-                        <p class="small text-muted mb-3 text-center"><b>{{ oquvchi.first_name }}</b> | {{ mavzu.sana|date:"d-F" }}</p>
+                        <p class="small text-muted mb-3 text-center">
+                            <b>{{ oquvchi.get_full_name|default:oquvchi.username }}</b> | {{ mavzu.sana|date:"d.m.Y" }}
+                        </p>
                         
                         <!-- BAHO QISMI -->
                         <div class="mb-3">
@@ -146,15 +118,17 @@
                         <div class="mb-3 border-top pt-3">
                             <label class="form-label small fw-bold text-secondary">Darsda ishtiroki:</label>
                             <input type="hidden" name="davomat_holati" value="1"> <!-- View tanishi uchun -->
+                            {% with dv=oquvchi.tayyor_davomat|get_item:mavzu.id %}
                             <div class="d-flex gap-2">
-                                <input type="radio" class="btn-check" name="holat" id="keldi{{ oquvchi.id }}{{ mavzu.id }}" value="keldi" 
-                                    {% if oquvchi.tayyor_davomat|get_item:mavzu.id %}{% if oquvchi.tayyor_davomat|get_item:mavzu.id.keldi %}checked{% endif %}{% else %}checked{% endif %}>
+                                <input type="radio" class="btn-check" name="holat" id="keldi{{ oquvchi.id }}{{ mavzu.id }}" value="keldi"
+                                    {% if dv %}{% if dv.keldi %}checked{% endif %}{% else %}checked{% endif %}>
                                 <label class="btn btn-outline-success btn-sm w-50" for="keldi{{ oquvchi.id }}{{ mavzu.id }}">Keldi</label>
 
                                 <input type="radio" class="btn-check" name="holat" id="kelmadi{{ oquvchi.id }}{{ mavzu.id }}" value="kelmadi"
-                                    {% if oquvchi.tayyor_davomat|get_item:mavzu.id %}{% if not oquvchi.tayyor_davomat|get_item:mavzu.id.keldi %}checked{% endif %}{% endif %}>
-                                <label class="btn btn-outline-danger btn-sm w-50" for="kelmadi{{ oquvchi.id }}{{ mavzu.id }}">Kelmidi (S)</label>
+                                    {% if dv and not dv.keldi %}checked{% endif %}>
+                                <label class="btn btn-outline-danger btn-sm w-50" for="kelmadi{{ oquvchi.id }}{{ mavzu.id }}">Kelmadi (S)</label>
                             </div>
+                            {% endwith %}
                         </div>
                         
                         <div class="mb-2">

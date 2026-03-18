@@ -2,12 +2,13 @@
     'BilimNazoratchi' Loyihasi - Tepadagi asosiy menyu (Header/Navbar)
     Ushbu fayl foydalanuvchi tizimda kim ekanligini ko'rsatadi va navigatsiyani ta'minlaydi.
 -->
+{% load static %}
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
     <div class="container">
         
         <!-- SAYT LOGOTIPI VA NOMI -->
-        <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'talim:bosh_sahifa' %}">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="{% if user.is_authenticated %}{% url 'talim:bosh_sahifa' %}{% else %}{% url 'talim:landing' %}{% endif %}">
             <!-- 1-talaba yuklagan logo.png chaqiriladi -->
             <img src="{% static 'img/logo.png' %}" alt="Logo" width="40" height="40" class="me-2 rounded-circle bg-light p-1 shadow-sm">
             <span style="color: var(--em-blue); letter-spacing: 0.5px;">BILIM</span><span style="color: #334155;">NAZORATCHI</span>
@@ -41,7 +42,7 @@
 
                     <!-- TIZIMDAN CHIQISH TUGMASI (Xavfsiz POST metodi orqali) -->
                     <li class="nav-item">
-                        <form action="{% url 'logout' %}" method="post" class="d-inline">
+                        <form action="{% url 'hisoblar:logout' %}" method="post" class="d-inline">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-outline-danger px-3 rounded-pill fw-bold">
                                 <i class="bi bi-box-arrow-right me-1"></i> Chiqish
@@ -52,7 +53,7 @@
                 {% else %}
                     <!-- FOYDALANUVCHI TIZIMGA KIRMAGAN BO'LSA -->
                     <li class="nav-item">
-                        <a class="btn btn-em-primary px-4 rounded-pill fw-bold shadow-sm" href="{% url 'login' %}">
+                        <a class="btn btn-em-primary px-4 rounded-pill fw-bold shadow-sm" href="{% url 'hisoblar:login' %}">
                             <i class="bi bi-box-arrow-in-right me-1"></i> TIZIMGA KIRISH
                         </a>
                     </li>

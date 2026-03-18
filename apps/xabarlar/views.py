@@ -51,7 +51,7 @@ def xabarni_oqish_view(request, xabar_id):
     foydalanuvchi = request.user
     
     # Xabarni qidiramiz. 
-    # Xavfsizlik: Faqat xabar egasi (kimga=user) uni ko'ra olishini ta'minlaymiz.
+    # Xavfsizlik: Faqat xabar egasi (kimga=foydalanuvchi) uni ko'ra olishini ta'minlaymiz.
     xabar = get_object_or_404(Ogohlantirish, id=xabar_id, kimga=foydalanuvchi)
     
     # Agar xabar hali o'qilmagan bo'lsa, uni o'qilgan deb belgilaymiz
@@ -76,7 +76,8 @@ def hammasini_oqilgan_qilish_view(request):
     Foydalanuvchining barcha yangi xabarlarini bitta bosish bilan 
     'o'qilgan' holatiga o'tkazuvchi tezkor funksiya.
     """
-    Ogohlantirish.objects.filter(kimga=request.user, oqilgan=False).update(oqilgan=True)
+    foydalanuvchi = request.user
+    Ogohlantirish.objects.filter(kimga=foydalanuvchi, oqilgan=False).update(oqilgan=True)
     
     messages.success(request, "Barcha xabarlar o'qilgan deb belgilandi.")
     return redirect('xabarlar:xabarlar_ruyxati')

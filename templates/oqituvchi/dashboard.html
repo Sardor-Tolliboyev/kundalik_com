@@ -4,11 +4,11 @@
 {% block title %}O'qituvchi Profili | BilimNazoratchi{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/oqituvchi.css' %}">
+    <link rel="stylesheet" href="{% static 'css/oqituvchi.css' %}?v=20260317">
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="mt-4">
     <!-- 1. YUQORI BLOK: Sarlavha -->
     <div class="row mb-4 align-items-center">
         <div class="col-md-8">
@@ -27,7 +27,8 @@
         <div class="col-lg-4 mb-4">
             <div class="card-em border-0 shadow-sm text-center p-4">
                 <div class="mb-3">
-                    <div class="teacher-avatar bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm mx-auto" style="width: 100px; height: 100px; font-size: 35px; font-weight: bold;">
+                    <div class="teacher-avatar bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm mx-auto"
+                         style="width: 100px; height: 100px; font-size: 35px; font-weight: bold;">
                         {{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}
                     </div>
                 </div>

@@ -1,35 +1,22 @@
 {% extends "admin/change_list.html" %}
 {% load i18n admin_urls static %}
 
-<!-- 
-    Ushbu shablon Sinf modelining ro'yxat sahifasini o'zgartiradi.
-    Maqsad: O'ng tepa burchakka "Exceldan yuklash" tugmasini qo'shish.
--->
-
+{# Sinf ro'yxat sahifasiga Excel import tugmasi #}
 {% block object-tools-items %}
-    <!-- 1. Standart "Sinf qo'shish" tugmasini saqlab qolamiz -->
-    {{ block.super }}
-
-    <!-- 2. Bizning yangi professional tugmamiz -->
-    <li>
-        {% url 'admin:talim_sinf_excel_yuklash' as excel_url %}
-        <a href="{{ excel_url }}" class="addlink" style="background-color: #28a745 !important; color: white; font-weight: bold; border: 1px solid #1e7e34; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
-            <i class="bi bi-file-earmark-excel"></i> 📥 O'QUVCHILAR RO'YXATINI EXCELDAN YUKLASH
-        </a>
-    </li>
+  {{ block.super }}
+  <li>
+    {% url 'admin:talim_sinf_excel_yuklash' as excel_url %}
+    <a href="{{ excel_url }}" class="addlink"
+       style="background-color:#28a745!important;color:#fff;font-weight:900;border:1px solid #1e7e34;box-shadow:0 2px 4px rgba(0,0,0,0.15);">
+      <i class="bi bi-file-earmark-excel"></i> O'quvchilarni Excel'dan yuklash
+    </a>
+  </li>
 {% endblock %}
 
 {% block extrahead %}
-    {{ block.super }}
-    <!-- Bootstrap ikonkalari agar kerak bo'lsa -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
-    <style>
-        /* Tugma ustiga borganda rangini biroz o'zgartirish */
-        .addlink:hover {
-            background-color: #218838 !important;
-            transform: translateY(-1px);
-            transition: all 0.2s ease;
-        }
-    </style>
+  {{ block.super }}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    .addlink:hover { background-color:#218838!important; transform: translateY(-1px); transition: all 0.2s ease; }
+  </style>
 {% endblock %}

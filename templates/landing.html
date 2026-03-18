@@ -1,142 +1,146 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Xush kelibsiz | Bilim Nazoratchi{% endblock %}
+{% block title %}BilimNazoratchi - Bosh sahifa{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* Landing sahifasi uchun maxsus stil sozlamalari */
+    /* Emaktabga yaqin: sodda, oq fon, toza bo'limlar */
+    .landing-bleed {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+    }
+
+    /* Hero'dan keyingi qism uchun yengil fon (rasm + gradient) */
+    .landing-bg {
+        background:
+            radial-gradient(900px 260px at 18% 10%, rgba(0, 195, 232, 0.10), rgba(0, 195, 232, 0.0) 60%),
+            radial-gradient(900px 260px at 82% 40%, rgba(0, 135, 192, 0.10), rgba(0, 135, 192, 0.0) 60%),
+            url("{% static 'img/hero-bg.svg' %}");
+        background-repeat: no-repeat;
+        background-position: center top;
+        background-size: cover;
+        border-radius: 26px;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+        padding: 8px 14px;
+    }
+
+    .section-title {
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.3px;
+    }
+
+    .section-lead {
+        color: var(--text-muted);
+        max-width: 820px;
+        margin: 0 auto;
+    }
+
+    .title-underline {
+        width: 70px;
+        height: 4px;
+        border-radius: 999px;
+        background: var(--em-blue);
+        margin: 14px auto 0 auto;
+    }
+
     .feature-icon {
-        width: 60px;
-        height: 60px;
-        background-color: var(--em-blue);
-        color: white;
-        display: flex;
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        border-radius: 15px;
-        margin-bottom: 20px;
-        font-size: 1.5rem;
-        box-shadow: 0 10px 20px rgba(0, 135, 192, 0.2);
-    }
-    .stat-number {
-        font-size: 2.5rem;
-        font-weight: 800;
+        background: rgba(0, 135, 192, 0.10);
+        border: 1px solid rgba(0, 135, 192, 0.18);
         color: var(--em-blue);
+        font-size: 22px;
+        margin-bottom: 14px;
     }
+
     .cta-section {
         background: linear-gradient(135deg, #0087c0 0%, #0056b3 100%);
-        border-radius: 30px;
-        padding: 60px;
-        color: white;
+        border-radius: 24px;
+        padding: 56px 28px;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 18px 45px rgba(2, 8, 23, 0.14);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-    <!-- =========================================================
-         1. HERO SECTION (ASOSIY SARLAVHA)
-         Ma'ruza 30-bet talabi asosida mantiqiy bo'lakka bo'lingan.
-         ========================================================= -->
+<!-- HERO (full-width) -->
+<div class="landing-bleed">
     {% include 'include/hero.html' %}
+</div>
 
-    <!-- =========================================================
-         2. STATISTIKA BO'LIMI (QUICK STATS)
-         Tizimning ko'lamini ko'rsatish uchun.
-         ========================================================= -->
-    <section class="row py-5 text-center mt-4">
-        <div class="col-md-4 mb-4">
-            <div class="stat-number">12 450+</div>
-            <p class="text-muted fw-bold">Faol o'quvchilar</p>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="stat-number">320+</div>
-            <p class="text-muted fw-bold">Hamkor maktablar</p>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="stat-number">24/7</div>
-            <p class="text-muted fw-bold">Onlayn nazorat</p>
+<div class="landing-bg mt-3">
+    <!-- Qisqa tanishtiruv -->
+    <section class="py-4">
+        <div class="text-center">
+            <h2 class="section-title mb-2">BilimNazoratchi platformasi</h2>
+            <p class="section-lead mb-0">
+                Maktabdagi ta'lim jarayonini raqamli boshqarish: jurnal, baho, davomat va tahlil.
+            </p>
+            <div class="title-underline"></div>
         </div>
     </section>
 
-    <!-- =========================================================
-         3. TIZIM IMKONIYATLARI (FEATURES)
-         Slayd 30-bet: "Katalog" ko'rinishidagi funksiyalar.
-         ========================================================= -->
-    <section class="py-5" id="imkoniyatlar">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">Tizim imkoniyatlari</h2>
-            <p class="text-muted">Bilim Nazoratchi — ta'limni raqamli boshqarish uchun mukkammal yechim</p>
-        </div>
-
+    <!-- Imkoniyatlar (sodda) -->
+    <section class="py-4" id="imkoniyatlar">
         <div class="row g-4">
-            <!-- 1-Imkoniyat: Pulse Analitika -->
             <div class="col-md-4">
-                <div class="card-em h-100 border-0 shadow-sm transition-all">
-                    <div class="feature-icon bg-primary">
-                        <i class="bi bi-graph-up-arrow"></i>
-                    </div>
-                    <h4 class="fw-bold">Pulse Analitika</h4>
-                    <p class="text-muted">O'quvchining bilim ko'rsatkichlarini matematik algoritmlar orqali tahlil qilish va bilim trendini (o'sish/pasayish) aniqlash.</p>
+                <div class="card-em h-100 border-0 shadow-sm text-center">
+                    <div class="feature-icon mx-auto"><i class="bi bi-journal-check"></i></div>
+                    <h5 class="fw-bold mb-2">Elektron jurnal</h5>
+                    <p class="text-muted small mb-0">
+                        Dars mavzulari, baholar va davomatni bir joyda yuriting.
+                    </p>
                 </div>
             </div>
-
-            <!-- 2-Imkoniyat: Excel Integratsiya -->
             <div class="col-md-4">
-                <div class="card-em h-100 border-0 shadow-sm transition-all">
-                    <div class="feature-icon bg-success">
-                        <i class="bi bi-file-earmark-excel"></i>
-                    </div>
-                    <h4 class="fw-bold">Excel Integratsiya</h4>
-                    <p class="text-muted">Butun boshli sinf o'quvchilarini bitta Excel fayl orqali tizimga yuklash va ularga avtomatik hisob ochish imkoniyati.</p>
+                <div class="card-em h-100 border-0 shadow-sm text-center">
+                    <div class="feature-icon mx-auto"><i class="bi bi-graph-up-arrow"></i></div>
+                    <h5 class="fw-bold mb-2">Tahlil va dinamika</h5>
+                    <p class="text-muted small mb-0">
+                        Natijalarni kuzating, o'sish dinamikasini ko'ring va xulosalar oling.
+                    </p>
                 </div>
             </div>
-
-            <!-- 3-Imkoniyat: Ota-ona nazorati -->
             <div class="col-md-4">
-                <div class="card-em h-100 border-0 shadow-sm transition-all">
-                    <div class="feature-icon bg-warning text-dark">
-                        <i class="bi bi-shield-lock"></i>
-                    </div>
-                    <h4 class="fw-bold">Masofaviy nazorat</h4>
-                    <p class="text-muted">Ota-onalar uchun o'z farzandining darsdagi faolligini, baholarini va "Xavf" signallarini real vaqtda kuzatish sahifasi.</p>
+                <div class="card-em h-100 border-0 shadow-sm text-center">
+                    <div class="feature-icon mx-auto"><i class="bi bi-shield-check"></i></div>
+                    <h5 class="fw-bold mb-2">Ota-ona nazorati</h5>
+                    <p class="text-muted small mb-0">
+                        Farzand natijalari va davomatini masofadan ko'rish imkoniyati.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- =========================================================
-         4. CHAQURIQ BO'LIMI (CALL TO ACTION)
-         ========================================================= -->
+    <!-- CTA -->
     <section class="py-5">
-        <div class="cta-section text-center shadow-lg">
-            <h2 class="display-5 fw-bold mb-4">Raqamli ta'lim kelajagiga qo'shiling</h2>
-            <p class="lead mb-5 opacity-75">Bilim Nazoratchi platformasi orqali maktabingiz faoliyatini yangi bosqichga olib chiqing.</p>
+        <div class="cta-section text-center">
+            <h2 class="fw-bold mb-2">Tizimga kirish</h2>
+            <p class="mb-4 opacity-75">
+                Rolingizga mos bo'limga avtomatik yo'naltirilasiz.
+            </p>
+
             {% if not user.is_authenticated %}
-                <a href="{% url 'login' %}" class="btn btn-light btn-lg px-5 rounded-pill fw-bold text-primary py-3">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Tizimga kirish
+                <a href="{% url 'hisoblar:login' %}" class="btn btn-light btn-lg px-5 rounded-pill fw-bold text-primary py-3 shadow">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Kirish
                 </a>
             {% else %}
-                <a href="{% url 'talim:bosh_sahifa' %}" class="btn btn-light btn-lg px-5 rounded-pill fw-bold text-primary py-3">
-                    <i class="bi bi-speedometer2 me-2"></i>Ish stoliga qaytish
+                <a href="{% url 'talim:bosh_sahifa' %}" class="btn btn-light btn-lg px-5 rounded-pill fw-bold text-primary py-3 shadow">
+                    <i class="bi bi-speedometer2 me-2"></i>Ish stolim
                 </a>
             {% endif %}
         </div>
     </section>
-
-    <!-- =========================================================
-         5. ALOQA BO'LIMI (Slayd 31-bet talabi asosida)
-         ========================================================= -->
-    <section class="py-5" id="aloqa">
-        <div class="row justify-content-center">
-            <div class="col-md-6 text-center">
-                <h3 class="fw-bold mb-3">Savollaringiz bormi?</h3>
-                <p class="text-muted mb-4">Mutaxassislarimiz sizga yordam berishga tayyor.</p>
-                <a href="https://t.me/Sardor_Tolliboyev" target="_blank" class="btn btn-em-primary rounded-pill px-5">
-                    <i class="bi bi-telegram me-2"></i>Biz bilan bog'lanish
-                </a>
-            </div>
-        </div>
-    </section>
-
+</div>
 {% endblock %}

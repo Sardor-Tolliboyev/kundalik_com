@@ -1,0 +1,173 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Admin Kirish | BilimNazoratchi{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    body.login { background: #f4f7f9 !important; }
+
+    .bn-login-wrap {
+      min-height: calc(100vh - 160px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 14px;
+    }
+
+    .bn-login-card {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border: 1px solid #e1e8ed;
+      border-radius: 14px;
+      box-shadow: 0 14px 34px rgba(2, 8, 23, 0.08);
+      padding: 28px;
+    }
+
+    .bn-login-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    .bn-login-brand img {
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      background: #ffffff;
+      padding: 4px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 8px 18px rgba(2, 8, 23, 0.08);
+    }
+
+    .bn-login-brand h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .bn-login-subtitle {
+      text-align: center;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 700;
+      margin: 0 0 18px 0;
+    }
+
+    .bn-field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #334155;
+    }
+
+    .bn-field input[type="text"],
+    .bn-field input[type="password"] {
+      width: 100%;
+      height: 46px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      padding: 10px 12px;
+      outline: none;
+      font-size: 14px;
+      background: #ffffff;
+    }
+
+    .bn-field input:focus {
+      border-color: #0087c0;
+      box-shadow: 0 0 0 4px rgba(0, 135, 192, 0.10);
+    }
+
+    .bn-error {
+      margin: 10px 0 0 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: #b91c1c;
+      font-weight: 800;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .bn-login-btn {
+      width: 100%;
+      height: 46px;
+      border-radius: 10px;
+      border: 0;
+      background: #0087c0;
+      color: #ffffff;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(0, 135, 192, 0.18);
+    }
+
+    .bn-login-btn:hover { filter: brightness(0.97); }
+
+    .bn-login-help {
+      margin-top: 14px;
+      text-align: center;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .bn-login-help a {
+      color: #0087c0;
+      text-decoration: none;
+      font-weight: 900;
+    }
+
+    .bn-login-help a:hover { text-decoration: underline; }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="bn-login-wrap">
+    <div class="bn-login-card">
+      <div class="bn-login-brand">
+        <img src="{% static 'img/logo.png' %}" alt="BilimNazoratchi">
+        <h1>Admin Panel</h1>
+      </div>
+      <p class="bn-login-subtitle">BilimNazoratchi boshqaruv markaziga kirish</p>
+
+      {% if form.errors %}
+        <div class="bn-error">Login yoki parol noto'g'ri.</div>
+      {% endif %}
+
+      <form action="{{ app_path }}" method="post" id="login-form">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <div class="bn-field" style="margin-bottom: 12px;">
+          <label for="id_username">Login</label>
+          <input type="text" name="username" id="id_username" autocomplete="username" required>
+        </div>
+
+        <div class="bn-field" style="margin-bottom: 16px;">
+          <label for="id_password">Parol</label>
+          <input type="password" name="password" id="id_password" autocomplete="current-password" required>
+        </div>
+
+        <button type="submit" class="bn-login-btn">Kirish</button>
+      </form>
+
+      <div class="bn-login-help">
+        Muammo bormi? <a href="https://t.me/Sardor_Tolliboyev" target="_blank" rel="noopener">Administrator</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

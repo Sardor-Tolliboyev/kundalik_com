@@ -5,46 +5,325 @@
     =========================================================
 */
 
+/* 0. RANGLAR (admin uchun) */
+:root {
+    --bn-admin-blue: #0087c0;
+    --bn-admin-blue-dark: #005a82;
+    --bn-admin-accent: #ff9d00;
+    --bn-admin-bg: #f4f7f9;
+    --bn-admin-card: #ffffff;
+    --bn-admin-border: #e2e8f0;
+    --bn-admin-text: #0f172a;
+    --bn-admin-muted: #64748b;
+}
+
 /* 1. UMUMIY FON */
 body {
-    background-color: #f4f7f9 !important;
-    color: #1a202c !important;
+    background-color: var(--bn-admin-bg) !important;
+    /* # IZOH: Admin foniga ham juda yengil naqsh (ko'zni olmaydigan) */
+    background-image: url("../img/orqa_fon_naqsh.svg");
+    background-repeat: repeat;
+    background-size: 520px 520px;
+    color: var(--bn-admin-text) !important;
     font-family: 'Open Sans', sans-serif !important;
 }
 
 /* 2. HEADER (Tepada qotib turadigan ko'k panel) */
 #header {
-    background: #0087c0 !important;
-    border-bottom: 4px solid #ff9d00 !important; /* eMaktab sariq chizig'i */
-    padding: 10px 40px !important;
+    background: var(--bn-admin-blue) !important;
+    border-bottom: 4px solid var(--bn-admin-accent) !important; /* eMaktab sariq chizig'i */
+    padding: 12px 24px !important;
 }
 
 #header a, #header span, #branding h1 a {
     color: #ffffff !important;
 }
 
-/* 3. DASHBOARDNI KARTOCKALARGA AYLANTIRISH */
-/* Bo'limlarni (App groups) chiroyli qilib yonma-yon tizadi */
-.dashboard #content-main {
+#branding {
     display: flex;
+    align-items: center;
+    gap: 14px;
     flex-wrap: wrap;
-    gap: 20px;
+}
+
+.bn-admin-brand {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none !important;
+    gap: 10px;
+}
+
+.bn-admin-logo {
+    height: 32px;
+    width: 32px;
+    background: #ffffff;
+    border-radius: 50%;
+    padding: 2px;
+}
+
+.bn-admin-title {
+    color: #ffffff !important;
+    font-weight: 900;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.bn-admin-toplinks {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+}
+
+.bn-admin-toplink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff !important;
+    font-weight: 900;
+    text-decoration: none !important;
+    letter-spacing: 0.4px;
+}
+
+.bn-admin-toplink:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+
+/* 2.5 EXCEL IMPORT KARTASI */
+.bn-excel-card {
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    max-width: 860px;
+}
+
+.bn-excel-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.bn-excel-title {
+    margin: 0;
+    font-weight: 900;
+}
+
+.bn-excel-subtitle {
+    margin: 6px 0 0 0;
+    color: var(--bn-admin-muted);
+    font-weight: 700;
+}
+
+.bn-excel-sample-btn {
+    display: inline-block;
+    margin-left: 10px;
+    background: var(--bn-admin-blue) !important;
+    border-color: var(--bn-admin-blue) !important;
+    color: #ffffff !important;
+    border-radius: 999px !important;
+    padding: 8px 14px !important;
+    font-weight: 900 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 2.6 FILE INPUT (Admin) */
+.bn-file {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.bn-file-input {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.bn-file-btn {
+    border-radius: 999px !important;
+    padding: 10px 14px !important;
+    font-weight: 900 !important;
+}
+
+.bn-file-name {
+    color: #334155;
+    font-weight: 800;
+    max-width: 360px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+    .bn-excel-card { max-width: 100%; }
+    .bn-excel-sample-btn { margin-left: 0; margin-top: 8px; }
+    .bn-file-name { max-width: 100%; }
+}
+
+.bn-admin-footer {
+    background: #111827;
+    color: #94a3b8;
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid #1e293b;
+}
+
+.bn-admin-footer-link {
+    color: #3b82f6 !important;
+    text-decoration: none;
+    font-weight: 900;
+}
+
+.bn-admin-footer-link:hover {
+    text-decoration: underline;
+}
+
+/* 3. KONTENTNI MARKAZLASH (katta ekranda bo'sh joyni kamaytiradi) */
+#content, .breadcrumbs, #footer {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Django default dashboard width/float'larini bekor qilish (asosiy muammo shu edi) */
+.dashboard #content {
+    width: auto !important;
+    max-width: 1280px;
+}
+
+/* base.css'dagi float va negative marginlarni dashboardda to'liq bekor qilamiz */
+.dashboard #content-main,
+.dashboard #content-related {
+    float: none !important;
+    position: static !important;
+    width: auto !important;
+    margin: 0 !important;
+}
+
+/* Django default: breadcrumbs va header full-width; biz ichki kontentni tekislaymiz */
+.breadcrumbs {
+    border-radius: 12px;
+    margin-top: 16px;
+}
+
+/* 4. DASHBOARD LAYOUT: chapda modullar, o'ngda so'nggi harakatlar */
+.bn-dashboard-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 6px 10px 6px;
+}
+
+.bn-dashboard-title h1 {
+    margin: 6px 0 4px 0;
+    font-weight: 900;
+    letter-spacing: -0.4px;
+}
+
+.bn-pill {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(0, 135, 192, 0.10);
+    border: 1px solid rgba(0, 135, 192, 0.18);
+    color: var(--bn-admin-blue);
+    font-weight: 900;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.bn-muted { color: var(--bn-admin-muted) !important; }
+
+.bn-dashboard-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.bn-action {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1px solid var(--bn-admin-border);
+    color: var(--bn-admin-blue) !important;
+    font-weight: 900;
+    text-decoration: none !important;
+    box-shadow: 0 10px 22px rgba(2, 8, 23, 0.06);
+}
+
+.bn-action:hover {
+    border-color: rgba(0, 135, 192, 0.35);
+    transform: translateY(-1px);
+    transition: all 0.15s ease;
+}
+
+.bn-dashboard-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 22px;
+    align-items: start;
+}
+
+.bn-dashboard-grid #content-main,
+.bn-dashboard-grid #content-related {
+    float: none !important;
+    position: static !important;
+    width: auto !important;
+    margin: 0 !important;
+}
+
+.bn-dashboard-grid #content-main {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.bn-dashboard-grid #content-related {
+    margin: 0 !important;
+    width: auto !important;
+}
+
+@media (max-width: 1100px) {
+    .bn-dashboard-grid { grid-template-columns: minmax(0, 1fr) 320px; }
+    .bn-dashboard-grid #content-main { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) {
+    .bn-dashboard-top { flex-direction: column; }
+    .bn-dashboard-actions { justify-content: flex-start; }
+    .bn-dashboard-grid { grid-template-columns: 1fr; }
 }
 
 .module {
-    background: white !important;
-    border: 1px solid #e1e8ed !important;
+    background: var(--bn-admin-card) !important;
+    border: 1px solid var(--bn-admin-border) !important;
     border-radius: 12px !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
-    width: 100% !important; /* Standart holda to'liq eni */
-    max-width: 480px !important; /* Lekin yonma-yon sig'sa 2 tadan chiqadi */
-    margin-bottom: 0 !important;
+    box-shadow: 0 10px 26px rgba(2, 8, 23, 0.06) !important;
+    width: 100% !important;
     overflow: hidden;
 }
 
 /* 4. BO'LIM SARLAVHALARI (Hisoblar, Ta'lim...) - ENDI 100% KO'RINADI */
 .module h2, .module caption {
-    background: #005a82 !important; /* TO'Q KO'K FON */
+    background: var(--bn-admin-blue-dark) !important; /* TO'Q KO'K FON */
     color: #ffffff !important;     /* TOZA OQ MATN */
     font-weight: 800 !important;
     padding: 12px 15px !important;
@@ -53,40 +332,65 @@ body {
     letter-spacing: 1px;
 }
 
+/* # IZOH: Django admin'da ayrim sarlavhalar default holatda `nowrap` bo'lib keladi.
+   Bizda `.module { overflow: hidden; }` bo'lgani uchun matn "yarim" ko'rinib qolishi mumkin.
+   Shuning uchun sarlavhalarni bemalol satrga tushadigan qilamiz. */
+.module h2 {
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+}
+
 /* 5. JADVAL ICHIDAGI MATNLAR (Foydalanuvchilar, Baholar...) */
 .module table td, .module table th {
     padding: 12px 15px !important;
 }
 
 .module table td a {
-    color: #0087c0 !important; /* Linklar aniq ko'k rangda */
+    color: var(--bn-admin-blue) !important; /* Linklar aniq ko'k rangda */
     font-weight: 700 !important;
     font-size: 14px;
 }
 
 .module table td a:hover {
-    color: #ff9d00 !important;
+    color: var(--bn-admin-accent) !important;
 }
 
 /* 6. O'NG TOMONDAGI "SO'NGI HARAKATLAR" */
 #content-related {
-    background: white !important;
+    background: var(--bn-admin-card) !important;
     border-radius: 12px !important;
     padding: 20px !important;
-    border: 1px solid #e1e8ed !important;
+    border: 1px solid var(--bn-admin-border) !important;
     color: #334155 !important;
 }
 
-#content-related h2 {
-    color: #005a82 !important;
+/* # IZOH: #content-related ichida ham `.module h2` ishlatiladi (Recent actions).
+   Quyidagi qoidani umumiy `h2` uchun ishlatsak, `.module h2` rangini bosib ketib,
+   sarlavha ko'rinmay qoladi. Shuning uchun faqat direct child bo'lsa qo'llaymiz. */
+#content-related > h2 {
+    color: var(--bn-admin-blue-dark) !important;
     font-weight: 800 !important;
-    border-bottom: 2px solid #f4f7f9;
+    border-bottom: 2px solid var(--bn-admin-bg);
+    padding-bottom: 10px;
+}
+
+/* Recent actions sarlavhasi har doim oq bo'lib ko'rinsin */
+#content-related .module h2 {
+    color: #ffffff !important;
+    border-bottom: 0 !important;
+    padding-bottom: 12px !important;
+}
+
+#content-related .module h3 {
+    margin: 12px 0 10px 0;
+    font-weight: 900;
+    color: #334155;
 }
 
 /* 7. TUGMALAR (SAQLASH / QO'SHISH) */
 .button, input[type=submit] {
-    background: #0087c0 !important;
-    border-radius: 4px !important;
+    background: var(--bn-admin-blue) !important;
+    border-radius: 8px !important;
     font-weight: 700 !important;
     padding: 10px 20px !important;
     color: white !important;
@@ -99,12 +403,173 @@ body {
 /* 8. BREADCRUMBS (Yo'l ko'rsatkichi) */
 .breadcrumbs {
     background: #ffffff !important;
-    padding: 10px 40px !important;
-    border-bottom: 1px solid #e2e8f0 !important;
-    color: #64748b !important;
+    padding: 10px 16px !important;
+    border: 1px solid var(--bn-admin-border) !important;
+    color: var(--bn-admin-muted) !important;
 }
 
 .breadcrumbs a {
-    color: #0087c0 !important;
+    color: var(--bn-admin-blue) !important;
     font-weight: 600;
-}           
+}
+
+/* 9. FORMA ELEMENTLARI (input/select) */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="url"],
+input[type="search"],
+textarea,
+select {
+    border-radius: 10px !important;
+    border-color: #cbd5e1 !important;
+    padding: 8px 10px !important;
+    min-height: 42px; /* # IZOH: select/input ichidagi matn kesilib qolmasin */
+    line-height: 1.25;
+}
+
+/* Select ichida matn yuqoridan "kesilib" qolmasligi uchun (ayniqsa Windows/Chrome'da) */
+#content select {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+/* 9.2 PAROL KO'ZCHASI (Admin) */
+.bn-pass-wrap-admin {
+    position: relative;
+    width: 100%;
+}
+
+.bn-pass-wrap-admin input[type="password"],
+.bn-pass-wrap-admin input[type="text"] {
+    padding-right: 44px !important; /* # IZOH: ko'zcha tugmasi uchun joy */
+}
+
+.bn-pass-toggle-admin {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #64748b;
+    padding: 6px 6px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.bn-pass-toggle-admin:hover {
+    color: var(--bn-admin-blue-dark);
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none !important;
+    border-color: var(--bn-admin-blue) !important;
+    box-shadow: 0 0 0 4px rgba(0, 135, 192, 0.10) !important;
+}
+
+/* 9.5 CHANGELIST: list_editable select matni kesilib qolmasin */
+.change-list #changelist table thead th {
+    white-space: normal; /* # IZOH: "TIZIMDAGI VAZIFASI" kabi sarlavhalar sig'sin */
+}
+
+.change-list #changelist table td {
+    vertical-align: middle;
+}
+
+.change-list #changelist table select {
+    min-height: 40px;
+    line-height: 1.25;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+/* "Tizimdagi vazifasi" (rol) select'i tor bo'lib matn yarim ko'rinib qolmasin */
+.change-list #changelist table th.column-rol,
+.change-list #changelist table td.field-rol {
+    min-width: 240px;
+}
+.change-list #changelist table td.field-rol select {
+    width: 100% !important;
+}
+
+/* 10. OBJECT TOOLS tugmalari (changelist tepasidagi tugmalar) */
+.object-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-left: 0 !important;
+}
+
+.object-tools li {
+    margin-left: 0 !important;
+}
+
+.object-tools a.addlink,
+.object-tools a.changelink,
+.object-tools a.viewsitelink {
+    border-radius: 10px !important;
+    font-weight: 900 !important;
+    white-space: normal !important; /* # IZOH: uzun matnlar kesilib qolmasin */
+    line-height: 1.2;
+    max-width: 520px;
+}
+
+/* 11. FORMA LAYOUT: uzun label va tanlovlar kesilib qolmasin */
+.aligned label {
+    width: 260px !important;
+    white-space: normal !important; /* # IZOH: uzun matnlar pastga tushib ketsin */
+    line-height: 1.25;
+}
+
+.aligned .form-row,
+.aligned .form-row > div {
+    max-width: 100%;
+}
+
+/* 12. HUQUQLAR WIDGETI (FilteredSelectMultiple) - kenglik va responsive */
+.selector {
+    width: 100% !important;
+    max-width: 1100px;
+    display: flex;                /* # IZOH: 2 ustun + o'rtadagi tugmalarni chiroyli joylaydi */
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.selector .selector-available,
+.selector .selector-chosen {
+    width: 100% !important;
+    float: none !important;       /* # IZOH: Django default float'larini bekor qilamiz */
+    flex: 1 1 420px;
+}
+
+.selector select {
+    width: 100% !important;
+    min-width: 420px; /* # IZOH: permission nomlari yarim ko'rinib qolmasin */
+}
+
+.selector .selector-chooser {
+    float: none !important;
+    align-self: center;
+}
+
+.selector-available,
+.selector-chosen {
+    box-sizing: border-box;
+}
+
+.selector-available h2,
+.selector-chosen h2 {
+    border-radius: 10px 10px 0 0;
+}
+
+@media (max-width: 1100px) {
+    .selector select { min-width: 320px; }
+}
+
+@media (max-width: 900px) {
+    .aligned label { width: 100% !important; }
+    .selector select { min-width: 100% !important; }
+}

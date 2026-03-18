@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Dars jadvali | BilimNazoratchi{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/dars_jadvali.css' %}?v=20260317">
+{% endblock %}
+
+{% block content %}
+<div class="bn-schedule-page">
+  <div class="bn-page-header">
+    <div>
+      <h2 class="mb-1">Dars jadvali</h2>
+      <p class="mb-0">Haftalik ko'rinish: <b>{{ hafta_boshi|date:"d.m" }} - {{ hafta_oxiri|date:"d.m.Y" }}</b></p>
+    </div>
+
+    <div class="bn-schedule-nav">
+      {% if user.is_staff or user.rol == 'admin' or user.rol == 'oqituvchi' %}
+        <div class="btn-group" role="group" aria-label="Smena">
+          <a class="btn btn-sm {% if tanlangan_smena == '1' %}btn-primary{% else %}btn-outline-primary{% endif %}"
+             href="?start={{ hafta_boshi|date:'Y-m-d' }}&smena=1{% if tanlangan_sinf %}&sinf={{ tanlangan_sinf }}{% endif %}{% if tanlangan_oqituvchi %}&oqituvchi={{ tanlangan_oqituvchi }}{% endif %}">
+            1-smena
+          </a>
+          <a class="btn btn-sm {% if tanlangan_smena == '2' %}btn-primary{% else %}btn-outline-primary{% endif %}"
+             href="?start={{ hafta_boshi|date:'Y-m-d' }}&smena=2{% if tanlangan_sinf %}&sinf={{ tanlangan_sinf }}{% endif %}{% if tanlangan_oqituvchi %}&oqituvchi={{ tanlangan_oqituvchi }}{% endif %}">
+            2-smena
+          </a>
+          <a class="btn btn-sm {% if tanlangan_smena == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}"
+             href="?start={{ hafta_boshi|date:'Y-m-d' }}&smena=all{% if tanlangan_sinf %}&sinf={{ tanlangan_sinf }}{% endif %}{% if tanlangan_oqituvchi %}&oqituvchi={{ tanlangan_oqituvchi }}{% endif %}">
+            Hammasi
+          </a>
+        </div>
+      {% else %}
+        <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill">
+          {% if tanlangan_smena == '2' %}2-smena{% else %}1-smena{% endif %}
+        </span>
+      {% endif %}
+
+      <a class="btn btn-sm btn-outline-primary rounded-pill px-3"
+         href="?start={{ prev_hafta|date:'Y-m-d' }}&smena={{ tanlangan_smena }}{% if tanlangan_sinf %}&sinf={{ tanlangan_sinf }}{% endif %}{% if tanlangan_oqituvchi %}&oqituvchi={{ tanlangan_oqituvchi }}{% endif %}">
+        <i class="bi bi-chevron-left"></i> Oldingi hafta
+      </a>
+      <a class="btn btn-sm btn-em-primary rounded-pill px-3"
+         href="?start={{ next_hafta|date:'Y-m-d' }}&smena={{ tanlangan_smena }}{% if tanlangan_sinf %}&sinf={{ tanlangan_sinf }}{% endif %}{% if tanlangan_oqituvchi %}&oqituvchi={{ tanlangan_oqituvchi }}{% endif %}">
+        Keyingi hafta <i class="bi bi-chevron-right"></i>
+      </a>
+    </div>
+  </div>
+
+  {% if user.is_staff or user.rol == 'admin' %}
+    <div class="card-em shadow-sm border-0 mb-3">
+      <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap mb-2">
+        <h6 class="fw-bold mb-0"><i class="bi bi-funnel text-primary me-2"></i>Filtr</h6>
+        <button class="btn btn-sm btn-em-primary rounded-pill px-3" type="button"
+                data-bs-toggle="modal" data-bs-target="#taqsimotModal"
+                data-mode="create"
+                data-redirect="{{ request.get_full_path }}">
+          <i class="bi bi-plus-lg"></i> Dars qo'shish
+        </button>
+      </div>
+      <form method="get" class="row g-2 align-items-end">
+        <input type="hidden" name="start" value="{{ hafta_boshi|date:'Y-m-d' }}">
+        <input type="hidden" name="smena" value="{{ tanlangan_smena }}">
+
+        <div class="col-md-4">
+          <label class="form-label small fw-bold">Sinf</label>
+          <select name="sinf" class="form-select">
+            <option value="">- Tanlang -</option>
+            {% for s in sinflar %}
+              <option value="{{ s.id }}" {% if tanlangan_sinf == s.id|stringformat:'s' %}selected{% endif %}>{{ s.nomi }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label small fw-bold">Smena</label>
+          <select name="smena" class="form-select">
+            <option value="1" {% if tanlangan_smena == '1' %}selected{% endif %}>1-smena</option>
+            <option value="2" {% if tanlangan_smena == '2' %}selected{% endif %}>2-smena</option>
+            <option value="all" {% if tanlangan_smena == 'all' %}selected{% endif %}>Hammasi</option>
+          </select>
+          <div class="form-text">1-smena: 08:00-13:00 | 2-smena: 13:00-17:55</div>
+        </div>
+
+        <div class="col-md-5">
+          <label class="form-label small fw-bold">O'qituvchi</label>
+          <select name="oqituvchi" class="form-select">
+            <option value="">- Tanlang -</option>
+            {% for o in oqituvchilar %}
+              <option value="{{ o.id }}" {% if tanlangan_oqituvchi == o.id|stringformat:'s' %}selected{% endif %}>
+                {{ o.get_full_name|default:o.username }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-12 col-lg-3">
+          <button class="btn btn-em-primary w-100" type="submit">Ko'rsatish</button>
+        </div>
+      </form>
+      <p class="text-muted small mb-0 mt-2">Admin uchun: katta bazada tez ishlashi uchun filtr tanlash tavsiya etiladi.</p>
+    </div>
+  {% endif %}
+
+  <div class="bn-schedule-card">
+    {% if not time_slots %}
+      <div class="p-4 text-center text-muted">
+        Haftalik dars jadvali topilmadi.
+      </div>
+    {% else %}
+      <div class="table-responsive">
+        <table class="table bn-schedule-table mb-0">
+          <thead>
+            <tr>
+              <th class="time-col">Vaqt</th>
+              {% for day in hafta_kunlari %}
+                <th>
+                  <div class="day-head">
+                    <div class="day-name">{{ day.nomi }}</div>
+                    <div class="day-date">{{ day.sana|date:"d.m" }}</div>
+                  </div>
+                </th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for slot in time_slots %}
+              <tr>
+                <th class="time-col">
+                  <div class="slot-wrap">
+                    <div class="slot-lesson">
+                      {% if slot.dars_raqami %}{{ slot.dars_raqami }}-dars{% else %}Dars{% endif %}
+                    </div>
+                    <div class="slot-time">{{ slot.range_str }}</div>
+                  </div>
+                </th>
+
+                {% for day in hafta_kunlari %}
+                  {% with day_map=cell_map|get_item:day.key %}
+                    {% with lessons=day_map|get_item:slot.start_str %}
+                      <td class="cell">
+                        {% if lessons %}
+                          {% for t in lessons %}
+                            <div class="lesson-card">
+                              <div class="lesson-title">{{ t.fan.nomi }}</div>
+                              {% if user.rol == 'oqituvchi' %}
+                                <div class="lesson-subtitle">
+                                  <div class="label">Sinf</div>
+                                  <div class="value">{{ t.sinf.nomi }}</div>
+                                </div>
+                              {% elif user.rol == 'oquvchi' or user.rol == 'ota_ona' %}
+                                <div class="lesson-subtitle">
+                                  <div class="label">Fan o'qituvchisi</div>
+                                  <div class="value">{{ t.oqituvchi.get_full_name|default:t.oqituvchi.username }}</div>
+                                </div>
+                              {% else %}
+                                <div class="lesson-subtitle">
+                                  <div class="label">Sinf</div>
+                                  <div class="value">{{ t.sinf.nomi }}</div>
+                                </div>
+                                <div class="lesson-subtitle">
+                                  <div class="label">Fan o'qituvchisi</div>
+                                  <div class="value">{{ t.oqituvchi.get_full_name|default:t.oqituvchi.username }}</div>
+                                </div>
+                              {% endif %}
+
+                              {% if user.rol == 'oqituvchi' %}
+                                <a href="{% url 'talim:jurnal' t.id %}" class="lesson-link">Jurnal →</a>
+                              {% endif %}
+
+                              {% if user.is_staff or user.rol == 'admin' %}
+                                <a href="{% url 'talim:jurnal' t.id %}" class="lesson-link">Jurnal (admin) →</a>
+                              {% endif %}
+
+                              {% if user.is_staff or user.rol == 'admin' %}
+                                <div class="lesson-actions">
+                                  <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3"
+                                          data-bs-toggle="modal" data-bs-target="#taqsimotModal"
+                                          data-mode="edit"
+                                          data-id="{{ t.id }}"
+                                          data-sinf="{{ t.sinf_id }}"
+                                          data-oqituvchi="{{ t.oqituvchi_id }}"
+                                          data-fan="{{ t.fan_id }}"
+                                          data-kun="{{ t.kun }}"
+                                          data-soat="{{ t.soat|time:'H:i' }}"
+                                          data-redirect="{{ request.get_full_path }}">
+                                    Tahrirlash
+                                  </button>
+                                  <a class="btn btn-sm btn-outline-secondary rounded-pill px-3"
+                                     href="/admin/talim/taqsimot/{{ t.id }}/change/?next={{ request.get_full_path|urlencode }}">
+                                    Admin
+                                  </a>
+                                </div>
+                              {% endif %}
+                            </div>
+                          {% endfor %}
+                        {% else %}
+                          <div class="no-lesson">Dars yo'q</div>
+                          {% if user.is_staff or user.rol == 'admin' %}
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 mt-2"
+                                    data-bs-toggle="modal" data-bs-target="#taqsimotModal"
+                                    data-mode="create"
+                                    data-kun="{{ day.key }}"
+                                    data-soat="{{ slot.start_str }}"
+                                    data-redirect="{{ request.get_full_path }}">
+                              + Qo'shish
+                            </button>
+                          {% endif %}
+                        {% endif %}
+                      </td>
+                    {% endwith %}
+                  {% endwith %}
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if user.is_staff or user.rol == 'admin' %}
+<!-- Dars jadvalini qo'shish/tahrirlash modali -->
+<div class="modal fade" id="taqsimotModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title fw-bold" id="taqsimotModalTitle">Dars qo'shish</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="post" class="p-0">
+        {% csrf_token %}
+        <input type="hidden" name="taqsimot_id" id="taqsimot_id">
+        <input type="hidden" name="redirect_to" id="redirect_to" value="{{ request.get_full_path }}">
+
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Sinf</label>
+            <select name="sinf_id" id="sinf_id" class="form-select" required>
+              <option value="">- Tanlang -</option>
+              {% for s in sinflar %}
+                <option value="{{ s.id }}">{{ s.nomi }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Fan</label>
+            <select name="fan_id" id="fan_id" class="form-select" required>
+              <option value="">- Tanlang -</option>
+              {% for f in fanlar %}
+                <option value="{{ f.id }}">{{ f.nomi }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Fan o'qituvchisi</label>
+            <select name="oqituvchi_id" id="oqituvchi_id" class="form-select" required>
+              <option value="">- Tanlang -</option>
+              {% for o in oqituvchilar %}
+                <option value="{{ o.id }}">{{ o.get_full_name|default:o.username }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="row g-2">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Hafta kuni</label>
+              <select name="kun" id="kun" class="form-select" required>
+                <option value="1">Dushanba</option>
+                <option value="2">Seshanba</option>
+                <option value="3">Chorshanba</option>
+                <option value="4">Payshanba</option>
+                <option value="5">Juma</option>
+                <option value="6">Shanba</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Vaqt (HH:MM)</label>
+              <input type="time" name="soat" id="soat" class="form-control" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0 p-4 pt-0">
+          <button type="submit" class="btn btn-em-primary w-100 py-2 fw-bold" id="taqsimotSubmitBtn">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/dars_jadvali.js' %}?v=20260317"></script>
+{% endblock %}

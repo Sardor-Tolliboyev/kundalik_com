@@ -1,0 +1,169 @@
+/* ====================================================================== */
+/* HAFTALIK DARS JADVALI (eMaktab'ga yaqin uslub) */
+/* ====================================================================== */
+
+.bn-schedule-page {
+  margin-top: 14px;
+}
+
+.bn-schedule-nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.bn-schedule-nav .btn-group .btn {
+  font-weight: 900;
+}
+
+.bn-schedule-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+.bn-schedule-table thead th {
+  background: #f8fafc;
+  border-bottom: 2px solid var(--border);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+  padding: 14px 12px;
+  min-width: 190px;
+}
+
+.bn-schedule-table .time-col {
+  min-width: 130px;
+  width: 130px;
+  background: #ffffff;
+  border-right: 1px solid var(--border);
+  position: sticky;
+  left: 0;
+  z-index: 3;
+}
+
+.bn-schedule-table tbody th.time-col {
+  vertical-align: middle;
+}
+
+.day-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.day-name {
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.day-date {
+  font-weight: 800;
+  color: var(--em-blue);
+}
+
+.slot-wrap {
+  display: grid;
+  gap: 2px;
+}
+
+.slot-lesson {
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.slot-time {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.bn-schedule-table td.cell {
+  background: #ffffff;
+  border-left: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 12px;
+  vertical-align: top;
+}
+
+.lesson-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 135, 192, 0.22);
+  border-radius: 12px;
+  padding: 10px 10px;
+  margin-bottom: 8px;
+  box-shadow: 0 10px 20px rgba(2, 8, 23, 0.04);
+  border-left: 6px solid rgba(0, 135, 192, 0.55);
+}
+
+.lesson-title {
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+
+.lesson-subtitle {
+  font-size: 12px;
+  color: #334155;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 2px;
+}
+
+.lesson-subtitle .label {
+  color: #64748b;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-size: 10px;
+}
+
+.lesson-subtitle .value {
+  color: #334155;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.lesson-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-weight: 900;
+  text-decoration: none;
+  color: var(--em-blue);
+}
+
+.lesson-link:hover {
+  text-decoration: underline;
+}
+
+.lesson-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.no-lesson {
+  color: #94a3b8;
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 12px 8px;
+  border: 1px dashed rgba(148, 163, 184, 0.65);
+  border-radius: 12px;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .bn-schedule-nav { justify-content: flex-start; }
+  .bn-schedule-table thead th { min-width: 160px; }
+  .bn-schedule-table .time-col { min-width: 110px; width: 110px; }
+}
+

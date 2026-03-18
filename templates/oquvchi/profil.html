@@ -5,11 +5,11 @@
 
 {% block extra_css %}
     <!-- O'quvchi uchun maxsus stillar -->
-    <link rel="stylesheet" href="{% static 'css/oquvchi.css' %}">
+    <link rel="stylesheet" href="{% static 'css/oquvchi.css' %}?v=20260317">
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="mt-4">
     <!-- 1. SALOMLASHUV VA SINF MA'LUMOTI -->
     <div class="row mb-4 align-items-center">
         <div class="col-md-8">
@@ -19,10 +19,18 @@
             <p class="text-muted">Assalomu alaykum, <b>{{ user.get_full_name|default:user.username }}</b>. O'quv natijalaringizni shu yerda kuzatishingiz mumkin.</p>
         </div>
         <div class="col-md-4 text-md-end">
-            <div class="card-em d-inline-block px-4 py-2 border-primary shadow-sm" style="background: white; border-radius: 50px;">
+            <div class="bn-pill-card">
                 <span class="text-muted small">Sinfingiz:</span>
                 <span class="fw-bold text-primary text-uppercase ms-2">{{ sinf.nomi|default:"Biriktirilmagan" }}</span>
             </div>
+            {% if sinf %}
+              <div class="bn-pill-card mt-2">
+                <span class="text-muted small">Smena:</span>
+                <span class="fw-bold text-primary ms-2">
+                  {% if sinf.smena == '2' %}2-smena{% else %}1-smena{% endif %}
+                </span>
+              </div>
+            {% endif %}
         </div>
     </div>
 
@@ -106,7 +114,7 @@
                     <tr>
                         <td class="ps-3 fw-bold text-dark">{{ baho.mavzu.taqsimot.fan.nomi }}</td>
                         <td class="text-center">
-                            <span class="badge {% if baho.qiymati == 5 %}bg-success{% elif baho.qiymati == 4 %}bg-primary{% else %}bg-warning text-dark{% endif %} rounded-circle p-2" style="width: 35px; height: 35px; line-height: 18px;">
+                            <span class="badge {% if baho.qiymati == 5 %}bg-success{% elif baho.qiymati == 4 %}bg-primary{% else %}bg-warning text-dark{% endif %} bn-grade-circle">
                                 {{ baho.qiymati }}
                             </span>
                         </td>

@@ -11,6 +11,9 @@
     --primary-dark: #0056b3;
     --em-blue: #0087c0;            /* eMaktab Blue */
     --accent: #00c3e8;             /* Cyan Action */
+    --em-orange: #ff9d00;          /* eMaktab Accent */
+    --em-gradient-top: #0087c0;
+    --em-gradient-bottom: #0056b3;
     --bg-main: #f4f7fa;            /* Soft Background */
     --white: #ffffff;
     --text-main: #2d3748;          /* Charcoal Grey */
@@ -34,8 +37,81 @@ body {
     min-height: 100vh;
     font-family: 'Open Sans', 'Inter', sans-serif;
     background-color: var(--bg-main);
+    /* # IZOH: Orqa fon uchun juda yengil naqsh (ko'zni olmaydi) */
+    background-image: url("../img/orqa_fon_naqsh.svg");
+    background-repeat: repeat;
+    background-size: 520px 520px;
     color: var(--text-main);
     line-height: 1.6;
+}
+
+/* Formalar: select/input matni kesilib qolmasin (mobil/desktop) */
+.form-control,
+.form-select {
+    min-height: 44px;
+    line-height: 1.25;
+}
+
+/* 2.5 KICHIK YORDAMCHI KOMPONENTLAR */
+.bn-page {
+    min-height: 60vh;
+}
+
+.bn-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin: 10px 0 18px 0;
+}
+
+.bn-page-header h2 {
+    margin: 0;
+    font-weight: 900;
+    letter-spacing: -0.3px;
+}
+
+.bn-page-header p {
+    margin: 6px 0 0 0;
+    color: var(--text-muted);
+}
+
+.bn-pill-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 22px rgba(2, 8, 23, 0.06);
+}
+
+.bn-grade-circle {
+    width: 35px;
+    height: 35px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+.alert-em-danger {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #b91c1c;
+    border-radius: 12px;
+    font-weight: 800;
+}
+
+.alert-em-success {
+    background: rgba(34, 197, 94, 0.10);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    color: #166534;
+    border-radius: 12px;
+    font-weight: 800;
 }
 
 /* 3. NAVBAR (TEPADA QOTIB TURADI) */
@@ -45,6 +121,36 @@ header.sticky-top {
     border-bottom: 3px solid var(--em-blue);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
+
+.navbar-em {
+    background-color: var(--white) !important;
+    min-height: 70px;
+}
+
+.navbar-em .nav-link:hover {
+    color: var(--em-blue) !important;
+}
+
+.bn-brand-a {
+    color: var(--em-blue);
+    letter-spacing: 0.5px;
+}
+
+.bn-brand-b {
+    color: #334155;
+    letter-spacing: 0.5px;
+}
+
+.bn-user-name {
+    line-height: 1.2;
+}
+
+.bn-role-badge {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 
 .navbar-brand span {
     font-weight: 800;
@@ -132,4 +238,33 @@ footer {
     padding: 60px 0;
     border-top: 1px solid #1e293b;
     margin-top: auto;
+}
+
+.footer-main {
+    background: #111827;
+    color: #9ca3af;
+}
+
+.footer-main .footer-text {
+    line-height: 1.6;
+}
+
+.footer-main .footer-kicker {
+    letter-spacing: 1px;
+}
+
+.footer-divider {
+    background-color: #374151;
+    opacity: 0.3;
+}
+
+.footer-telegram-btn {
+    background-color: #0088cc !important;
+    border: none !important;
+    transition: transform 0.2s ease-in-out;
+}
+
+.footer-telegram-btn:hover {
+    transform: scale(1.05);
+    background-color: #0077b5 !important;
 }

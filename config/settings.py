@@ -35,10 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Biz yaratgan jamoaviy ilovalar (Local Apps)
-    'apps.hisoblar',  # Foydalanuvchilar: O'qituvchi, O'quvchi, Ota-ona tizimi
-    'apps.talim',     # O'quv jarayoni: Sinf, Fan, Baho, Mavzu mantiqi
-    'apps.tahlil',    # Analitika: O'quvchilar ko'rsatkichlari va Pulse tizimi
-    'apps.xabarlar',  # Bildirishnomalar: Ota-onalar uchun ogohlantirishlar
+    'apps.hisoblar.apps.HisoblarConfig',  # Foydalanuvchilar: O'qituvchi, O'quvchi, Ota-ona tizimi
+    'apps.talim.apps.TalimConfig',        # O'quv jarayoni: Sinf, Fan, Baho, Mavzu mantiqi
+    'apps.tahlil.apps.TahlilConfig',      # Analitika: O'quvchilar ko'rsatkichlari va Pulse tizimi
+    'apps.xabarlar.apps.XabarlarConfig',  # Bildirishnomalar: Ota-onalar uchun ogohlantirishlar
 ]
 
 
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',      # Sessiyalarni boshqarish
+    'django.middleware.locale.LocaleMiddleware',                # Admin va tizim matnlarini o'zbekchalashtirish
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',                  # CSRF xavfsizligi
     'django.contrib.auth.middleware.AuthenticationMiddleware',      # Login tizimi
@@ -107,16 +108,24 @@ AUTH_PASSWORD_VALIDATORS = [
 # Tizim tili va vaqtini O'zbekistonga moslaymiz
 LANGUAGE_CODE = 'uz'
 
+# # IZOH: Sayt faqat o'zbek tilida ishlaydi (inglizcha tanlov yo'q).
+LANGUAGES = [
+    ('uz', "O'zbek"),
+]
+
 TIME_ZONE = 'Asia/Tashkent'
 
 USE_I18N = True # Ko'p tillilikni qo'llab-quvvatlash
 USE_L10N = True # Raqam/Sana formatlarini mahalliylashtirish
 USE_TZ = False   # MySQL va SQLite muammolarini oldini olish uchun False tavsiya etiladi
 
+# IZOH: Loyiha admin tarjimalari uchun Django'ning o'z ichki (built-in) uz tarjimalari ishlatiladi.
+# Kerakli joylar esa `templates/admin/*.html` override orqali bevosita o'zbekchalashtirilgan.
+
 
 # 9. STATIK VA MEDIA FAYLLAR (CSS, JS, IMAGES)
 # Saytning dizayn fayllari (Local static)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Foydalanuvchilar yuklagan media fayllar (masalan, o'quvchi rasmi)
