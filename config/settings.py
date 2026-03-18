@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 # So'rovlarni (Request) qayta ishlash zanjiri (Tartib muhim!)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Statik fayllarni samarali yetkazib berish uchun (productionda ishlatiladi)
     'django.contrib.sessions.middleware.SessionMiddleware',      # Sessiyalarni boshqarish
     'django.middleware.locale.LocaleMiddleware',                # Admin va tizim matnlarini o'zbekchalashtirish
     'django.middleware.common.CommonMiddleware',
@@ -127,6 +128,12 @@ USE_TZ = False   # MySQL va SQLite muammolarini oldini olish uchun False tavsiya
 # Saytning dizayn fayllari (Local static)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
+# Server uchun statik fayllar yig'iladigan joy
+STATIC_ROOT = BASE_DIR / 'staticfiles' 
+
+# WhiteNoise orqali fayllarni siqish va xotirada saqlash (Tezlik uchun)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Foydalanuvchilar yuklagan media fayllar (masalan, o'quvchi rasmi)
 MEDIA_URL = '/media/'
