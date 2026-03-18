@@ -20,7 +20,7 @@ SECRET_KEY = 'django-insecure-bilim-nazoratchi-2026-pro-key'
 DEBUG = True
 
 # Ruxsat berilgan domenlar (Localhost uchun barcha manzillarga ruxsat berilgan)
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*','https://bilimnazoratchi.up.railway.app']
 
 
 # 3. ILOVALAR RO'YXATI (INSTALLED APPS)
@@ -150,4 +150,4 @@ LOGOUT_REDIRECT_URL = 'hisoblar:login'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CSRF xavfsizligi uchun ishonchli manzillar
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
+CSRF_TRUSTED_ORIGINS = [ 'https://bilimnazoratchi.up.railway.app', 'http://127.0.0.1:8000', 'http://localhost:8000']
