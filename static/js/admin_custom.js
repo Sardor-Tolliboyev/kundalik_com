@@ -112,8 +112,17 @@ function bnAdminInit() {
     const title = (h1.textContent || "").replace(/\s+/g, " ").trim();
     const changeMatch = title.match(/^Select (.+) to change$/i);
     const viewMatch = title.match(/^Select (.+) to view$/i);
-    if (changeMatch) h1.textContent = `Tahrirlash uchun ${changeMatch[1]}ni tanlang`;
-    if (viewMatch) h1.textContent = `Ko'rish uchun ${viewMatch[1]}ni tanlang`;
+    // # IZOH: Ba'zan model nomi atrofida bo'sh joylar kelib qoladi (masalan: "Foydalanuvchi ni").
+    // Shuning uchun `trim()` qilib, tushum qo'shimchasini yopishtirib yozamiz.
+    const tushum = (nom) => {
+      const x = (nom || "").replace(/\s+/g, " ").trim();
+      if (!x) return x;
+      // Agar allaqachon "...ni" bilan tugasa, takrorlamaymiz.
+      if (x.toLowerCase().endsWith("ni")) return x;
+      return `${x}ni`;
+    };
+    if (changeMatch) h1.textContent = `Tahrirlash uchun ${tushum(changeMatch[1])} tanlang`;
+    if (viewMatch) h1.textContent = `Ko'rish uchun ${tushum(viewMatch[1])} tanlang`;
   }
 
   // 4) User add form matni: "After you've created a user..." -> o'zbekcha

@@ -3,6 +3,14 @@
 
 {% block title %}Admin Kirish | BilimNazoratchi{% endblock %}
 
+{# # IZOH: Login sahifasida breadcrumbs/sidebarga ehtiyoj yo'q — faqat kirish kartasi ko'rinsin. #}
+{% block nav-breadcrumbs %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content_title %}{% endblock %}
+{% block content_subtitle %}{% endblock %}
+{% block bodyclass %}{{ block.super }} login{% endblock %}
+
 {% block extrastyle %}
   {{ block.super }}
   <style>
@@ -170,4 +178,3 @@
     </div>
   </div>
 {% endblock %}
-
