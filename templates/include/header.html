@@ -40,6 +40,13 @@
                         </div>
                     </li>
 
+                    <!-- PROFILNI TAHRIRLASH (hamma foydalanuvchi uchun) -->
+                    <li class="nav-item me-2">
+                        <a class="btn btn-sm btn-outline-primary px-3 rounded-pill fw-bold" href="{% url 'hisoblar:shaxsiy_profil_tahrir' %}">
+                            <i class="bi bi-pencil-square me-1"></i> Profil
+                        </a>
+                    </li>
+
                     <!-- TIZIMDAN CHIQISH TUGMASI (Xavfsiz POST metodi orqali) -->
                     <li class="nav-item">
                         <form action="{% url 'hisoblar:logout' %}" method="post" class="d-inline">

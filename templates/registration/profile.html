@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Mening profilim | BilimNazoratchi{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+      <h2 class="fw-bold mb-1">Mening profilim</h2>
+      <div class="text-muted small">Shaxsiy ma’lumotlaringizni ko‘rish va yangilash.</div>
+    </div>
+    <a class="btn btn-primary rounded-pill fw-bold" href="{% url 'hisoblar:shaxsiy_profil_tahrir' %}">
+      Profilni tahrirlash
+    </a>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="text-muted small fw-bold">Login</div>
+          <div class="fw-bold">@{{ foydalanuvchi.username }}</div>
+        </div>
+        <div class="col-md-6">
+          <div class="text-muted small fw-bold">Tizimdagi vazifa</div>
+          <div class="fw-bold">{{ rol_nomi }}</div>
+        </div>
+        <div class="col-md-6">
+          <div class="text-muted small fw-bold">Ism</div>
+          <div class="fw-bold">{{ foydalanuvchi.first_name|default:"-" }}</div>
+        </div>
+        <div class="col-md-6">
+          <div class="text-muted small fw-bold">Familiya</div>
+          <div class="fw-bold">{{ foydalanuvchi.last_name|default:"-" }}</div>
+        </div>
+        <div class="col-md-6">
+          <div class="text-muted small fw-bold">Telefon</div>
+          <div class="fw-bold">{{ foydalanuvchi.telefon|default:"-" }}</div>
+        </div>
+        <div class="col-md-6">
+          <div class="text-muted small fw-bold">Telegram ID</div>
+          <div class="fw-bold">{{ foydalanuvchi.telegram_id|default:"-" }}</div>
+        </div>
+        <div class="col-md-6">
+          <div class="text-muted small fw-bold">Email</div>
+          <div class="fw-bold">{{ foydalanuvchi.email|default:"-" }}</div>
+        </div>
+        {% if sinf_nomi %}
+        <div class="col-md-6">
+          <div class="text-muted small fw-bold">Sinf</div>
+          <div class="fw-bold">{{ sinf_nomi }}</div>
+        </div>
+        {% endif %}
+        {% if farzand_fio %}
+        <div class="col-md-6">
+          <div class="text-muted small fw-bold">Farzand</div>
+          <div class="fw-bold">{{ farzand_fio }}</div>
+        </div>
+        {% endif %}
+        {% if farzand_sinfi %}
+        <div class="col-md-6">
+          <div class="text-muted small fw-bold">Farzand sinfi</div>
+          <div class="fw-bold">{{ farzand_sinfi }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

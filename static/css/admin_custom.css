@@ -573,3 +573,121 @@ input:focus, textarea:focus, select:focus {
     .aligned label { width: 100% !important; }
     .selector select { min-width: 100% !important; }
 }
+
+/* 13. CHANGELIST "HARAKAT" PANELI: select + "Bajarish" tugmasi tekis tursin */
+.change-list #changelist .actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.change-list #changelist .actions label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 !important;
+}
+
+.change-list #changelist .actions select {
+    margin: 0 !important;
+    min-height: 42px;
+}
+
+.change-list #changelist .actions button,
+.change-list #changelist .actions .button,
+.change-list #changelist .actions input[type="submit"] {
+    margin: 0 !important;
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.change-list #changelist .actions .action-counter {
+    margin: 0 !important;
+    align-self: center;
+}
+
+/* 14. INLINE FK WIDGET: select matni + ikonlar ustma-ust tushib qolmasin */
+.related-widget-wrapper {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    max-width: 100%;
+}
+
+.related-widget-wrapper > select,
+.related-widget-wrapper > input,
+.related-widget-wrapper > textarea {
+    flex: 1 1 auto;
+    min-width: 0; /* # IZOH: tor joylarda ham ikonlar yonida sig'sin */
+    max-width: 100%;
+}
+
+/* Django'ning add/change/view ikonkalari (pencil/plus/ko'z) */
+.related-widget-wrapper-link {
+    flex: 0 0 auto;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+}
+
+.related-widget-wrapper-link img {
+    display: block;
+}
+
+/* Inline jadval kataklarida ham hammasi markazda tursin */
+.inline-group .tabular td,
+.inline-group .tabular th {
+    vertical-align: middle !important;
+}
+
+@media (max-width: 700px) {
+    .related-widget-wrapper {
+        flex-wrap: wrap;
+    }
+    .related-widget-wrapper > select,
+    .related-widget-wrapper > input,
+    .related-widget-wrapper > textarea {
+        min-width: 100%;
+        flex-basis: 100%;
+    }
+}
+
+/* 14.1 TABULAR INLINE: "original" matn (obj __str__) ustma-ust tushmasin */
+.inline-group .tabular td.original p {
+    display: none !important; /* # IZOH: Keraksiz takroriy matn, dizaynni buzadi */
+}
+
+.inline-group .tabular td.original {
+    padding: 0 !important;
+    width: 1px !important;
+}
+
+/* 14.2 TABULAR INLINE: vaqt inputi va "Hozir" linki bir qatorda chiroyli tursin */
+.inline-group .tabular td.field-soat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.inline-group .tabular td.field-soat input {
+    flex: 1 1 140px;
+    min-width: 140px;
+}
+
+.inline-group .tabular td.field-soat .datetimeshortcuts {
+    margin: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}

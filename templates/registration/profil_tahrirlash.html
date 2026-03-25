@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profilni tahrirlash | BilimNazoratchi{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+      <h2 class="fw-bold mb-1">Profilni tahrirlash</h2>
+      <div class="text-muted small">Login o‘zgarmaydi. Ism, familiya, telefon, Telegram va parolni yangilashingiz mumkin.</div>
+    </div>
+    <a class="btn btn-outline-secondary rounded-pill" href="{% url 'talim:bosh_sahifa' %}">Bosh sahifaga qaytish</a>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-3">Shaxsiy ma’lumotlar</h5>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            {{ profil_forma.non_field_errors }}
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">{{ profil_forma.first_name.label }}</label>
+                {{ profil_forma.first_name }}
+                <div class="text-danger small">{{ profil_forma.first_name.errors }}</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">{{ profil_forma.last_name.label }}</label>
+                {{ profil_forma.last_name }}
+                <div class="text-danger small">{{ profil_forma.last_name.errors }}</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">{{ profil_forma.telefon.label }}</label>
+                {{ profil_forma.telefon }}
+                <div class="text-danger small">{{ profil_forma.telefon.errors }}</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">{{ profil_forma.telegram_id.label }}</label>
+                {{ profil_forma.telegram_id }}
+                <div class="text-danger small">{{ profil_forma.telegram_id.errors }}</div>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-bold">{{ profil_forma.email.label }}</label>
+                {{ profil_forma.email }}
+                <div class="text-danger small">{{ profil_forma.email.errors }}</div>
+              </div>
+            </div>
+
+            <div class="mt-3 d-grid">
+              <button type="submit" name="profil_saqlash" value="1" class="btn btn-primary fw-bold rounded-pill py-2">
+                Ma’lumotlarni saqlash
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-3">Parolni yangilash</h5>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            {{ parol_forma.non_field_errors }}
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">{{ parol_forma.old_password.label }}</label>
+              <div class="input-group">
+                {{ parol_forma.old_password }}
+                <button class="btn btn-outline-secondary" type="button" data-bn-pass-target="id_old_password" aria-label="Parolni ko‘rsatish/yashirish">
+                  <i class="bi bi-eye-slash"></i>
+                </button>
+              </div>
+              <div class="text-danger small">{{ parol_forma.old_password.errors }}</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">{{ parol_forma.new_password1.label }}</label>
+              <div class="input-group">
+                {{ parol_forma.new_password1 }}
+                <button class="btn btn-outline-secondary" type="button" data-bn-pass-target="id_new_password1" aria-label="Parolni ko‘rsatish/yashirish">
+                  <i class="bi bi-eye-slash"></i>
+                </button>
+              </div>
+              <div class="text-danger small">{{ parol_forma.new_password1.errors }}</div>
+              {% if parol_forma.new_password1.help_text %}
+                <div class="text-muted small mt-1">{{ parol_forma.new_password1.help_text|safe }}</div>
+              {% endif %}
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">{{ parol_forma.new_password2.label }}</label>
+              <div class="input-group">
+                {{ parol_forma.new_password2 }}
+                <button class="btn btn-outline-secondary" type="button" data-bn-pass-target="id_new_password2" aria-label="Parolni ko‘rsatish/yashirish">
+                  <i class="bi bi-eye-slash"></i>
+                </button>
+              </div>
+              <div class="text-danger small">{{ parol_forma.new_password2.errors }}</div>
+            </div>
+
+            <div class="mt-3 d-grid">
+              <button type="submit" name="parol_saqlash" value="1" class="btn btn-success fw-bold rounded-pill py-2">
+                Parolni yangilash
+              </button>
+            </div>
+          </form>
+          <div class="text-muted small mt-2">Parolni ko‘rish/yashirish uchun ko‘zcha tugmasidan foydalaning.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

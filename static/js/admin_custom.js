@@ -139,6 +139,46 @@ function bnAdminInit() {
     if (passwordHelpMap.has(t)) li.textContent = passwordHelpMap.get(t);
   });
 
+  // 5.5) Admin parol sahifasida qolib ketgan inglizcha matnlar (parolni yangilash/OTP bloklari)
+  // # IZOH: Ba'zi paketlar yoki Django admin sahifalarida (password form) matnlar inglizcha bo'lib qolishi mumkin.
+  document.querySelectorAll("#content p, #content label, #content span, #content div").forEach((el) => {
+    const raw = (el.textContent || "").replace(/\s+/g, " ").trim();
+    if (!raw) return;
+
+    // "Enter a new password for the user X."
+    const m = raw.match(/^Enter a new password for the user (.+)\.$/i);
+    if (m) {
+      el.textContent = `Foydalanuvchi uchun yangi parol kiriting: ${m[1]}.`;
+      return;
+    }
+
+    if (raw === "Password-based authentication:") {
+      el.textContent = "Parol orqali kirish:";
+      return;
+    }
+
+    if (raw === "Enabled") {
+      el.textContent = "Yoqilgan";
+      return;
+    }
+
+    if (raw === "Disabled") {
+      el.textContent = "O‘chirilgan";
+      return;
+    }
+
+    // Izoh matni (ko‘p bo‘lgani uchun startsWith bilan)
+    if (
+      raw.startsWith("Whether the user will be able to authenticate using a password or not.") ||
+      raw.startsWith("If disabled, they may still be able to authenticate using other backends")
+    ) {
+      el.textContent =
+        "Foydalanuvchi parol orqali tizimga kira oladimi-yo‘qmi shuni belgilaydi. " +
+        "Agar o‘chirilsa, foydalanuvchi boshqa kirish usullari (masalan, SSO yoki LDAP) orqali baribir tizimga kira olishi mumkin.";
+      return;
+    }
+  });
+
   // 6) Submit tugmalari (Save and add another, Save and continue editing, Save)
   document.querySelectorAll(".submit-row input[type='submit'], .submit-row button[type='submit']").forEach((el) => {
     const current = el.value ?? el.textContent;

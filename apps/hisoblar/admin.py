@@ -11,6 +11,7 @@ import io
 from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
+from django.contrib.auth.models import Permission
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.http import HttpResponse
 from django.urls import path
@@ -195,6 +196,22 @@ class FoydalanuvchiAdmin(UserAdmin):
                 "Uni o'zgartirish uchun <a href='../password/'>mana bu havolaga</a> o'ting."
             )
         return form
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """
+        Foydalanuvchi huquqlari ro'yxatini soddalashtirish.
+
+        # IZOH: Django'ning ichki ilovalari (admin/logentry, contenttypes, sessions va h.k.)
+        juda ko'p "texnik" huquqlar chiqaradi. Biz esa faqat loyihamizga tegishli
+        (hisoblar, ta'lim, tahlil, xabarlar) huquqlarini ko'rsatamiz — admin panel
+        chalkash bo'lib ketmasin.
+        """
+        if db_field.name == "user_permissions":
+            ilovalar = ["hisoblar", "talim", "tahlil", "xabarlar"]
+            kwargs["queryset"] = Permission.objects.filter(content_type__app_label__in=ilovalar).order_by(
+                "content_type__app_label", "name"
+            )
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
 admin.site.site_header = "BILIM NAZORATCHI: BOSHQARUV MARKAZI"
