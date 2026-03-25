@@ -392,6 +392,28 @@ function bnAdminInit() {
       else el.textContent = "Parolni yangilash";
     }
   });
+
+  // 11) "Biriktirilgan farzandi" maydoni faqat ota-ona rolida ko'rinsin
+  // # IZOH: Admin foydalanuvchi formasida `farzandi` fieldi faqat `rol='ota_ona'` bo'lganda kerak.
+  const rolSelect = document.querySelector("#id_rol");
+  const farzandInput = document.querySelector("#id_farzandi");
+  const farzandRow = farzandInput ? farzandInput.closest(".form-row") : null;
+
+  const bnUpdateFarzandVisibility = () => {
+    if (!rolSelect || !farzandRow) return;
+    const rol = (rolSelect.value || "").trim();
+    const kerakmi = rol === "ota_ona";
+    farzandRow.style.display = kerakmi ? "" : "none";
+    if (!kerakmi && farzandInput) {
+      // Rol ota-ona bo'lmasa, farzand tanlovini tozalab qo'yamiz (xato saqlanmasin).
+      farzandInput.value = "";
+    }
+  };
+
+  if (rolSelect && farzandRow) {
+    bnUpdateFarzandVisibility();
+    rolSelect.addEventListener("change", bnUpdateFarzandVisibility);
+  }
 }
 
 if (document.readyState === "loading") {
