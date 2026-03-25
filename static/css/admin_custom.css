@@ -28,6 +28,13 @@ body {
     font-family: 'Open Sans', sans-serif !important;
 }
 
+/* Login sahifasida header'dagi ortiqcha tugmalar ko'rinmasin (minimal ko'rinish) */
+body.login .bn-admin-toplinks,
+body.login .bn-dashboard-actions,
+body.login #nav-sidebar {
+    display: none !important;
+}
+
 /* 2. HEADER (Tepada qotib turadigan ko'k panel) */
 #header {
     background: var(--bn-admin-blue) !important;

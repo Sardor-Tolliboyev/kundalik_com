@@ -241,34 +241,38 @@ function bnAdminInit() {
     );
   };
 
-  document.querySelectorAll("#content input[type='password']").forEach((input) => {
-    if (input.dataset.bnPwdBound) return;
-    input.dataset.bnPwdBound = "1";
+  // # IZOH: Admin login sahifasida bu ko'zcha ba'zan layoutni buzib qo'yadi.
+  // Login sahifasi o'zining oddiy dizaynida qolsin.
+  if (!document.body.classList.contains("login")) {
+    document.querySelectorAll("#content input[type='password']").forEach((input) => {
+      if (input.dataset.bnPwdBound) return;
+      input.dataset.bnPwdBound = "1";
 
-    const parent = input.parentElement;
-    if (!parent) return;
+      const parent = input.parentElement;
+      if (!parent) return;
 
-    // Wrapper: position relative, button absolute (CSS bilan).
-    const wrap = document.createElement("div");
-    wrap.className = "bn-pass-wrap-admin";
+      // Wrapper: position relative, button absolute (CSS bilan).
+      const wrap = document.createElement("div");
+      wrap.className = "bn-pass-wrap-admin";
 
-    parent.insertBefore(wrap, input);
-    wrap.appendChild(input);
+      parent.insertBefore(wrap, input);
+      wrap.appendChild(input);
 
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "bn-pass-toggle-admin";
-    btn.setAttribute("aria-label", "Parolni ko'rsatish/yashirish");
-    btn.innerHTML = eyeSvg(false);
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "bn-pass-toggle-admin";
+      btn.setAttribute("aria-label", "Parolni ko'rsatish/yashirish");
+      btn.innerHTML = eyeSvg(false);
 
-    btn.addEventListener("click", () => {
-      const isHidden = input.type === "password";
-      input.type = isHidden ? "text" : "password";
-      btn.innerHTML = eyeSvg(!isHidden);
+      btn.addEventListener("click", () => {
+        const isHidden = input.type === "password";
+        input.type = isHidden ? "text" : "password";
+        btn.innerHTML = eyeSvg(!isHidden);
+      });
+
+      wrap.appendChild(btn);
     });
-
-    wrap.appendChild(btn);
-  });
+  }
 
   // 9) Huquqlar widgeti (FilteredSelectMultiple) ichida qolib ketgan inglizcha matnlar
   // # IZOH: Bu widget Django admin JS tomonidan keyinroq ham DOM'ga qayta yozilishi mumkin.
