@@ -46,6 +46,14 @@ body.login #nav-sidebar {
     color: #ffffff !important;
 }
 
+/* # IZOH: Django admin'dagi "yorug'/qorong'i rejim" (quyosh/oy) tugmasi bizga kerak emas. */
+#header .theme-toggle,
+#header button.theme-toggle,
+#header a.theme-toggle,
+.theme-toggle {
+    display: none !important;
+}
+
 #branding {
     display: flex;
     align-items: center;
@@ -442,33 +450,7 @@ select {
     padding-bottom: 10px !important;
 }
 
-/* 9.2 PAROL KO'ZCHASI (Admin) */
-.bn-pass-wrap-admin {
-    position: relative;
-    width: 100%;
-}
-
-.bn-pass-wrap-admin input[type="password"],
-.bn-pass-wrap-admin input[type="text"] {
-    padding-right: 44px !important; /* # IZOH: ko'zcha tugmasi uchun joy */
-}
-
-.bn-pass-toggle-admin {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 0;
-    background: transparent;
-    color: #64748b;
-    padding: 6px 6px;
-    line-height: 1;
-    cursor: pointer;
-}
-
-.bn-pass-toggle-admin:hover {
-    color: var(--bn-admin-blue-dark);
-}
+/* 9.2 PAROL KO'ZCHASI (Admin) - olib tashlandi (ortiqcha) */
 
 input:focus, textarea:focus, select:focus {
     outline: none !important;

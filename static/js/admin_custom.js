@@ -6,6 +6,10 @@
  */
 
 function bnAdminInit() {
+  // 0) Django admin theme toggle (quyosh/oy) tugmasi bizga kerak emas — butunlay olib tashlaymiz.
+  // # IZOH: Django core template ichida chiqadigan elementni "o'chirish"ning eng xavfsiz yo'li — DOM'dan remove qilish.
+  document.querySelectorAll(".theme-toggle, #header .theme-toggle").forEach((el) => el.remove());
+
   // 1) Chap menyudagi qidiruv inputi placeholder'ini o'zbekchalashtirish.
   const navSearch = document.querySelector('#nav-sidebar input[type="search"]');
   if (navSearch) {
@@ -219,60 +223,8 @@ function bnAdminInit() {
     }
   });
 
-  // 8) Admin formalarda parolni ko'rsatish (ko'zcha)
-  // # IZOH: Template o'zgartirmasdan input ichiga (o'ng tomonga) ko'zcha tugmasini qo'shamiz.
-  const eyeSvg = (open) => {
-    // Minimal inline SVG (admin'da tashqi ikonka kutubxonasi shart bo'lmasin).
-    if (open) {
-      return (
-        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
-        '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="2"/>' +
-        '<path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="2"/>' +
-        "</svg>"
-      );
-    }
-    return (
-      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
-      '<path d="M3 12s3.5-7 9-7c2.1 0 3.9.6 5.4 1.5" stroke="currentColor" stroke-width="2"/>' +
-      '<path d="M21 12s-3.5 7-9 7c-2.1 0-3.9-.6-5.4-1.5" stroke="currentColor" stroke-width="2"/>' +
-      '<path d="M10.5 10.5a3 3 0 0 0 3 3" stroke="currentColor" stroke-width="2"/>' +
-      '<path d="M2 2l20 20" stroke="currentColor" stroke-width="2"/>' +
-      "</svg>"
-    );
-  };
-
-  // # IZOH: Admin login sahifasida bu ko'zcha ba'zan layoutni buzib qo'yadi.
-  // Login sahifasi o'zining oddiy dizaynida qolsin.
-  if (!document.body.classList.contains("login")) {
-    document.querySelectorAll("#content input[type='password']").forEach((input) => {
-      if (input.dataset.bnPwdBound) return;
-      input.dataset.bnPwdBound = "1";
-
-      const parent = input.parentElement;
-      if (!parent) return;
-
-      // Wrapper: position relative, button absolute (CSS bilan).
-      const wrap = document.createElement("div");
-      wrap.className = "bn-pass-wrap-admin";
-
-      parent.insertBefore(wrap, input);
-      wrap.appendChild(input);
-
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "bn-pass-toggle-admin";
-      btn.setAttribute("aria-label", "Parolni ko'rsatish/yashirish");
-      btn.innerHTML = eyeSvg(false);
-
-      btn.addEventListener("click", () => {
-        const isHidden = input.type === "password";
-        input.type = isHidden ? "text" : "password";
-        btn.innerHTML = eyeSvg(!isHidden);
-      });
-
-      wrap.appendChild(btn);
-    });
-  }
+  // 8) Admin parol ko'zchasi (O'CHIRILDI)
+  // # IZOH: Foydalanuvchi talabiga ko'ra admin formalarda parol ko'rsatish ikonkalari ortiqcha bo'lgani uchun olib tashlandi.
 
   // 9) Huquqlar widgeti (FilteredSelectMultiple) ichida qolib ketgan inglizcha matnlar
   // # IZOH: Bu widget Django admin JS tomonidan keyinroq ham DOM'ga qayta yozilishi mumkin.
