@@ -107,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # 8. MAHALLIYLASHTIRISH (INTERNATIONALIZATION)
 # Tizim tili va vaqtini O'zbekistonga moslaymiz
-LANGUAGE_CODE = 'uz'
+LANGUAGE_CODE = 'uz-uz'
 
 # # IZOH: Sayt faqat o'zbek tilida ishlaydi (inglizcha tanlov yo'q).
 LANGUAGES = [
