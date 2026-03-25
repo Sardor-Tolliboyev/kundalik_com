@@ -112,8 +112,8 @@ function bnAdminInit() {
     const title = (h1.textContent || "").replace(/\s+/g, " ").trim();
     const changeMatch = title.match(/^Select (.+) to change$/i);
     const viewMatch = title.match(/^Select (.+) to view$/i);
-    if (changeMatch) h1.textContent = `Tahrirlash uchun ${changeMatch[1]} ni tanlang`;
-    if (viewMatch) h1.textContent = `Ko'rish uchun ${viewMatch[1]} ni tanlang`;
+    if (changeMatch) h1.textContent = `Tahrirlash uchun ${changeMatch[1]}ni tanlang`;
+    if (viewMatch) h1.textContent = `Ko'rish uchun ${viewMatch[1]}ni tanlang`;
   }
 
   // 4) User add form matni: "After you've created a user..." -> o'zbekcha
