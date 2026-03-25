@@ -467,6 +467,16 @@ function bnAdminInit() {
       else el.textContent = yangisi;
       return;
     }
+
+    // Bitta obyektni o'chirish sahifasi: "... delete the Sinf “5-sinf”? All of the following related items will be deleted:"
+    if (t.toLowerCase().startsWith("are you sure you want to delete the ") && t.includes("related items will be deleted")) {
+      const m = t.match(/^Are you sure you want to delete the (.+?)\\?\\s*All of the following related items will be deleted:?$/i);
+      const nom = m && m[1] ? m[1].replace(/\s+/g, " ").trim() : "ushbu obyekt";
+      const yangisi = `Rostdan ham ${nom} o'chirilsinmi?`;
+      if (isInput) el.value = yangisi;
+      else el.textContent = yangisi;
+      return;
+    }
   });
 
   // 12.1) O'chirish sahifasida keraksiz uzun ro'yxatlar ko'rinmasin (faqat tasdiqlash qolsin)
