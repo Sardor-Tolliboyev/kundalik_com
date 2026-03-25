@@ -71,6 +71,20 @@ function bnAdminInit() {
     if (mapped) btn.textContent = mapped;
   });
 
+  // Actions select: ayrim tarjimalarda qo'shimcha bo'shliq sabab "Foydalanuvchilar larni" kabi ko'rinish chiqib qoladi.
+  // # IZOH: Bu "larni/ni" qo'shimchalarini alohida so'z qilib yuboradigan tarjima muammosi.
+  // Biz admin UI'da ko'rinish chiroyli bo'lishi uchun bo'shliqlarni yopishtirib qo'yamiz.
+  document.querySelectorAll("select[name='action'] option").forEach((opt) => {
+    const raw = (opt.textContent || "").replace(/\s+/g, " ").trim();
+    if (!raw) return;
+    const fixed = raw
+      .replace(/\s+larni\b/gi, "larni")
+      .replace(/\s+ni\b/gi, "ni")
+      .replace(/\s+dan\b/gi, "dan")
+      .replace(/\s+ga\b/gi, "ga");
+    if (fixed !== raw) opt.textContent = fixed;
+  });
+
   // Change list filter header: "Filter" -> "Filtr"
   const filterHeader = document.querySelector("#changelist-filter-header");
   if (filterHeader) {
@@ -413,6 +427,66 @@ function bnAdminInit() {
   if (rolSelect && farzandRow) {
     bnUpdateFarzandVisibility();
     rolSelect.addEventListener("change", bnUpdateFarzandVisibility);
+  }
+
+  // 12) O'chirishni tasdiqlash sahifasi (delete_selected) matnlarini o'zbekchalashtirish
+  // # IZOH: Django admin delete confirmation sahifasi ba'zan inglizcha bo'lib qoladi.
+  // Buni template o'zgartirmasdan, oddiy JS bilan o'zbekchalaymiz.
+  const pageH1 = document.querySelector("#content h1");
+  if (pageH1) {
+    const t = (pageH1.textContent || "").replace(/\s+/g, " ").trim();
+    if (t === "Delete multiple objects") pageH1.textContent = "Bir nechta obyektni o'chirish";
+    if (t === "Delete object") pageH1.textContent = "Obyektni o'chirish";
+  }
+
+  document.querySelectorAll("#content p, #content h2, #content h3, #content a, #content input[type='submit'], #content button").forEach((el) => {
+    const isInput = el instanceof HTMLInputElement;
+    const raw = isInput ? (el.value || "") : (el.textContent || "");
+    const t = raw.replace(/\s+/g, " ").trim();
+    if (!t) return;
+
+    // Tugmalar
+    if (/^Yes,\s*I[’']?m\s*sure$/i.test(t)) {
+      if (isInput) el.value = "Ha, o'chiraman";
+      else el.textContent = "Ha, o'chiraman";
+      return;
+    }
+    if (/^No,\s*take\s*me\s*back$/i.test(t)) {
+      if (isInput) el.value = "Yo'q, ortga qaytish";
+      else el.textContent = "Yo'q, ortga qaytish";
+      return;
+    }
+
+    // Asosiy ogohlantirish matni (model nomlari bo'lishi mumkin, shuning uchun partial match)
+    if (t.startsWith("Are you sure you want to delete the selected") && t.includes("All of the following objects")) {
+      // Model nomini ajratib olishga urinib ko'ramiz: "... selected X? All ..."
+      const m = t.match(/^Are you sure you want to delete the selected (.+?)\\? All of the following objects/i);
+      const nom = m && m[1] ? m[1].replace(/\?/g, "").trim() : "obyektlar";
+      const yangisi = `Tanlangan ${nom}ni o'chirmoqchimisiz?`;
+      if (isInput) el.value = yangisi;
+      else el.textContent = yangisi;
+      return;
+    }
+  });
+
+  // 12.1) O'chirish sahifasida keraksiz uzun ro'yxatlar ko'rinmasin (faqat tasdiqlash qolsin)
+  // # IZOH: Userga faqat tasdiqlash tugmalari va qisqa ogohlantirish kifoya.
+  if (document.body.classList.contains("delete-confirmation")) {
+    // "Xulosa/Objects" sarlavhalarini yashirish
+    document.querySelectorAll("#content h2, #content h3").forEach((h) => {
+      const t = (h.textContent || "").replace(/\s+/g, " ").trim().toLowerCase();
+      if (t === "xulosa" || t === "objects" || t === "obyektlar" || t === "summary") {
+        h.style.display = "none";
+      }
+    });
+
+    // Uzun ro'yxatlarni yashirish (submit-row ichidagilarga tegmaymiz)
+    document.querySelectorAll("#content ul").forEach((ul) => {
+      if (ul.closest(".submit-row")) return;
+      if (ul.classList.contains("messagelist")) return;
+      if (ul.classList.contains("errorlist")) return;
+      ul.style.display = "none";
+    });
   }
 }
 

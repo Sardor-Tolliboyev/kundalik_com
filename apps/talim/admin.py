@@ -9,6 +9,7 @@ Vazifasi:
 
 import io
 import pandas as pd
+import re
 
 from django.contrib import admin, messages
 from django.db import transaction
@@ -68,29 +69,153 @@ class SinfAdmin(admin.ModelAdmin):
                 yaratilgan_o_quvchilar = []
                 standart_parol = "12345678"
 
+                # # IZOH: Excel'da ota-ona F.I.SH ustuni turli nomlarda kelishi mumkin.
+                # Userlar ko'pincha "ota" / "otasi" deb yozib yuboradi, shuning uchun ikkalasini ham qabul qilamiz.
+                ota_ona_ustun_nomlari = [
+                    "ota yoki onasi ism familiyasi",
+                    "Ota yoki onasi ism familiyasi",
+                    "otasi yoki onasi ism familiyasi",
+                    "Otasi yoki onasi ism familiyasi",
+                    "Ota/ona ism familiyasi",
+                    "Ota-ona ism familiyasi",
+                    "Ota onasi ism familiyasi",
+                    "Ota-ona F.I.SH",
+                    "Ota-ona FIO",
+                    "Ota-ona",
+                ]
+
+                def _norm_matn(matn: str) -> str:
+                    x = str(matn or "").strip().lower()
+                    x = x.replace(".", " ").replace("/", " ").replace("-", " ").replace("_", " ")
+                    x = re.sub(r"\s+", " ", x)
+                    return x
+
+                def ustun_top(ustunlar, nomlar):
+                    ustunlar_norm = {_norm_matn(x): str(x) for x in ustunlar}
+                    for nom in nomlar:
+                        kalit = _norm_matn(nom)
+                        if kalit in ustunlar_norm:
+                            return ustunlar_norm[kalit]
+                    return None
+
+                ota_ona_ustuni = ustun_top(jadval.columns, ota_ona_ustun_nomlari)
+
+                if ota_ona_ustuni is None:
+                    # # IZOH: Ustun nomi aynan mos kelmasa ham, ma'nosiga qarab topishga harakat qilamiz.
+                    for col in jadval.columns:
+                        n = _norm_matn(col)
+                        if "ota" in n and ("ona" in n or "onasi" in n) and ("ism" in n or "familiya" in n or "fio" in n or "fish" in n):
+                            ota_ona_ustuni = str(col)
+                            break
+
+                def fio_ajrat(fio_matn: str):
+                    """
+                    F.I.SH'ni (Ism Familiya) ajratish.
+
+                    # IZOH: Oldingi importda fio to'liq `first_name`ga yozilgan.
+                    # Endi chiroyliroq bo'lishi uchun `first_name` va `last_name`ga bo'lamiz.
+                    """
+                    qismlar = [x for x in (fio_matn or "").strip().split(" ") if x]
+                    if not qismlar:
+                        return "", ""
+                    if len(qismlar) == 1:
+                        return qismlar[0], ""
+                    return " ".join(qismlar[:-1]), qismlar[-1]
+
+                def login_yasash(fio_matn: str):
+                    """
+                    F.I.SH asosida login tayyorlash va unikallikni ta'minlash.
+
+                    # IZOH: Django username uchun xavfsiz belgilarga keltiramiz va 20 belgidan oshirmaymiz.
+                    """
+                    xom = (fio_matn or "").strip().lower()
+                    xom = xom.replace("’", "").replace("'", "").replace("`", "")
+                    xom = re.sub(r"\s+", "_", xom)
+                    xom = re.sub(r"[^a-z0-9_]+", "", xom)
+                    if not xom:
+                        xom = "user"
+
+                    asos = xom[:20]
+                    kandidat = asos
+                    raqam = 1
+                    while Foydalanuvchi.objects.filter(username=kandidat).exists():
+                        raqam += 1
+                        suff = str(raqam)
+                        kesma = (asos[: max(1, 20 - (len(suff) + 1))]).rstrip("_")
+                        kandidat = f"{kesma}_{suff}"
+                    return kandidat
+
                 with transaction.atomic():
                     for _, qator in jadval.iterrows():
-                        fio = str(qator['Ism familiyasi']).strip()
-                        login = fio.replace(" ", "_").lower()[:20]
+                        fio_qiymat = qator.get("Ism familiyasi", "")
+                        fio = "" if pd.isna(fio_qiymat) else str(fio_qiymat).strip()
+                        if not fio:
+                            continue
+
+                        login = login_yasash(fio)
+                        ism, familiya = fio_ajrat(fio)
 
                         foydalanuvchi, created = Foydalanuvchi.objects.get_or_create(
                             username=login,
                             defaults={
-                                'first_name': fio,
+                                'first_name': ism,
+                                'last_name': familiya,
                                 'rol': 'oquvchi',
-                                'sinf': sinf_obyekti
-                            }
+                                'sinf': sinf_obyekti,
+                            },
                         )
 
                         if created:  # # IZOH: yangi foydalanuvchi yaratilgan bo'lsa
                             foydalanuvchi.set_password(standart_parol)
                             foydalanuvchi.save()
 
+                        # Ota-ona yaratish (ixtiyoriy ustun)
+                        ota_ona_fio = ""
+                        ota_ona_login = "-"
+                        ota_ona_parol = "-"
+                        if ota_ona_ustuni:
+                            ota_ona_qiymat = qator.get(ota_ona_ustuni, "")
+                            ota_ona_fio = "" if pd.isna(ota_ona_qiymat) else str(ota_ona_qiymat).strip()
+
+                        # Avvaldan ota-ona biriktirilgan bo'lsa, loginini chiqaramiz (parolni taxmin qilmaymiz).
+                        mavjud_ota_onalar = list(foydalanuvchi.ota_onasi.all())
+                        if mavjud_ota_onalar and not ota_ona_fio:
+                            ota_ona_login = "; ".join([x.username for x in mavjud_ota_onalar if x.username]) or "-"
+
+                        if ota_ona_fio:
+                            ota_ism, ota_fam = fio_ajrat(ota_ona_fio)
+                            ota_ana_fio_norm = " ".join([ota_ism, ota_fam]).strip().lower()
+
+                            # # IZOH: Bir xil F.I.SH bilan ota-ona allaqachon bog'langan bo'lsa, takror yaratmaymiz.
+                            moslari = [
+                                x for x in mavjud_ota_onalar
+                                if (" ".join([x.first_name or "", x.last_name or ""]).strip().lower() == ota_ana_fio_norm)
+                            ]
+                            if moslari:
+                                ota_ona_login = "; ".join([x.username for x in moslari if x.username]) or "-"
+                            else:
+                                ota_ona_login = login_yasash(ota_ona_fio)
+                                ota_ona_user = Foydalanuvchi.objects.create(
+                                    username=ota_ona_login,
+                                    first_name=ota_ism,
+                                    last_name=ota_fam,
+                                    rol="ota_ona",
+                                    farzandi=foydalanuvchi,
+                                    # # IZOH: ota-onani ham sinfga bog'lab qo'yamiz (filtr uchun qulay).
+                                    sinf=sinf_obyekti,
+                                )
+                                ota_ona_user.set_password(standart_parol)
+                                ota_ona_user.save()
+                                ota_ona_parol = standart_parol
+
                         yaratilgan_o_quvchilar.append({
                             'F.I.SH': fio,
                             'Login (Username)': login,
                             'Parol': standart_parol,
-                            'Sinfi': sinf_obyekti.nomi
+                            'Sinfi': sinf_obyekti.nomi,
+                            "Ota-ona F.I.SH": ota_ona_fio or "-",
+                            "Ota-ona login": ota_ona_login,
+                            "Ota-ona parol": ota_ona_parol,
                         })
 
                 natija_df = pd.DataFrame(yaratilgan_o_quvchilar)
@@ -123,11 +248,11 @@ class SinfAdmin(admin.ModelAdmin):
         # Import jarayonida esa sinf admin forma orqali tanlanadi (excel'dagi "Sinf" ustuni ixtiyoriy).
         namuna_df = pd.DataFrame(
             [
-                {"Ism familiyasi": "Ali Valiyev", "Sinf": "5-sinf"},
-                {"Ism familiyasi": "Valiyeva Malika", "Sinf": "5-sinf"},
-                {"Ism familiyasi": "G'aniyev Sardor", "Sinf": "5-sinf"},
+                {"Ism familiyasi": "Ali Valiyev", "Sinf": "5-sinf", "Ota yoki onasi ism familiyasi": "Salimov Ali"},
+                {"Ism familiyasi": "Valiyeva Malika", "Sinf": "5-sinf", "Ota yoki onasi ism familiyasi": "Qurashev Joni"},
+                {"Ism familiyasi": "G'aniyev Sardor", "Sinf": "5-sinf", "Ota yoki onasi ism familiyasi": "Sadriyeva Guli"},
             ],
-            columns=["Ism familiyasi", "Sinf"],
+            columns=["Ism familiyasi", "Sinf", "Ota yoki onasi ism familiyasi"],
         )
 
         output = io.BytesIO()

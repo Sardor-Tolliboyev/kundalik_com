@@ -101,21 +101,38 @@ class FoydalanuvchiAdmin(UserAdmin):
         """Barcha foydalanuvchilar ma'lumotlarini (Login va 12345678 paroli bilan) Excelga chiqarish"""
         foydalanuvchilar = (
             Foydalanuvchi.objects.all()
-            .select_related('sinf')
-            .order_by('sinf__nomi', 'first_name')
+            .select_related("sinf")
+            .prefetch_related("ota_onasi")
+            .order_by("sinf__nomi", "first_name")
         )
 
         malumotlar = []
         standart_parol = "12345678"
 
         for foydalanuvchi in foydalanuvchilar:
+            # # IZOH: Ota-onani alohida satr qilib eksport qilmaymiz.
+            # Ota-ona login/parolini o'quvchi satrining oxirgi ustunlarida chiqaramiz.
+            if foydalanuvchi.rol == "ota_ona":
+                continue
+
+            ota_onasi_logini = "-"
+            ota_onasi_paroli = "-"
+            if foydalanuvchi.rol == "oquvchi":
+                ota_onalar = list(foydalanuvchi.ota_onasi.all())
+                if ota_onalar:
+                    # Bir nechta ota-ona bo'lsa, loginlarni `; ` bilan ajratamiz.
+                    ota_onasi_logini = "; ".join([x.username for x in ota_onalar if x.username]) or "-"
+                    ota_onasi_paroli = standart_parol
+
             # # IZOH: Excel ustun nomlarini o'zgartirmaymiz (format bir xil bo'lib qoladi).
             malumotlar.append({
                 'Ism familiyasi': f"{foydalanuvchi.first_name} {foydalanuvchi.last_name}" if foydalanuvchi.first_name else foydalanuvchi.username,
                 'Login': foydalanuvchi.username,
                 'Parol': standart_parol,
                 'Sinfi': foydalanuvchi.sinf.nomi if foydalanuvchi.sinf else "-",
-                'Lavozimi': foydalanuvchi.get_rol_display()
+                'Lavozimi': foydalanuvchi.get_rol_display(),
+                "Ota-onasi logini": ota_onasi_logini,
+                "Ota-onasi paroli": ota_onasi_paroli,
             })
 
         jadval_df = pd.DataFrame(malumotlar)
